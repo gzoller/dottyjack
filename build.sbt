@@ -1,12 +1,34 @@
-val dottyVersion = "0.23.0-RC1"
+val dottyVersion = "0.24.0-bin-20200320-30f8c6f-NIGHTLY"
+
+val pubSettings = Seq(
+  publishMavenStyle := true,
+  bintrayOrganization := Some("blocke"),
+  bintrayReleaseOnPublish in ThisBuild := true,
+  licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
+  bintrayRepository := "releases",
+  bintrayPackageLabels := Seq("scala", "dotty", "json")
+)
 
 lazy val root = project
   .in(file("."))
+  .settings(pubSettings: _*)
   .settings(
-    name := "dotty-simple",
-    version := "0.1.0",
+    name := "dottyjack",
+
+    resolvers += Resolver.jcenterRepo,
 
     scalaVersion := dottyVersion,
 
-    libraryDependencies += "com.novocode" % "junit-interface" % "0.11" % "test"
+    Test / parallelExecution := false,
+    
+    scalacOptions ++= Seq("-language:implicitConversions"),
+
+    testFrameworks += new TestFramework("munit.Framework"),
+
+    libraryDependencies ++= 
+      Seq(
+        "commons-codec" % "commons-codec" % "1.12",
+        "co.blocke" %% "dotty-reflection" % "df4205_SNAPSHOT",
+        "munit" %% "munit" % "0.6.z-3" % "test"   // special build of munit compatible with Dotty 0.24
+      )
   )
