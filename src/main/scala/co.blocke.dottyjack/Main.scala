@@ -6,6 +6,8 @@ object Main {
 
   def main(args: Array[String]): Unit = {
 
+    println(analyzeType[Array[Byte]])
+
     val dj = DottyJack()
 
     println(dj.render("foom"))

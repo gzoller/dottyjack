@@ -10,10 +10,9 @@ object TypeAdapterCache {
 
   val StandardFactories: List[TypeAdapterFactory] =
     List(
-      /*
       BigDecimalTypeAdapterFactory,
       BigIntTypeAdapterFactory,
-      BinaryTypeAdapterFactory,
+      // BinaryTypeAdapterFactory,
       BooleanTypeAdapterFactory,
       ByteTypeAdapterFactory,
       CharTypeAdapterFactory,
@@ -22,7 +21,6 @@ object TypeAdapterCache {
       IntTypeAdapterFactory,
       LongTypeAdapterFactory,
       ShortTypeAdapterFactory,
-      */
       StringTypeAdapterFactory
       /*
       //    TypeTypeAdapterFactory,

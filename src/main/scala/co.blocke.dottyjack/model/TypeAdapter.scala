@@ -24,6 +24,7 @@ import co.blocke.dotty_reflection.impl.Clazzes._
  * in this case.  With strict matching String != Phone.
  *
  */
+ /*
 object TypeAdapter {
 
  /*
@@ -39,16 +40,14 @@ object TypeAdapter {
   */
 
   // abstract class =:=[X]
-  //   extends TypeAdapterFactory
-  //   with ScalarTypeAdapter[X] {
-  //   val myTpe = analyzeType[X]
-  //   println("HERE: "+myTpe)  // Problem... X for the macro got lost and dumbed down to Any, which then fails...
-  //   val info = Reflector.reflectOnType(myTpe).asInstanceOf[model.PrimitiveType]
-  //   def matches(tpe: TypeStructure): Boolean = Class.forName(myTpe.className) =:= Class.forName(tpe.className)
-  //   def makeTypeAdapter(tpe: TypeStructure): TypeAdapter[X] = this
+  //   extends TypeAdapterFactory {
+  //   self: TypeAdapter[X] =>
+  //   def matches(tpe: TypeStructure): Boolean = myTpe.className == tpe.className
+  //   def makeTypeAdapter(tpe: TypeStructure): TypeAdapter[X] = self
   // }
 
 }
+*/
 
 trait TypeAdapter[T] {
   self =>

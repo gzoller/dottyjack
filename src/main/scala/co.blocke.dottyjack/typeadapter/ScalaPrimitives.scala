@@ -1,14 +1,20 @@
 package co.blocke.dottyjack
 package typeadapter
 
-import org.apache.commons.codec.binary.Base64
 import model._
 
+import co.blocke.dotty_reflection.impl.Clazzes._
+import co.blocke.dotty_reflection._
+
+import org.apache.commons.codec.binary.Base64
 import scala.collection.mutable
 
-/*
-object BigDecimalTypeAdapterFactory extends TypeAdapter.=:=[BigDecimal] with BigDecimalTypeAdapter
-trait BigDecimalTypeAdapter {
+
+object BigDecimalTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[BigDecimal] with ScalarTypeAdapter[BigDecimal]:
+  def matches(tpe: TypeStructure): Boolean = Class.forName(tpe.className) =:= classOf[scala.math.BigDecimal]
+  def makeTypeAdapter(tpe: TypeStructure): TypeAdapter[BigDecimal] = this
+
+  val info = Reflector.reflectOn[scala.math.BigDecimal]
   def read(parser: Parser): BigDecimal = {
     val bd = parser.expectNumber(true)
     if (bd == null)
@@ -18,10 +24,13 @@ trait BigDecimalTypeAdapter {
   }
   def write[WIRE](t: BigDecimal, writer: Writer[WIRE], out: mutable.Builder[WIRE, WIRE]): Unit =
     writer.writeDecimal(t, out)
-}
 
-object BigIntTypeAdapterFactory extends TypeAdapter.=:=[BigInt] with BigIntTypeAdapter
-trait BigIntTypeAdapter {
+
+object BigIntTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[BigInt] with ScalarTypeAdapter[BigInt]:
+  def matches(tpe: TypeStructure): Boolean = Class.forName(tpe.className) =:= classOf[scala.math.BigInt]
+  def makeTypeAdapter(tpe: TypeStructure): TypeAdapter[BigInt] = this
+
+  val info = Reflector.reflectOn[scala.math.BigInt]
   def read(parser: Parser): BigInt = {
     val bi = parser.expectNumber(true)
     if (bi == null)
@@ -33,10 +42,13 @@ trait BigIntTypeAdapter {
     case null => writer.writeNull(out)
     case _    => writer.writeBigInt(t, out)
   }
-}
 
-object BinaryTypeAdapterFactory extends TypeAdapter.=:=[Array[Byte]] with BinaryTypeAdapter with Stringish
-trait BinaryTypeAdapter {
+
+object BinarTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Array[Byte]] with ScalarTypeAdapter[Array[Byte]]:
+  def matches(tpe: TypeStructure): Boolean = tpe.className == "scala.Array" && Class.forName(tpe.params.head.className) =:= ByteClazz
+  def makeTypeAdapter(tpe: TypeStructure): TypeAdapter[Array[Byte]] = this
+
+  val info = Reflector.reflectOn[Array[Byte]]
   def read(parser: Parser): Array[Byte] =
     parser.expectString() match {
       case null      => null
@@ -48,17 +60,23 @@ trait BinaryTypeAdapter {
       case null => writer.writeNull(out)
       case _    => writer.writeString(Base64.encodeBase64String(t), out)
     }
-}
 
-object BooleanTypeAdapterFactory extends TypeAdapter.=:=[Boolean] with BooleanTypeAdapter
-trait BooleanTypeAdapter {
+
+object BooleanTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Boolean] with ScalarTypeAdapter[Boolean]:
+  def matches(tpe: TypeStructure): Boolean = Class.forName(tpe.className) =:= BooleanClazz
+  def makeTypeAdapter(tpe: TypeStructure): TypeAdapter[Boolean] = this
+
+  val info = Reflector.reflectOn[Boolean]
   def read(parser: Parser): Boolean = parser.expectBoolean()
   def write[WIRE](t: Boolean, writer: Writer[WIRE], out: mutable.Builder[WIRE, WIRE]): Unit =
     writer.writeBoolean(t, out)
-}
 
-object ByteTypeAdapterFactory extends TypeAdapter.=:=[Byte] with ByteTypeAdapter
-trait ByteTypeAdapter {
+
+object ByteTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Byte] with ScalarTypeAdapter[Byte]:
+  def matches(tpe: TypeStructure): Boolean = Class.forName(tpe.className) =:= ByteClazz
+  def makeTypeAdapter(tpe: TypeStructure): TypeAdapter[Byte] = this
+
+  val info = Reflector.reflectOn[Byte]
   def read(parser: Parser): Byte =
     Option(parser.expectNumber())
       .flatMap(_.toByteOption)
@@ -70,10 +88,13 @@ trait ByteTypeAdapter {
       }
   def write[WIRE](t: Byte, writer: Writer[WIRE], out: mutable.Builder[WIRE, WIRE]): Unit =
     writer.writeInt(t, out)
-}
 
-object CharTypeAdapterFactory extends TypeAdapter.=:=[Char] with CharTypeAdapter with Stringish
-trait CharTypeAdapter {
+
+object CharTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Char] with ScalarTypeAdapter[Char]:
+  def matches(tpe: TypeStructure): Boolean = Class.forName(tpe.className) =:= CharClazz
+  def makeTypeAdapter(tpe: TypeStructure): TypeAdapter[Char] = this
+
+  val info = Reflector.reflectOn[Char]
   def read(parser: Parser): Char =
     parser.expectString() match {
       case null =>
@@ -90,10 +111,13 @@ trait CharTypeAdapter {
     }
   def write[WIRE](t: Char, writer: Writer[WIRE], out: mutable.Builder[WIRE, WIRE]): Unit =
     writer.writeString(t.toString, out)
-}
 
-object DoubleTypeAdapterFactory extends TypeAdapter.=:=[Double] with DoubleTypeAdapter
-trait DoubleTypeAdapter {
+
+object DoubleTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Double] with ScalarTypeAdapter[Double]:
+  def matches(tpe: TypeStructure): Boolean = Class.forName(tpe.className) =:= DoubleClazz
+  def makeTypeAdapter(tpe: TypeStructure): TypeAdapter[Double] = this
+
+  val info = Reflector.reflectOn[Double]
   def read(parser: Parser): Double =
     Option(
       parser
@@ -107,10 +131,13 @@ trait DoubleTypeAdapter {
       }
   def write[WIRE](t: Double, writer: Writer[WIRE], out: mutable.Builder[WIRE, WIRE]): Unit =
     writer.writeDouble(t, out)
-}
 
-object FloatTypeAdapterFactory extends TypeAdapter.=:=[Float] with FloatTypeAdapter
-trait FloatTypeAdapter {
+
+object FloatTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Float] with ScalarTypeAdapter[Float]:
+  def matches(tpe: TypeStructure): Boolean = Class.forName(tpe.className) =:= FloatClazz
+  def makeTypeAdapter(tpe: TypeStructure): TypeAdapter[Float] = this
+
+  val info = Reflector.reflectOn[Float]
   def read(parser: Parser): Float =
     Option(
       parser
@@ -124,10 +151,13 @@ trait FloatTypeAdapter {
       }
   def write[WIRE](t: Float, writer: Writer[WIRE], out: mutable.Builder[WIRE, WIRE]): Unit =
     writer.writeDouble(util.FixFloat.capFloat(t), out)
-}
 
-object IntTypeAdapterFactory extends TypeAdapter.=:=[Int] with IntTypeAdapter
-trait IntTypeAdapter {
+
+object IntTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Int] with ScalarTypeAdapter[Int]:
+  def matches(tpe: TypeStructure): Boolean = Class.forName(tpe.className) =:= IntClazz
+  def makeTypeAdapter(tpe: TypeStructure): TypeAdapter[Int] = this
+
+  val info = Reflector.reflectOn[Int]
   def read(parser: Parser): Int =
     Option(
       parser
@@ -141,10 +171,13 @@ trait IntTypeAdapter {
       }
   def write[WIRE](t: Int, writer: Writer[WIRE], out: mutable.Builder[WIRE, WIRE]): Unit =
     writer.writeInt(t, out)
-}
 
-object LongTypeAdapterFactory extends TypeAdapter.=:=[Long] with LongTypeAdapter
-trait LongTypeAdapter {
+
+object LongTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Long] with ScalarTypeAdapter[Long]:
+  def matches(tpe: TypeStructure): Boolean = Class.forName(tpe.className) =:= LongClazz
+  def makeTypeAdapter(tpe: TypeStructure): TypeAdapter[Long] = this
+
+  val info = Reflector.reflectOn[Long]
   def read(parser: Parser): Long =
     Option(
       parser
@@ -158,10 +191,13 @@ trait LongTypeAdapter {
       }
   def write[WIRE](t: Long, writer: Writer[WIRE], out: mutable.Builder[WIRE, WIRE]): Unit =
     writer.writeLong(t, out)
-}
 
-object ShortTypeAdapterFactory extends TypeAdapter.=:=[Short] with ShortTypeAdapter
-trait ShortTypeAdapter {
+
+object ShortTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Short] with ScalarTypeAdapter[Short]:
+  def matches(tpe: TypeStructure): Boolean = Class.forName(tpe.className) =:= ShortClazz
+  def makeTypeAdapter(tpe: TypeStructure): TypeAdapter[Short] = this
+
+  val info = Reflector.reflectOn[Short]
   def read(parser: Parser): Short =
     Option(
       parser
@@ -175,25 +211,9 @@ trait ShortTypeAdapter {
       }
   def write[WIRE](t: Short, writer: Writer[WIRE], out: mutable.Builder[WIRE, WIRE]): Unit =
     writer.writeInt(t, out)
-}
-*/
-
-  // abstract class =:=[X]
-  //   extends TypeAdapterFactory
-  //   with ScalarTypeAdapter[X] {
-  //   val myTpe = analyzeType[X]
-  //   println("HERE: "+myTpe)  // Problem... X for the macro got lost and dumbed down to Any, which then fails...
-  //   val info = Reflector.reflectOnType(myTpe).asInstanceOf[model.PrimitiveType]
-  //   def matches(tpe: TypeStructure): Boolean = Class.forName(myTpe.className) =:= Class.forName(tpe.className)
-  //   def makeTypeAdapter(tpe: TypeStructure): TypeAdapter[X] = this
-  // }
 
 
-//object StringTypeAdapterFactory extends TypeAdapter.=:=[String] with Stringish {
-
-import co.blocke.dotty_reflection.impl.Clazzes._
-import co.blocke.dotty_reflection._
-object StringTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[String] with ScalarTypeAdapter[String] with Stringish {
+object StringTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[String] with ScalarTypeAdapter[String] with Stringish:
   def matches(tpe: TypeStructure): Boolean = Class.forName(tpe.className) =:= StringClazz
   def makeTypeAdapter(tpe: TypeStructure): TypeAdapter[String] = this
 
@@ -201,4 +221,3 @@ object StringTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Stri
   def read(parser: Parser): String = parser.expectString()
   def write[WIRE](t: String, writer: Writer[WIRE], out: mutable.Builder[WIRE, WIRE]): Unit =
     writer.writeString(t, out)
-}
