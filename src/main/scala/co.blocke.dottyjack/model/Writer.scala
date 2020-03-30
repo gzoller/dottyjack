@@ -3,8 +3,11 @@ package model
 
 import scala.collection.Map
 import scala.collection.mutable
+import co.blocke.dotty_reflection.infos.FieldInfo
+
 // TODO
 // import ClassHelper.ExtraFieldValue
+case class ExtraFieldValue[T](value: T, valueTypeAdapter: TypeAdapter[T])
 
 trait Writer[WIRE] {
   def writeArray[Elem](t: Iterable[Elem], elemTypeAdapter: TypeAdapter[Elem], out: mutable.Builder[WIRE, WIRE]): Unit
@@ -16,14 +19,13 @@ trait Writer[WIRE] {
   def writeLong(t: Long, out: mutable.Builder[WIRE, WIRE]): Unit
   def writeMap[Key, Value, To](t: Map[Key, Value], keyTypeAdapter: TypeAdapter[Key], valueTypeAdapter: TypeAdapter[Value], out: mutable.Builder[WIRE, WIRE]): Unit
   def writeNull(out: mutable.Builder[WIRE, WIRE]): Unit
-  // TODO
-  // def writeObject[T](
-  //     t: T,
-  //     orderedFieldNames: List[String],
-  //     fieldMembersByName: Map[String, ClassHelper.ClassFieldMember[T, Any]],
-  //     out: mutable.Builder[WIRE, WIRE],
-  //     extras: List[(String, ExtraFieldValue[_])] = List.empty[(String, ExtraFieldValue[_])]
-  // ): Unit
+  def writeObject[T](
+      t: T,
+      orderedFieldNames: List[String],
+      fieldMembersByName: Map[String, ClassFieldMember[_]],
+      out: mutable.Builder[WIRE, WIRE],
+      extras: List[(String, ExtraFieldValue[_])] = List.empty[(String, ExtraFieldValue[_])]
+  ): Unit
   def writeString(t: String, out: mutable.Builder[WIRE, WIRE]): Unit
   def writeRaw(t: WIRE, out: mutable.Builder[WIRE, WIRE]): Unit // i.e. no quotes for JSON
   // TODO

@@ -2,7 +2,7 @@ package co.blocke.dottyjack
 package json
 
 import model._
-// import typeadapter.ClassTypeAdapterBase
+import typeadapter.ClassTypeAdapterBase
 
 import scala.collection.mutable
 import scala.jdk.CollectionConverters._
@@ -215,11 +215,10 @@ case class JsonParser(jsRaw: JSON, jackFlavor: JackFlavor[JSON]) extends Parser 
     builder.result()
   }
 
-  /*
   def expectObject(
       classBase: ClassTypeAdapterBase[_],
       hintLabel: String
-  ): (mutable.BitSet, Array[Any], java.util.HashMap[String, _]) = {
+  ): (mutable.BitSet, List[Object], java.util.HashMap[String, _]) = {
     whitespace()
     val args      = classBase.argsTemplate.clone()
     val fieldBits = classBase.fieldBitsTemplate.clone()
@@ -248,8 +247,8 @@ case class JsonParser(jsRaw: JSON, jackFlavor: JackFlavor[JSON]) extends Parser 
       classBase.fieldMembersByName.get(key) match {
         case Some(field) =>
           whitespace()
-          fieldBits -= field.index
-          args(field.index) = field.valueTypeAdapter.read(this)
+          fieldBits -= field.info.index
+          args(field.info.index) = field.valueTypeAdapter.read(this).asInstanceOf[Object]
         case None => // found some input field not present in class
           val mark = i
           skipOverElement()
@@ -261,9 +260,8 @@ case class JsonParser(jsRaw: JSON, jackFlavor: JackFlavor[JSON]) extends Parser 
     if (i == max || jsChars(i) != '}')
       throw new ScalaJackError(showError("Expected end of object here"))
     i += 1
-    (fieldBits, args, captured)
+    (fieldBits, args.toList, captured)
   }
-  */
 
   private def skipString(): Unit = {
     i += 1

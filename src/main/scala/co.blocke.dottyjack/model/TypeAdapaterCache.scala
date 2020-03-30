@@ -4,6 +4,7 @@ package model
 import typeadapter._
 import scala.util.{ Success, Try }
 import co.blocke.dotty_reflection._
+import co.blocke.dotty_reflection.infos._
 
 
 object TypeAdapterCache {
@@ -12,7 +13,7 @@ object TypeAdapterCache {
     List(
       BigDecimalTypeAdapterFactory,
       BigIntTypeAdapterFactory,
-      // BinaryTypeAdapterFactory,
+      BinaryTypeAdapterFactory,
       BooleanTypeAdapterFactory,
       ByteTypeAdapterFactory,
       CharTypeAdapterFactory,
@@ -21,7 +22,7 @@ object TypeAdapterCache {
       IntTypeAdapterFactory,
       LongTypeAdapterFactory,
       ShortTypeAdapterFactory,
-      StringTypeAdapterFactory
+      StringTypeAdapterFactory,
       /*
       //    TypeTypeAdapterFactory,
       TypeParameterTypeAdapterFactory,
@@ -36,7 +37,9 @@ object TypeAdapterCache {
       //     will likewise be hidden (interpreted as regular classes).
       SealedTraitTypeAdapterFactory,
       ValueClassTypeAdapterFactory,
-      ClassTypeAdapterFactory,
+      */
+      CaseClassTypeAdapterFactory
+      /*
       TraitTypeAdapterFactory,
       UUIDTypeAdapterFactory,
       AnyTypeAdapterFactory,
@@ -67,25 +70,63 @@ object TypeAdapterCache {
 
 case class TypeAdapterCache(
     jackFlavor: JackFlavor[_],
-    factories:  List[TypeAdapterFactory]) {
+    factories:  List[TypeAdapterFactory]):
 
   sealed trait Phase
   case object Uninitialized extends Phase
   case object Initializing extends Phase
   case class Initialized(typeAdapterAttempt: Try[TypeAdapter[_]]) extends Phase
 
-  object TypeEntryFactory extends java.util.function.Function[TypeStructure, TypeAdapter[_]]:
-    override def apply(tpe: TypeStructure): TypeAdapter[_] = factories.find(_.matches(tpe)).get.makeTypeAdapter(tpe) // (it will always find one--the last in the list is a catch-all)
 
-  private val typeEntries =
-    new java.util.concurrent.ConcurrentHashMap[TypeStructure, TypeAdapter[_]]
+  class TypeEntry(tpe: ConcreteType):
+    @volatile
+    private var phase: Phase = Uninitialized
+
+    def typeAdapter: TypeAdapter[_] = 
+      val attempt =
+        phase match {
+          case Initialized(a) => a
+
+          case Uninitialized | Initializing =>
+            synchronized {
+              phase match {
+                case Uninitialized =>
+                  phase = Initializing
+                  val typeAdapterAttempt = Try {
+                    val taCache: TypeAdapterCache = TypeAdapterCache.this
+                    val foundFactory = factories.find(_.matches(tpe)).get
+                    foundFactory.makeTypeAdapter(tpe)(taCache)
+                  }
+                  phase = Initialized(typeAdapterAttempt)
+                  typeAdapterAttempt
+
+                case Initializing =>
+                  Success(LazyTypeAdapter(TypeAdapterCache.this, tpe))
+
+                case Initialized(a) =>
+                  a
+              }
+            }
+        }
+      attempt.get
+
+
+  private val typeEntries = new java.util.concurrent.ConcurrentHashMap[ConcreteType, TypeEntry]
 
   def withFactory(factory: TypeAdapterFactory): TypeAdapterCache =
     copy(factories = factories :+ factory)
 
-  def typeAdapter(tpe: TypeStructure): TypeAdapter[_] =
-    typeEntries.computeIfAbsent(tpe, TypeEntryFactory)
+  def typeAdapter(tpe: TypeStructure): TypeAdapter[_] = 
+    typeAdapter(Reflector.reflectOnType(tpe))
+
+  def typeAdapter(concreteType: ConcreteType): TypeAdapter[_] =
+    typeEntries.computeIfAbsent(concreteType, ConcreteTypeEntryFactory).typeAdapter
 
   inline def typeAdapterOf[T]: TypeAdapter[T] =
     typeAdapter(analyzeType[T]).asInstanceOf[TypeAdapter[T]]
-}
+
+  val self = this 
+
+  object ConcreteTypeEntryFactory extends java.util.function.Function[ConcreteType, TypeEntry]:
+    override def apply(concrete: ConcreteType): TypeEntry = 
+      new TypeEntry(concrete)

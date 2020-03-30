@@ -4,6 +4,7 @@ package model
 import scala.collection.mutable
 import scala.reflect.ClassTag
 import co.blocke.dotty_reflection._
+import co.blocke.dotty_reflection.infos._
 import co.blocke.dotty_reflection.impl.Clazzes._
 
 
@@ -52,9 +53,8 @@ object TypeAdapter {
 trait TypeAdapter[T] {
   self =>
 
-  val info: model.ConcreteType
-  val defaultValue: Option[T] = None
-  val resolved: TypeAdapter[T] = this // Might be something else during Lazy construction
+  val info: ConcreteType
+  def resolved: TypeAdapter[T] = this // Might be something else during Lazy construction
   
   def read(parser: Parser): T
   def write[WIRE](

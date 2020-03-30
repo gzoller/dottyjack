@@ -1,4 +1,4 @@
-package co.blocke.scalajack
+package co.blocke.dottyjack
 
 trait SJCapture {
   var captured: java.util.HashMap[String, _] =

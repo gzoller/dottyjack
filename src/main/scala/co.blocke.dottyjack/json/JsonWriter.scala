@@ -120,18 +120,17 @@ case class JsonWriter() extends Writer[JSON] {
     first
   }
 
-  /*
   def writeObject[T](
       t: T,
       orderedFieldNames: List[String],
-      fieldMembersByName: Map[String, ClassHelper.ClassFieldMember[T, Any]],
-      out: mutable.Builder[String, String],
+      fieldMembersByName: Map[String, ClassFieldMember[_]],
+      out: mutable.Builder[JSON, JSON],
       extras: List[(String, ExtraFieldValue[_])]
   ): Unit = {
     if (t == null) {
       addString("null", out)
     } else {
-      out += "{"
+      out += "{".asInstanceOf[JSON]
       val wasFirst = writeFields(
         isFirst = true,
         extras.map(
@@ -149,7 +148,7 @@ case class JsonWriter() extends Writer[JSON] {
         orderedFieldNames
           .map { fieldName => // Strictly-speaking JSON has no order, but it's clean to write out in constructor order.
             val oneField = fieldMembersByName(fieldName)
-            (fieldName, oneField.valueIn(t), oneField.valueTypeAdapter)
+            (fieldName, oneField.info.valueAccessor.invoke(t), oneField.valueTypeAdapter.asInstanceOf[TypeAdapter[Any]])
           },
         out
       )
@@ -162,18 +161,18 @@ case class JsonWriter() extends Writer[JSON] {
               if (first)
                 first = false
               else
-                out += ","
+                out += ",".asInstanceOf[JSON]
               writeString(field, out)
-              out += ":"
-              out += fvalue
-                .asInstanceOf[String] // all json captured things are String
+              out += ":".asInstanceOf[JSON]
+              out += fvalue.asInstanceOf[JSON] // all json captured things are String
           }
         case _ =>
       }
-      out += "}"
+      out += "}".asInstanceOf[JSON]
     }
   }
 
+  /*
   def writeTuple[T](t: T, writeFns: List[TupleTypeAdapterFactory.TupleField[_]], out: mutable.Builder[String, String]): Unit = {
     out += "["
     var first = true

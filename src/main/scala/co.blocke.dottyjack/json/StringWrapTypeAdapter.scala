@@ -3,6 +3,7 @@ package json
 
 import model._
 import co.blocke.dotty_reflection._
+import co.blocke.dotty_reflection.infos._
 
 import scala.collection.mutable
 
@@ -13,7 +14,7 @@ case class StringWrapTypeAdapter[T](
     emptyStringOk:      Boolean        = true
   ) extends TypeAdapter[T] with Stringish {
 
-  val info: model.ConcreteType = ??? // unused
+  val info: ConcreteType = ??? // unused
 
   def read(parser: Parser): T =
     parser.expectString() match {

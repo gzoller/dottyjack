@@ -28,7 +28,7 @@ lazy val root = project
     libraryDependencies ++= 
       Seq(
         "commons-codec" % "commons-codec" % "1.12",
-        "co.blocke" %% "dotty-reflection" % "class360_3add25", //"0.0.14",
+        "co.blocke" %% "dotty-reflection" % "df4205_SNAPSHOT",
         "munit" %% "munit" % "0.6.z-3" % "test"   // special build of munit compatible with Dotty 0.24
       )
   )

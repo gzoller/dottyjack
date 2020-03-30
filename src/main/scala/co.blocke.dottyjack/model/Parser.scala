@@ -1,8 +1,7 @@
 package co.blocke.dottyjack
 package model
 
-// TODO
-// import typeadapter.ClassTypeAdapterBase
+import typeadapter.ClassTypeAdapterBase
 import scala.collection.mutable
 
 trait Parser {
@@ -23,11 +22,10 @@ trait Parser {
       keyTypeAdapter:   TypeAdapter[K],
       valueTypeAdapter: TypeAdapter[V],
       builder:          mutable.Builder[(K, V), TO]): TO
-  // TODO
-  // def expectObject(
-  //     classBase: ClassTypeAdapterBase[_],
-  //     hintLabel: String
-  // ): (mutable.BitSet, Array[Any], java.util.HashMap[String, _])
+  def expectObject(
+      classBase: ClassTypeAdapterBase[_],
+      hintLabel: String
+  ): (mutable.BitSet, List[Object], java.util.HashMap[String, _])
   def expectBoolean(): Boolean
   def expectNumber(nullOK: Boolean = false): String
   def peekForNull: Boolean // peek-ahead to find null

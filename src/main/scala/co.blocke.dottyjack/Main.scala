@@ -2,16 +2,19 @@ package co.blocke.dottyjack
 
 import co.blocke.dotty_reflection._
 
+case class Person(name: String, age: Int)
+
 object Main {
 
   def main(args: Array[String]): Unit = {
 
-    println(analyzeType[Array[Byte]])
-
     val dj = DottyJack()
 
-    println(dj.render("foom"))
-    println(dj.read[String]("\"Greg\"".asInstanceOf[json.JSON]))
+    val js:json.JSON = """{"name":"Greg","age":53}""".asInstanceOf[json.JSON]
+
+    val p = dj.read[Person](js)
+    println(p)
+    println(dj.render(p))
   }
 
 }
