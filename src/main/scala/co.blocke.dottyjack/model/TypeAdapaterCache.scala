@@ -23,21 +23,18 @@ object TypeAdapterCache {
       LongTypeAdapterFactory,
       ShortTypeAdapterFactory,
       StringTypeAdapterFactory,
-      /*
-      //    TypeTypeAdapterFactory,
-      TypeParameterTypeAdapterFactory,
-      OptionTypeAdapterFactory,
-      TryTypeAdapterFactory,
+      // TypeParameterTypeAdapterFactory,
+      // OptionTypeAdapterFactory,
+      // TryTypeAdapterFactory,
       TupleTypeAdapterFactory,
-      EitherTypeAdapterFactory, // Either must precede SealedTraitTypeAdapter
-      UnionTypeAdapterFactory,
-      EnumerationTypeAdapterFactory,
+      // EitherTypeAdapterFactory, // Either must precede SealedTraitTypeAdapter
+      // UnionTypeAdapterFactory,
+      // EnumerationTypeAdapterFactory,
       // WARNING: These two must precede CaseClassTypeAdapter in this list or all
       //     ValueClasses will be interpreted as case classes, and case objects
       //     will likewise be hidden (interpreted as regular classes).
-      SealedTraitTypeAdapterFactory,
-      ValueClassTypeAdapterFactory,
-      */
+      // SealedTraitTypeAdapterFactory,
+      // ValueClassTypeAdapterFactory,
       CaseClassTypeAdapterFactory
       /*
       TraitTypeAdapterFactory,

@@ -60,7 +60,7 @@ case class CaseClassTypeAdapter[T](
     else 
       // External type hint --> Substitute type field's type into the placeholder (i.e.'T') in the class' fields
       val substitutedTypeMembersIfAny =
-        /*
+        /* TODO  Maybe?  If needed?
         if (typeMembersByName.nonEmpty) {
           val fixedFields = substituteTypeMemberTypes(parser, taCache)
           this.copy(fieldMembersByName = fixedFields)
@@ -95,7 +95,7 @@ case class CaseClassTypeAdapter[T](
       writer: Writer[WIRE],
       out:    mutable.Builder[WIRE, WIRE]): Unit = 
     val extras = Nil
-    /*
+    /* TODO
     val extras = typeMembersByName
       .map {
         case (typeMemberName, tm) =>
@@ -118,7 +118,7 @@ case class CaseClassTypeAdapter[T](
 
   // Used by AnyTypeAdapter to insert type hint (not normally needed) into output so object
   // may be reconstituted on read
-  /*
+  /* TODO
   def writeWithHint[WIRE](
       t:      T,
       writer: Writer[WIRE],

@@ -7,17 +7,15 @@ import scala.collection.mutable
 trait Parser {
   type WIRE
 
-  // TODO
-  //val jackFlavor: JackFlavor[WIRE] // This is needed and used by permissive type adapters
+  val jackFlavor: JackFlavor[WIRE] // This is needed and used by permissive type adapters
 
   def expectString(nullOK: Boolean = true): String
   def expectList[K, TO](
       KtypeAdapter: TypeAdapter[K],
       builder:      mutable.Builder[K, TO]): TO
-  // TODO
-  // def expectTuple(
-  //     readFns: List[typeadapter.TupleTypeAdapterFactory.TupleField[_]]
-  // ): List[Any]
+  def expectTuple(
+      readFns: List[TupleField[_]]
+  ): List[Object]
   def expectMap[K, V, TO](
       keyTypeAdapter:   TypeAdapter[K],
       valueTypeAdapter: TypeAdapter[V],

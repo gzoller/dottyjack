@@ -68,7 +68,7 @@ object BinaryTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Arra
 
 
 object BooleanTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Boolean] with ScalarTypeAdapter[Boolean]:
-  def matches(concrete: ConcreteType): Boolean = concrete.name == BooleanClazz.getName
+  def matches(concrete: ConcreteType): Boolean = concrete == PrimitiveType.Scala_Boolean
   def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[Boolean] = this
 
   val info = Reflector.reflectOn[Boolean]
@@ -78,7 +78,7 @@ object BooleanTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Boo
 
 
 object ByteTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Byte] with ScalarTypeAdapter[Byte]:
-  def matches(concrete: ConcreteType): Boolean = concrete.name == ByteClazz.getName
+  def matches(concrete: ConcreteType): Boolean = concrete == PrimitiveType.Scala_Byte
   def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[Byte] = this
 
   val info = Reflector.reflectOn[Byte]
@@ -96,7 +96,7 @@ object ByteTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Byte] 
 
 
 object CharTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Char] with ScalarTypeAdapter[Char]:
-  def matches(concrete: ConcreteType): Boolean = concrete.name == CharClazz.getName
+  def matches(concrete: ConcreteType): Boolean = concrete == PrimitiveType.Scala_Char
   def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[Char] = this
 
   val info = Reflector.reflectOn[Char]
@@ -119,7 +119,7 @@ object CharTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Char] 
 
 
 object DoubleTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Double] with ScalarTypeAdapter[Double]:
-  def matches(concrete: ConcreteType): Boolean = concrete.name == DoubleClazz.getName
+  def matches(concrete: ConcreteType): Boolean = concrete == PrimitiveType.Scala_Double
   def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[Double] = this
 
   val info = Reflector.reflectOn[Double]
@@ -139,7 +139,7 @@ object DoubleTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Doub
 
 
 object FloatTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Float] with ScalarTypeAdapter[Float]:
-  def matches(concrete: ConcreteType): Boolean = concrete.name == FloatClazz.getName
+  def matches(concrete: ConcreteType): Boolean = concrete == PrimitiveType.Scala_Float
   def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[Float] = this
 
   val info = Reflector.reflectOn[Float]
@@ -159,7 +159,7 @@ object FloatTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Float
 
 
 object IntTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Int] with ScalarTypeAdapter[Int]:
-  def matches(concrete: ConcreteType): Boolean = concrete.name == IntClazz.getName
+  def matches(concrete: ConcreteType): Boolean = concrete == PrimitiveType.Scala_Int
   def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[Int] = this
 
   val info = Reflector.reflectOn[Int]
@@ -179,7 +179,7 @@ object IntTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Int] wi
 
 
 object LongTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Long] with ScalarTypeAdapter[Long]:
-  def matches(concrete: ConcreteType): Boolean = concrete.name == LongClazz.getName
+  def matches(concrete: ConcreteType): Boolean = concrete == PrimitiveType.Scala_Long
   def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[Long] = this
 
   val info = Reflector.reflectOn[Long]
@@ -199,7 +199,7 @@ object LongTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Long] 
 
 
 object ShortTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Short] with ScalarTypeAdapter[Short]:
-  def matches(concrete: ConcreteType): Boolean = concrete.name == ShortClazz.getName
+  def matches(concrete: ConcreteType): Boolean = concrete == PrimitiveType.Scala_Short
   def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[Short] = this
 
   val info = Reflector.reflectOn[Short]
@@ -219,7 +219,7 @@ object ShortTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Short
 
 
 object StringTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[String] with ScalarTypeAdapter[String] with Stringish:
-  def matches(concrete: ConcreteType): Boolean = concrete.name == StringClazz.getName
+  def matches(concrete: ConcreteType): Boolean = concrete == PrimitiveType.Scala_String
   def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[String] = this
 
   val info = Reflector.reflectOn[String]

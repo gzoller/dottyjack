@@ -5,8 +5,6 @@ import scala.collection.Map
 import scala.collection.mutable
 import co.blocke.dotty_reflection.infos.FieldInfo
 
-// TODO
-// import ClassHelper.ExtraFieldValue
 case class ExtraFieldValue[T](value: T, valueTypeAdapter: TypeAdapter[T])
 
 trait Writer[WIRE] {
@@ -28,10 +26,9 @@ trait Writer[WIRE] {
   ): Unit
   def writeString(t: String, out: mutable.Builder[WIRE, WIRE]): Unit
   def writeRaw(t: WIRE, out: mutable.Builder[WIRE, WIRE]): Unit // i.e. no quotes for JSON
-  // TODO
-  // def writeTuple[T](
-  //     t: T,
-  //     writeFns: List[typeadapter.TupleTypeAdapterFactory.TupleField[_]],
-  //     out: mutable.Builder[WIRE, WIRE]
-  // ): Unit
+  def writeTuple[T](
+      t: T,
+      writeFns: List[TupleField[_]],
+      out: mutable.Builder[WIRE, WIRE]
+  ): Unit
 }
