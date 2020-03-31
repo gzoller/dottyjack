@@ -7,7 +7,7 @@ import java.lang.reflect.Method
 import scala.collection.mutable
 import scala.util.matching.Regex
 
-object TupleTypeAdapterFactory extends TypeAdapterFactory {
+object TupleTypeAdapterFactory extends TypeAdapterFactory:
 
   private val tupleFullName: Regex = """scala.Tuple(\d+)""".r
 
@@ -16,7 +16,6 @@ object TupleTypeAdapterFactory extends TypeAdapterFactory {
       case ti: TupleInfo => true
       case _ => false
     }
-
 
   def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
     val ti = concrete.asInstanceOf[TupleInfo]
@@ -29,49 +28,6 @@ object TupleTypeAdapterFactory extends TypeAdapterFactory {
       }}
     TupleTypeAdapter(concrete, fields, ti.infoClass.getConstructors.head)
 
-    /*
-  override def typeAdapterOf[T](
-      classSymbol: ClassSymbol,
-      next:        TypeAdapterFactory
-  )(implicit taCache: TypeAdapterCache, tt: TypeTag[T]): TypeAdapter[T] =
-    classSymbol.fullName match {
-      case tupleFullName(numberOfFieldsAsString) =>
-        val numberOfFields = numberOfFieldsAsString.toInt
-        val fieldTypes = tt.tpe.dealias.typeArgs
-
-        val fields = for (i <- 0 until numberOfFields) yield {
-          val fieldType = fieldTypes(i)
-          val fieldTypeAdapter = taCache.typeAdapter(fieldType) match {
-            case opt: OptionTypeAdapter[_] => opt.convertNullToNone()
-            case ta                        => ta
-          }
-
-          val valueAccessorMethodSymbol =
-            tt.tpe.member(TermName(s"_${i + 1}")).asMethod
-          val valueAccessorMethod =
-            Reflection.methodToJava(valueAccessorMethodSymbol)
-          TupleField(
-            i,
-            fieldTypeAdapter,
-            valueAccessorMethodSymbol,
-            valueAccessorMethod
-          )
-        }
-
-        val classMirror = currentMirror.reflectClass(classSymbol)
-        val constructorMirror = classMirror.reflectConstructor(
-          classSymbol.primaryConstructor.asMethod
-        )
-
-        TupleTypeAdapter(fields.toList, constructorMirror)
-          .asInstanceOf[TypeAdapter[T]]
-
-      case _ =>
-        next.typeAdapterOf[T]
-    }
-    */
-
-}
 
 case class TupleTypeAdapter[T](
   info:        ConcreteType,

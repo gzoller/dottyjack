@@ -3,7 +3,7 @@ package co.blocke.dottyjack
 import co.blocke.dotty_reflection._
 
 case class Foo(a: Int)
-case class Person(name: String, age: (Int,Foo,String), extra: (Double,Boolean))
+case class Person(name: String, age: Option[Foo])
 
 object Main {
 
@@ -11,7 +11,7 @@ object Main {
 
     val dj = DottyJack()
 
-    val p = Person("Greg", (53, Foo(5), "wow"), (12.34,true))
+    val p = Person("Greg", None)
 
     val js = dj.render(p)
     println(js)

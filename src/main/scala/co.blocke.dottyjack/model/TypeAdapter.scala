@@ -56,6 +56,8 @@ trait TypeAdapter[T] {
   val info: ConcreteType
   def resolved: TypeAdapter[T] = this // Might be something else during Lazy construction
   
+  def defaultValue: Option[T] = None
+  
   def read(parser: Parser): T
   def write[WIRE](
       t:      T,

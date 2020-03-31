@@ -24,7 +24,7 @@ object TypeAdapterCache {
       ShortTypeAdapterFactory,
       StringTypeAdapterFactory,
       // TypeParameterTypeAdapterFactory,
-      // OptionTypeAdapterFactory,
+      OptionTypeAdapterFactory,
       // TryTypeAdapterFactory,
       TupleTypeAdapterFactory,
       // EitherTypeAdapterFactory, // Either must precede SealedTraitTypeAdapter

@@ -19,14 +19,10 @@ trait ClassTypeAdapterBase[T] extends TypeAdapter[T] with Classish:
 
 case class CaseClassTypeAdapter[T](
     info:               ConcreteType,
-    // className:          String,
     // typeMembersByName:  Map[String, ClassHelper.TypeMember[T]],
-    // orderedFieldNames:  List[String],
-    // fieldMembersByName: Map[String, ClassHelper.ClassFieldMember[T, Any]],
+    fieldMembersByName: Map[String, ClassFieldMember[_]],
     argsTemplate:       Array[Object],
     fieldBitsTemplate:  mutable.BitSet
-    // constructorMirror:  MethodMirror,
-    // isSJCapture:        Boolean,
     // dbCollectionName:   Option[String]
 )(implicit taCache: TypeAdapterCache) extends ClassTypeAdapterBase[T]:
 
@@ -38,20 +34,6 @@ case class CaseClassTypeAdapter[T](
   }
   private val orderedFieldNames = classInfo.fields.map(_.name)
 
-  val fieldMembersByName = 
-    classInfo.fields.map{f => 
-      val fieldMember: ClassFieldMember[_] = f.fieldType match {
-        case c: ConcreteType => 
-          ClassFieldMember(
-            f,
-            taCache.typeAdapter(c),
-            None,  // TODO
-            None,  // TODO
-            None   // TODO
-          )
-        case c => throw new ScalaJackError(s"Concrete type expected for class ${info.name} field ${f.name}.  ${c.getClass.getName} was found.")
-      }
-      f.name -> fieldMember}.toMap
   val isSJCapture = classInfo.hasMixin("co.blocke.dottyjack.SJCapture")
 
   def read(parser: Parser): T =
@@ -74,8 +56,6 @@ case class CaseClassTypeAdapter[T](
       )
       if (foundBits.isEmpty) then
         val asBuilt = classInfo.constructWith[T](args)
-        // val asBuilt = classInfo.constructWith[T](args.toIndexedSeq.map(_.asInstanceOf[Object]): _*)
-          // constructorMirror.apply(args.toIndexedSeq: _*).asInstanceOf[T]
         if isSJCapture
           asBuilt.asInstanceOf[SJCapture].captured = captured
         asBuilt
