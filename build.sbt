@@ -9,6 +9,8 @@ val pubSettings = Seq(
   bintrayPackageLabels := Seq("scala", "dotty", "json")
 )
 
+resolvers += "co.blocke provisional resolver" at "https://dl.bintray.com/blocke/provisional"
+
 lazy val root = project
   .in(file("."))
   .settings(pubSettings: _*)
@@ -28,7 +30,8 @@ lazy val root = project
     libraryDependencies ++= 
       Seq(
         "commons-codec" % "commons-codec" % "1.12",
-        "co.blocke" %% "dotty-reflection" % "df4205_SNAPSHOT",
+        "co.blocke" %% "dotty-reflection" % "4269bf_SNAPSHOT",
+        // "org.json4s" %% "json4s-core" % "3.6.6" % "test",
         "munit" %% "munit" % "0.6.z-3" % "test"   // special build of munit compatible with Dotty 0.24
       )
   )

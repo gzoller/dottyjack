@@ -12,7 +12,11 @@ import scala.collection.mutable
 
 
 object BigDecimalTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[BigDecimal] with ScalarTypeAdapter[BigDecimal]:
-  def matches(concrete: ConcreteType): Boolean = concrete.name == "scala.math.BigDecimal"
+  def matches(concrete: ConcreteType): Boolean = 
+    concrete match {
+      case u: UnknownInfo if u.infoClass.getName == "scala.math.BigDecimal" => true
+      case _ => false
+    }
   def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[BigDecimal] = this
 
   val info = Reflector.reflectOn[scala.math.BigDecimal]
@@ -28,7 +32,11 @@ object BigDecimalTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[
 
 
 object BigIntTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[BigInt] with ScalarTypeAdapter[BigInt]:
-  def matches(concrete: ConcreteType): Boolean = concrete.name == "scala.math.BigInt"
+  def matches(concrete: ConcreteType): Boolean = 
+    concrete match {
+      case u: UnknownInfo if u.infoClass.getName == "scala.math.BigInt" => true
+      case _ => false
+    }
   def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[BigInt] = this
 
   val info = Reflector.reflectOn[scala.math.BigInt]
@@ -48,7 +56,7 @@ object BigIntTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[BigI
 object BinaryTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Array[Byte]] with ScalarTypeAdapter[Array[Byte]]:
   def matches(concrete: ConcreteType): Boolean = 
     concrete match {
-      case SeqLikeInfo("scala.Array", _, PrimitiveType.Scala_Byte) => true
+      case ArrayInfo("[B", _, PrimitiveType.Scala_Byte) => true
       case c => false
     }
   def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[Array[Byte]] = this

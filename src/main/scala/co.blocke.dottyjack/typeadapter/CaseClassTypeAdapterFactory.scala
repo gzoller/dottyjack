@@ -2,6 +2,7 @@ package co.blocke.dottyjack
 package typeadapter
 
 import co.blocke.dotty_reflection.infos._
+import co.blocke.dotty_reflection._
 import model._
 import scala.collection.mutable
 
