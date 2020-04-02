@@ -134,6 +134,18 @@ class ScalaPrim() extends FunSuite:
     assertEquals(inst, sj.read[SampleString](js))
   }
 
+  test("Enumeration (Scala 2.x) must work (not nullable)") {
+    import SizeWithType._
+    val inst = SampleEnum(Size.Small, Size.Medium, Size.Large, null, Size.Medium, Little)
+    val js = sj.render(inst)
+    assertEquals(
+      """{"e1":"Small","e2":"Medium","e3":"Large","e4":null,"e5":"Medium","e6":"Little"}""".asInstanceOf[JSON],
+      js)
+    // mutate e5 into an ordinal...
+    val js2 = js.asInstanceOf[String].replaceAll(""""e5":"Medium"""", """"e5":1""").asInstanceOf[JSON]
+    assertEquals(inst, sj.read[SampleEnum](js2))
+  }
+
 
   test("BigDecimal must break") {
     describe("--- Negative Tests ---")
@@ -307,20 +319,37 @@ class ScalaPrim() extends FunSuite:
     }
   }
 
-/*
-  it("Enumeration must work (not nullable)") {
-    val inst =
-      SampleEnum(Size.Small, Size.Medium, Size.Large, null, Size.Medium)
-    val js = sj.render(inst)
-    assertResult(
-      """{"e1":"Small","e2":"Medium","e3":"Large","e4":null,"e5":"Medium"}"""
-    ) { js }
-    // mutate e5 into an ordinal...
-    val js2 = js.replaceAll(""""e5":"Medium"""", """"e5":1""")
-    assertResult(inst) {
+  test("Enumeration must break") {
+    val js =
+      """{"e1":"Small","e2":"Bogus","e3":"Large","e4":null,"e5":"Medium","e6":"Little"}""".asInstanceOf[JSON]
+    val msg =
+      """No value found in enumeration co.blocke.scalajack.json.primitives.Size$ for Bogus
+              |{"e1":"Small","e2":"Bogus","e3":"Large","e4":null,"e5":"Medium","e6":"Little"}
+              |-------------------------^""".stripMargin
+    interceptMessage[co.blocke.dottyjack.ScalaJackError](msg){
+      sj.read[SampleEnum](js)
+    }
+    val js2 =
+      """{"e1":"Small","e2":"Medium","e3":"Large","e4":null,"e5":9,"e6":"Little}""".asInstanceOf[JSON]
+    val msg2 =
+      """No value found in enumeration co.blocke.scalajack.json.primitives.Size$ for 9
+               |...Small","e2":"Medium","e3":"Large","e4":null,"e5":9,"e6":"Little}
+               |----------------------------------------------------^""".stripMargin
+    interceptMessage[co.blocke.dottyjack.ScalaJackError](msg2){
       sj.read[SampleEnum](js2)
     }
+    val js3 =
+      """{"e1":"Small","e2":"Medium","e3":"Large","e4":null,"e5":false,"e6":"Little}""".asInstanceOf[JSON]
+    val msg3 = """Expected a Number or String here
+               |...Small","e2":"Medium","e3":"Large","e4":null,"e5":false,"e6":"Little}
+               |----------------------------------------------------^""".stripMargin
+    interceptMessage[co.blocke.dottyjack.ScalaJackError](msg3){
+      sj.read[SampleEnum](js3)
+    }
   }
+
+
+/*
   it("UUID must work") {
     val inst = SampleUUID(
       null,
@@ -344,28 +373,6 @@ class ScalaPrim() extends FunSuite:
  
       }
       describe("--- Negative Tests ---") {
-        it("Enumeration must break") {
-          val js =
-            """{"e1":"Small","e2":"Bogus","e3":"Large","e4":null,"e5":"Medium"}"""
-          val msg =
-            """No value found in enumeration co.blocke.scalajack.json.primitives.Size$ for Bogus
-                    |{"e1":"Small","e2":"Bogus","e3":"Large","e4":null,"e5":"Medium"}
-                    |-------------------------^""".stripMargin
-          the[ScalaJackError] thrownBy sj.read[SampleEnum](js) should have message msg
-          val js2 =
-            """{"e1":"Small","e2":"Medium","e3":"Large","e4":null,"e5":9}"""
-          val msg2 =
-            """No value found in enumeration co.blocke.scalajack.json.primitives.Size$ for 9
-                     |...Small","e2":"Medium","e3":"Large","e4":null,"e5":9}
-                     |----------------------------------------------------^""".stripMargin
-          the[ScalaJackError] thrownBy sj.read[SampleEnum](js2) should have message msg2
-          val js3 =
-            """{"e1":"Small","e2":"Medium","e3":"Large","e4":null,"e5":false}"""
-          val msg3 = """Expected a Number or String here
-                     |...Small","e2":"Medium","e3":"Large","e4":null,"e5":false}
-                     |----------------------------------------------------^""".stripMargin
-          the[ScalaJackError] thrownBy sj.read[SampleEnum](js3) should have message msg3
-        }
 
         it("UUID must break") {
           val js =

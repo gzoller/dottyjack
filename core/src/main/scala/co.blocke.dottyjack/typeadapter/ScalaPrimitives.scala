@@ -9,6 +9,7 @@ import co.blocke.dotty_reflection._
 
 import org.apache.commons.codec.binary.Base64
 import scala.collection.mutable
+import scala.language.implicitConversions
 
 
 object BigDecimalTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[BigDecimal] with ScalarTypeAdapter[BigDecimal]:

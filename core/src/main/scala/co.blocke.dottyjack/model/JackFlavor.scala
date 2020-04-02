@@ -27,15 +27,14 @@ trait JackFlavor[WIRE]: // extends Filterable[WIRE] with ViewSplice {
 
   val defaultHint: String        = "_hint"
   val stringifyMapKeys: Boolean  = false
-  /* TODO
-  val hintMap: Map[Type, String] = Map.empty[Type, String]
-  val hintValueModifiers: Map[Type, HintValueModifier] =
-    Map.empty[Type, HintValueModifier]
-  val typeValueModifier: HintValueModifier     = DefaultHintModifier
+  // TODO 
+  // val hintMap: Map[Type, String] = Map.empty[Type, String]
+  // val hintValueModifiers: Map[Type, HintValueModifier] =
+  //   Map.empty[Type, HintValueModifier]
+  // val typeValueModifier: HintValueModifier     = DefaultHintModifier
   val enumsAsInt: Boolean                      = false
-  val customAdapters: List[TypeAdapterFactory] = List.empty[TypeAdapterFactory]
-  val parseOrElseMap: Map[Type, Type]          = Map.empty[Type, Type]
-  */
+  // val customAdapters: List[TypeAdapterFactory] = List.empty[TypeAdapterFactory]
+  // val parseOrElseMap: Map[Type, Type]          = Map.empty[Type, Type]
   val permissivesOk: Boolean                   = false
 
   lazy val taCache: TypeAdapterCache = bakeCache()
@@ -131,24 +130,23 @@ trait JackFlavor[WIRE]: // extends Filterable[WIRE] with ViewSplice {
   lazy val anyTypeAdapter: TypeAdapter[Any]       = taCache.typeAdapterOf[Any]
   lazy val anyMapKeyTypeAdapter: TypeAdapter[Any] = taCache.typeAdapterOf[Any]
 
-  /* TODO
+  // TODO
   // Look up any custom hint label for given type, and if none then use default
-  def getHintLabelFor(tpe: TypeStructure): String = hintMap.getOrElse(tpe, defaultHint)
+  // def getHintLabelFor(tpe: TypeStructure): String = hintMap.getOrElse(tpe, defaultHint)
 
-  def stringWrapTypeAdapterFactory[T](
-      wrappedTypeAdapter: TypeAdapter[T],
-      emptyStringOk: Boolean = true
-  )(implicit tt: TypeTag[T]): TypeAdapter[T]
+  // def stringWrapTypeAdapterFactory[T](
+  //     wrappedTypeAdapter: TypeAdapter[T],
+  //     emptyStringOk: Boolean = true
+  // )(implicit tt: TypeTag[T]): TypeAdapter[T]
 
   def enumsAsInts(): JackFlavor[WIRE]
-  def allowPermissivePrimitives(): JackFlavor[WIRE]
-  def parseOrElse(poe: (Type, Type)*): JackFlavor[WIRE]
-  def withAdapters(ta: TypeAdapterFactory*): JackFlavor[WIRE]
-  def withDefaultHint(hint: String): JackFlavor[WIRE]
-  def withHints(h: (Type, String)*): JackFlavor[WIRE]
-  def withHintModifiers(hm: (Type, HintValueModifier)*): JackFlavor[WIRE]
-  def withTypeValueModifier(tm: HintValueModifier): JackFlavor[WIRE]
-  */
+  // def allowPermissivePrimitives(): JackFlavor[WIRE]
+  // def parseOrElse(poe: (Type, Type)*): JackFlavor[WIRE]
+  // def withAdapters(ta: TypeAdapterFactory*): JackFlavor[WIRE]
+  // def withDefaultHint(hint: String): JackFlavor[WIRE]
+  // def withHints(h: (Type, String)*): JackFlavor[WIRE]
+  // def withHintModifiers(hm: (Type, HintValueModifier)*): JackFlavor[WIRE]
+  // def withTypeValueModifier(tm: HintValueModifier): JackFlavor[WIRE]
 
   // Need WIRE-specific Builder instance.  By default this is StringBuilder.  Mongo will overwrite this.
   def getBuilder: mutable.Builder[WIRE, WIRE] =

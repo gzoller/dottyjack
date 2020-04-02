@@ -29,7 +29,7 @@ object TypeAdapterCache {
       TupleTypeAdapterFactory,
       // EitherTypeAdapterFactory, // Either must precede SealedTraitTypeAdapter
       // UnionTypeAdapterFactory,
-      // EnumerationTypeAdapterFactory,
+      EnumTypeAdapterFactory,
       // WARNING: These two must precede CaseClassTypeAdapter in this list or all
       //     ValueClasses will be interpreted as case classes, and case objects
       //     will likewise be hidden (interpreted as regular classes).

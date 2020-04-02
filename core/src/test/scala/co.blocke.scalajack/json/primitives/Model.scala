@@ -35,12 +35,18 @@ case class SampleDouble(d1: Double, d2: Double, d3: Double, d4: Double)
 object Size extends Enumeration {
   val Small, Medium, Large = Value
 }
+object SizeWithType extends Enumeration {
+  type SizeWithType = Value
+  val Little, Grand = Value
+}
+import SizeWithType._
 case class SampleEnum(
     e1: Size.Value,
     e2: Size.Value,
     e3: Size.Value,
     e4: Size.Value,
-    e5: Size.Value)
+    e5: Size.Value,
+    e6: SizeWithType)
 
 case class SampleFloat(f1: Float, f2: Float, f3: Float, f4: Float)
 case class SampleInt(i1: Int, i2: Int, i3: Int, i4: Int)

@@ -85,13 +85,13 @@ case class JsonFlavorFor[J](
 
 case class JsonFlavor(
     override val defaultHint:        String                       = "_hint",
-    override val permissivesOk:      Boolean                      = false
+    override val permissivesOk:      Boolean                      = false,
 //    override val customAdapters:     List[TypeAdapterFactory]     = List.empty[TypeAdapterFactory],
 //    override val hintMap:            Map[Type, String]            = Map.empty[Type, String],
 //    override val hintValueModifiers: Map[Type, HintValueModifier] = Map.empty[Type, HintValueModifier],
 //    override val typeValueModifier:  HintValueModifier            = DefaultHintModifier,
 //    override val parseOrElseMap:     Map[Type, Type]              = Map.empty[Type, Type],
-//    override val enumsAsInt:         Boolean                      = false
+    override val enumsAsInt:         Boolean                      = false
 ) extends JackFlavor[JSON] {
 
   def _read[T](input: JSON, typeAdapter: TypeAdapter[T]): T =
@@ -127,23 +127,21 @@ case class JsonFlavor(
   // override lazy val anyMapKeyTypeAdapter: AnyMapKeyTypeAdapter =
   //   typeadapter.AnyMapKeyTypeAdapter(this, anyTypeAdapter)
 
-  /*
-  def allowPermissivePrimitives(): JackFlavor[JSON] =
-    this.copy(permissivesOk = true)
+  // def allowPermissivePrimitives(): JackFlavor[JSON] =
+  //   this.copy(permissivesOk = true)
   def enumsAsInts(): JackFlavor[JSON] = this.copy(enumsAsInt = true)
-  def parseOrElse(poe: (Type, Type)*): JackFlavor[JSON] =
-    this.copy(parseOrElseMap = this.parseOrElseMap ++ poe)
-  def withAdapters(ta: TypeAdapterFactory*): JackFlavor[JSON] =
-    this.copy(customAdapters = this.customAdapters ++ ta.toList)
-  def withDefaultHint(hint: String): JackFlavor[JSON] =
-    this.copy(defaultHint = hint)
-  def withHints(h: (Type, String)*): JackFlavor[JSON] =
-    this.copy(hintMap = this.hintMap ++ h)
-  def withHintModifiers(hm: (Type, HintValueModifier)*): JackFlavor[JSON] =
-    this.copy(hintValueModifiers = this.hintValueModifiers ++ hm)
-  def withTypeValueModifier(tm: HintValueModifier): JackFlavor[JSON] =
-    this.copy(typeValueModifier = tm)
-    */
+  // def parseOrElse(poe: (Type, Type)*): JackFlavor[JSON] =
+  //   this.copy(parseOrElseMap = this.parseOrElseMap ++ poe)
+  // def withAdapters(ta: TypeAdapterFactory*): JackFlavor[JSON] =
+  //   this.copy(customAdapters = this.customAdapters ++ ta.toList)
+  // def withDefaultHint(hint: String): JackFlavor[JSON] =
+  //   this.copy(defaultHint = hint)
+  // def withHints(h: (Type, String)*): JackFlavor[JSON] =
+  //   this.copy(hintMap = this.hintMap ++ h)
+  // def withHintModifiers(hm: (Type, HintValueModifier)*): JackFlavor[JSON] =
+  //   this.copy(hintValueModifiers = this.hintValueModifiers ++ hm)
+  // def withTypeValueModifier(tm: HintValueModifier): JackFlavor[JSON] =
+  //   this.copy(typeValueModifier = tm)
 
   def stringWrapTypeAdapterFactory[T](
       wrappedTypeAdapter: TypeAdapter[T],
