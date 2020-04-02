@@ -146,6 +146,21 @@ class ScalaPrim() extends FunSuite:
     assertEquals(inst, sj.read[SampleEnum](js2))
   }
 
+  test("UUID must work") {
+    val inst = SampleUUID(
+      null,
+      UUID.fromString("580afe0d-81c0-458f-9e09-4486c7af0fe9")
+    )
+    val js = sj.render(inst)
+    assertEquals(
+      """{"u1":null,"u2":"580afe0d-81c0-458f-9e09-4486c7af0fe9"}""".asInstanceOf[JSON],
+      js)
+    assertEquals(inst, sj.read[SampleUUID](js))
+  }
+
+
+  //--------------------------------------------------------
+
 
   test("BigDecimal must break") {
     describe("--- Negative Tests ---")
@@ -348,48 +363,22 @@ class ScalaPrim() extends FunSuite:
     }
   }
 
-
-/*
-  it("UUID must work") {
-    val inst = SampleUUID(
-      null,
-      UUID.fromString("580afe0d-81c0-458f-9e09-4486c7af0fe9")
-    )
-    val js = sj.render(inst)
-    assertResult(
-      """{"u1":null,"u2":"580afe0d-81c0-458f-9e09-4486c7af0fe9"}"""
-    ) {
-        js
-      }
-    assertResult(inst) {
+  test("UUID must break") {
+    val js =
+      """{"u1":"bogus","u2":"580afe0d-81c0-458f-9e09-4486c7af0fe9"}""".asInstanceOf[JSON]
+    val msg = """Failed to create UUID value from parsed text bogus
+              |{"u1":"bogus","u2":"580afe0d-81c0-458f-9e09-4486c7af0fe9"}
+              |------------^""".stripMargin
+    interceptMessage[co.blocke.dottyjack.ScalaJackError](msg){
       sj.read[SampleUUID](js)
     }
   }
 
-  describe(
-    "---------------------------\n:  Scala Primitive Tests  :\n---------------------------"
-  ) {
-      describe("+++ Positive Tests +++") {
- 
-      }
-      describe("--- Negative Tests ---") {
-
-        it("UUID must break") {
-          val js =
-            """{"u1":"bogus","u2":"580afe0d-81c0-458f-9e09-4486c7af0fe9"}"""
-          val msg = """Failed to create UUID value from parsed text bogus
-                    |{"u1":"bogus","u2":"580afe0d-81c0-458f-9e09-4486c7af0fe9"}
-                    |------------^""".stripMargin
-          the[ScalaJackError] thrownBy sj.read[SampleUUID](js) should have message msg
-        }
-        it("Can't find TypeAdapter for given type") {
-          val js = """{"hey":"you"}"""
-          val msg =
-            "Unable to find a type adapter for Process (abstract class or a dependency of an abstract class)"
-          the[java.lang.IllegalArgumentException] thrownBy sj
-            .read[java.lang.Process](js) should have message msg
-        }
-      }
+  test("Can't find TypeAdapter for given type") {
+    val js = """{"hey":"you"}""".asInstanceOf[JSON]
+    val msg =
+      "Unable to find a type adapter for Process (abstract class or a dependency of an abstract class)"
+    interceptMessage[co.blocke.dottyjack.ScalaJackError](msg){
+      sj.read[java.lang.Process](js)
     }
-}
-*/
+  }

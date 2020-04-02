@@ -30,38 +30,37 @@ object TypeAdapterCache {
       // EitherTypeAdapterFactory, // Either must precede SealedTraitTypeAdapter
       // UnionTypeAdapterFactory,
       EnumTypeAdapterFactory,
+      UUIDTypeAdapterFactory,
+
       // WARNING: These two must precede CaseClassTypeAdapter in this list or all
       //     ValueClasses will be interpreted as case classes, and case objects
       //     will likewise be hidden (interpreted as regular classes).
       // SealedTraitTypeAdapterFactory,
       // ValueClassTypeAdapterFactory,
       CaseClassTypeAdapterFactory
-      /*
-      TraitTypeAdapterFactory,
-      UUIDTypeAdapterFactory,
-      AnyTypeAdapterFactory,
-      JavaBigDecimalTypeAdapterFactory,
-      JavaBigIntegerTypeAdapterFactory,
-      JavaBooleanTypeAdapterFactory,
-      JavaByteTypeAdapterFactory,
-      JavaCharacterTypeAdapterFactory,
-      JavaDoubleTypeAdapterFactory,
-      JavaFloatTypeAdapterFactory,
-      JavaIntTypeAdapterFactory,
-      JavaLongTypeAdapterFactory,
-      JavaNumberTypeAdapterFactory,
-      JavaShortTypeAdapterFactory,
-      DurationTypeAdapterFactory,
-      InstantTypeAdapterFactory,
-      LocalDateTimeTypeAdapterFactory,
-      LocalDateTypeAdapterFactory,
-      LocalTimeTypeAdapterFactory,
-      OffsetDateTimeTypeAdapterFactory,
-      OffsetTimeTypeAdapterFactory,
-      PeriodTypeAdapterFactory,
-      ZonedDateTimeTypeAdapterFactory,
-      PlainClassTypeAdapterFactory
-      */
+      // TraitTypeAdapterFactory,
+      // AnyTypeAdapterFactory,
+      // JavaBigDecimalTypeAdapterFactory,
+      // JavaBigIntegerTypeAdapterFactory,
+      // JavaBooleanTypeAdapterFactory,
+      // JavaByteTypeAdapterFactory,
+      // JavaCharacterTypeAdapterFactory,
+      // JavaDoubleTypeAdapterFactory,
+      // JavaFloatTypeAdapterFactory,
+      // JavaIntTypeAdapterFactory,
+      // JavaLongTypeAdapterFactory,
+      // JavaNumberTypeAdapterFactory,
+      // JavaShortTypeAdapterFactory,
+      // DurationTypeAdapterFactory,
+      // InstantTypeAdapterFactory,
+      // LocalDateTimeTypeAdapterFactory,
+      // LocalDateTypeAdapterFactory,
+      // LocalTimeTypeAdapterFactory,
+      // OffsetDateTimeTypeAdapterFactory,
+      // OffsetTimeTypeAdapterFactory,
+      // PeriodTypeAdapterFactory,
+      // ZonedDateTimeTypeAdapterFactory,
+      // PlainClassTypeAdapterFactory
     )
 }
 

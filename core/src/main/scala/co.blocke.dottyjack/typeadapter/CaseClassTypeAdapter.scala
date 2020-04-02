@@ -31,7 +31,7 @@ case class CaseClassTypeAdapter[T](
 
   private val classInfo = info match {
     case c: ScalaClassInfo => c 
-    case _ => throw new ScalaJackError("Unexpected info type: "+info.getClass.getName)
+    case _ => throw new ScalaJackError("Unable to find a type adapter for Process (abstract class or a dependency of an abstract class)")
   }
   private val orderedFieldNames = classInfo.fields.map(_.name)
 
