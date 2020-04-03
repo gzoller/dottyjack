@@ -24,7 +24,7 @@ object TupleTypeAdapterFactory extends TypeAdapterFactory:
       case c: ConcreteType => 
         val javaClassField = ti.infoClass.getDeclaredField(s"_${idx+1}")
         javaClassField.setAccessible(true)
-        TupleField(idx+1, javaClassField, taCache.typeAdapter(c))
+        TupleField(idx+1, javaClassField, taCache.typeAdapterOf(c))
       case f => throw new ScalaJackError(s"Unexpected non-Concrete tuple type ${f.getClass.getName}")
       }}
     TupleTypeAdapter(concrete, fields, ti.infoClass.getConstructors.head)

@@ -29,6 +29,7 @@ object TypeAdapterCache {
       TupleTypeAdapterFactory,
       // EitherTypeAdapterFactory, // Either must precede SealedTraitTypeAdapter
       // UnionTypeAdapterFactory,
+      ArrayTypeAdapterFactory,
       EnumTypeAdapterFactory,
       UUIDTypeAdapterFactory,
 
@@ -112,14 +113,14 @@ case class TypeAdapterCache(
   def withFactory(factory: TypeAdapterFactory): TypeAdapterCache =
     copy(factories = factories :+ factory)
 
-  def typeAdapter(tpe: TypeStructure): TypeAdapter[_] = 
-    typeAdapter(Reflector.reflectOnType(tpe))
+  def typeAdapterOf(tpe: TypeStructure): TypeAdapter[_] = 
+    typeAdapterOf(Reflector.reflectOnType(tpe))
 
-  def typeAdapter(concreteType: ConcreteType): TypeAdapter[_] =
+  def typeAdapterOf(concreteType: ConcreteType): TypeAdapter[_] =
     typeEntries.computeIfAbsent(concreteType, ConcreteTypeEntryFactory).typeAdapter
 
   inline def typeAdapterOf[T]: TypeAdapter[T] =
-    typeAdapter(analyzeType[T]).asInstanceOf[TypeAdapter[T]]
+    typeAdapterOf(analyzeType[T]).asInstanceOf[TypeAdapter[T]]
 
   val self = this 
 

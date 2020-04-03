@@ -37,7 +37,7 @@ object OptionTypeAdapterFactory extends TypeAdapterFactory:
       case c: ConcreteType => c
       case c => throw new ScalaJackError(s"Unexpected non-concrete type in option: ${c.getClass.getName}")
     }
-    OptionTypeAdapter(concrete, taCache.typeAdapter(wrapped))
+    OptionTypeAdapter(concrete, taCache.typeAdapterOf(wrapped))
 
 
 case class OptionTypeAdapter[E](

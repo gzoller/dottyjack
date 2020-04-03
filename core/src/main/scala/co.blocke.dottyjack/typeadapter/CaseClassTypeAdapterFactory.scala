@@ -23,7 +23,7 @@ object CaseClassTypeAdapterFactory extends TypeAdapterFactory:
       classInfo.fields.map{ f => 
         val fieldMember: ClassFieldMember[_] = f.fieldType match {
           case c: ConcreteType =>
-            val fieldTypeAdapter = taCache.typeAdapter(c)
+            val fieldTypeAdapter = taCache.typeAdapterOf(c)
 
             // See if there's a default value set and blip bits/args accordingly to "pre-set" these values
             fieldTypeAdapter.defaultValue.map{ default =>

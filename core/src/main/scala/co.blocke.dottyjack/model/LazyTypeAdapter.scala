@@ -17,7 +17,7 @@ case class LazyTypeAdapter[T](taCache: TypeAdapterCache, info: ConcreteType)
     // $COVERAGE-OFF$Can't really test as this is triggered by race condition, if it can happen at all.
     if (typeAdapter == null) {
       typeAdapter =
-        taCache.typeAdapter(info).resolved.asInstanceOf[TypeAdapter[T]]
+        taCache.typeAdapterOf(info).resolved.asInstanceOf[TypeAdapter[T]]
       if (typeAdapter.isInstanceOf[LazyTypeAdapter[_]]) {
         throw new IllegalStateException(
           s"Type adapter for ${info.name} is still being built"
