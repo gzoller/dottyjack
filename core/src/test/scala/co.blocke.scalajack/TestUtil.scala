@@ -5,6 +5,7 @@ import munit.internal.console
 object TestUtil {
 
   inline def describe(message: String, color: String = Console.MAGENTA): Unit = println(s"$color$message${Console.RESET}")
+  inline def pending = describe("   << Test Pending (below) >>", Console.YELLOW)
 
   def hexStringToByteArray(s: String): Array[Byte] = {
     val len = s.length

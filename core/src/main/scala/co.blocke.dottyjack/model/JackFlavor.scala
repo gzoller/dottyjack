@@ -5,20 +5,6 @@ package model
 import scala.collection.mutable
 import co.blocke.dotty_reflection._
 
-/**
-  * Special type-locked version of JackFlavor.  The normal read/render in JackFlavor reflect on the type
-  * of T, which takes valuable time.  If you have repeated operations on a single type you can create JackFlavorFor,
-  * which is already locked into type T (doesn't need to look it up for read/render).  This results in a 20%+ boost
-  * in performance in some cases.
-  * @tparam WIRE
-  * @tparam T
-  */
-  /*
-trait JackFlavorFor[WIRE, T] extends JackFlavor[WIRE]:
-  def read(input: WIRE): T
-  def render(t: T): WIRE
-*/
-
 trait JackFlavor[WIRE]: // extends Filterable[WIRE] with ViewSplice {
 
   type WIRE_TYPE = WIRE
@@ -121,9 +107,6 @@ trait JackFlavor[WIRE]: // extends Filterable[WIRE] with ViewSplice {
     _render(t, typeAdapter)
 
   def _render[T](t: T, typeAdapter: TypeAdapter[T]): WIRE
-
-  // TODO
-  // def forType[T](implicit tt: TypeTag[T]): JackFlavorFor[WIRE, T]
 
   // These is so pervasively handy, let's just pre-stage it for easy access
   lazy val stringTypeAdapter: TypeAdapter[String] = taCache.typeAdapterOf[String]

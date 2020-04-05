@@ -32,6 +32,7 @@ object TypeAdapterCache {
       ArrayTypeAdapterFactory,
       EnumTypeAdapterFactory,
       UUIDTypeAdapterFactory,
+      CollectionTypeAdapterFactory,
 
       // WARNING: These two must precede CaseClassTypeAdapter in this list or all
       //     ValueClasses will be interpreted as case classes, and case objects
