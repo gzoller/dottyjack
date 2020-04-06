@@ -21,13 +21,11 @@ object BigDecimalTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[
   def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[BigDecimal] = this
 
   val info = Reflector.reflectOn[scala.math.BigDecimal]
-  def read(parser: Parser): BigDecimal = {
-    val bd = parser.expectNumber(true)
-    if (bd == null)
-      null
-    else
-      BigDecimal(bd)
-  }
+  def read(parser: Parser): BigDecimal = 
+    parser.expectNumber(true) match {
+      case null => null
+      case bd   => BigDecimal(bd)
+    }
   def write[WIRE](t: BigDecimal, writer: Writer[WIRE], out: mutable.Builder[WIRE, WIRE]): Unit =
     writer.writeDecimal(t, out)
 
@@ -41,13 +39,11 @@ object BigIntTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[BigI
   def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[BigInt] = this
 
   val info = Reflector.reflectOn[scala.math.BigInt]
-  def read(parser: Parser): BigInt = {
-    val bi = parser.expectNumber(true)
-    if (bi == null)
-      null
-    else
-      BigInt(bi)
-  }
+  def read(parser: Parser): BigInt = 
+    parser.expectNumber(true) match {
+      case null => null
+      case bd   => BigInt(bd)
+    }
   def write[WIRE](t: BigInt, writer: Writer[WIRE], out: mutable.Builder[WIRE, WIRE]): Unit = t match {
     case null => writer.writeNull(out)
     case _    => writer.writeBigInt(t, out)

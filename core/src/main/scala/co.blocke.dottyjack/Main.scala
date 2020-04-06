@@ -12,10 +12,7 @@ case class Person(
     gender:     String,
     ip_address: String)
 
-
-
-case class FoomX(a: Map[String,Int])
-case class MapSeq( a1: Seq[Map[String,Int]])
+case class SampleJNumber(n17: java.lang.Number)
 
 object Main {
 
@@ -76,8 +73,7 @@ object Main {
 
   def main(args: Array[String]): Unit = {
 
-  //MapSeq(List( Map("a"->1,"b"->2), Map("c"->3,"d"->4) ))
-    println(Reflector.reflectOn[MapSeq])
+    println(Reflector.reflectOn[SampleJNumber])
 
   /*
 

@@ -9,7 +9,7 @@ import scala.collection.mutable
 object CaseClassTypeAdapterFactory extends TypeAdapterFactory:
   
   def matches(concrete: ConcreteType): Boolean = concrete match {
-    case c: ClassInfo => true
+    case c: ScalaClassInfo => true
     case _ => false
   }
   
