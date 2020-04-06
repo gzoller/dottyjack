@@ -81,20 +81,24 @@ class AnyPrim() extends FunSuite:
   }
 
   test("Enumeration works") {
-    pending
+    val payload: Size.Value = Size.Small
+    val js = sj.render(AnyShell(payload))
+    assertEquals("""{"a":"Small"}""".asInstanceOf[JSON], js)
+    assert({
+      val parsed = sj.read[AnyShell](js).a
+      (parsed == payload.toString) && parsed.isInstanceOf[String] // enum value becomes String
+    })
   }
-  /*
-        it("Enumeration works") {
-          val payload: Size.Value = Size.Small
-          val js = sj.render(AnyShell(payload))
-          assertResult("""{"a":"Small"}""") { js }
-          assertResult(true) {
-            val parsed = sj.read[AnyShell](js).a
-            (parsed == payload.toString) && parsed
-              .isInstanceOf[String] // enum value becomes String
-          }
-        }
-        */
+
+  test("Enum works") {
+    val payload = Color.Blue
+    val js = sj.render(AnyShell(payload))
+    assertEquals("""{"a":"Blue"}""".asInstanceOf[JSON], js)
+    assert({
+      val parsed = sj.read[AnyShell](js).a
+      (parsed == payload.toString) && parsed.isInstanceOf[String] // enum value becomes String
+    })
+  }
 
   test("Float works") {
     val payload: Float = 1234.5678F

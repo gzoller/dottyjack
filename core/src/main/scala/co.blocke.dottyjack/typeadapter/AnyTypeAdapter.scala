@@ -87,8 +87,8 @@ case class AnyTypeAdapter(info: ConcreteType, taCache: TypeAdapterCache) extends
       out:    mutable.Builder[WIRE, WIRE]): Unit =
     t match {
       case null         => writer.writeNull(out)
-      // TODO (plus Enum for Scala 3)
-      // case enum: Enumeration#Value => writer.writeString(enum.toString, out)
+      case e if e.getClass.getName =="scala.Enumeration$Val" => writer.writeString(t.toString, out)
+      case _: scala.Enum => writer.writeString(t.toString, out)
       case _: Map[_, _] => mapAnyTypeAdapter.write(t.asInstanceOf[Map[Any, Any]], writer, out)
       case _: Seq[_]    => listAnyTypeAdapter.write(t.asInstanceOf[List[Any]], writer, out)
       case _: Option[_] => optionAnyTypeAdapter.write(t.asInstanceOf[Option[Any]], writer, out)

@@ -35,7 +35,8 @@ object EnumTypeAdapterFactory extends TypeAdapterFactory:
         ScalaEnumTypeAdapter(concrete, enumsAsInt)
 
       // Java Enum support
-      case javaEnum: JavaEnumInfo => ???  // TODO
+      case javaEnum: JavaEnumInfo => 
+        JavaEnumTypeAdapter(concrete, enumsAsInt)
     }
 
 
@@ -143,3 +144,31 @@ case class ScalaEnumTypeAdapter[E <: Enum](
       case _               => writer.writeString(t.toString, out)
     }
   
+
+case class JavaEnumTypeAdapter[E <: java.lang.Enum[_]](
+    info:        ConcreteType,
+    enumsAsInt:  Boolean
+  ) extends TypeAdapter[E]:
+
+  val javaEnum = info.asInstanceOf[JavaEnumInfo]
+
+  def read(parser: Parser): E = 
+    if (parser.peekForNull) then
+      null.asInstanceOf[E]
+    else
+      val valueOf = info.infoClass.getDeclaredMethod("valueOf", classOf[String])
+      try {
+        valueOf.invoke(info.infoClass, parser.expectString()).asInstanceOf[E]
+      } catch {
+        case ex: java.lang.reflect.InvocationTargetException => throw ex.getCause
+        case t: Throwable => throw t
+      }
+    
+  def write[WIRE](
+      t:      E,
+      writer: Writer[WIRE],
+      out:    mutable.Builder[WIRE, WIRE]): Unit = 
+    t match {
+      case null            => writer.writeNull(out)
+      case _               => writer.writeString(t.toString, out)
+    }

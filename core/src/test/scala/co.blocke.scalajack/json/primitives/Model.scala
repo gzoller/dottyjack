@@ -48,6 +48,11 @@ case class SampleEnum(
     e5: Size.Value,
     e6: SizeWithType)
 
+enum Color {
+    case Red, Blue, Green
+}
+case class TVColors( color1: Color, color2: Color )
+
 case class SampleFloat(f1: Float, f2: Float, f3: Float, f4: Float)
 case class SampleInt(i1: Int, i2: Int, i3: Int, i4: Int)
 case class SampleLong(l1: Long, l2: Long, l3: Long, l4: Long)
@@ -165,6 +170,7 @@ case class VCBoolean(vc: Boolean) extends AnyVal
 case class VCByte(vc: Byte) extends AnyVal
 case class VCChar(vc: Char) extends AnyVal
 case class VCDouble(vc: Double) extends AnyVal
+case class VCEnum(vc: Color) extends AnyVal
 case class VCEnumeration(vc: Size.Value) extends AnyVal
 case class VCFloat(vc: Float) extends AnyVal
 case class VCInt(vc: Int) extends AnyVal

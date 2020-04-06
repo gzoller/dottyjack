@@ -16,6 +16,7 @@ class Enums() extends FunSuite:
   test("Enumeration (Scala 2.x) must work (not nullable)") {
     describe("-----------------\n:  Scala Enums  :\n-----------------", Console.BLUE)
     describe("+++ Positive Tests +++")
+
     import SizeWithType._
     val inst = SampleEnum(Size.Small, Size.Medium, Size.Large, null, Size.Medium, Little)
     val js = sj.render(inst)
@@ -28,7 +29,12 @@ class Enums() extends FunSuite:
   }
 
   test("Enum (Scala 3.x) must work (not nullable)") {
-    pending
+    val inst = TVColors(null, Color.Red)
+    val js = sj.render(inst)
+    assertEquals(
+      """{"color1":null,"color2":"Red"}""".asInstanceOf[JSON],
+      js)
+    assertEquals(inst, sj.read[TVColors](js))
   }
 
   test("""Sealed trait "enums" must work""") {
@@ -70,7 +76,13 @@ class Enums() extends FunSuite:
   }
 
   test("Enum (Scala 3.x) must break") {
-    pending
+    val js = """{"color1":null,"color2":"Bogus"}""".asInstanceOf[JSON]
+    val msg = """No value found in enumeration co.blocke.scalajack.json.primitives.Color for Bogus
+      |{"color1":null,"color2":"Bogus"}
+      |------------------------------^""".stripMargin
+    interceptMessage[co.blocke.dottyjack.ScalaJackError](msg){
+      sj.read[TVColors](js)
+    }
   }
 
   //--------------------------------------
@@ -78,10 +90,19 @@ class Enums() extends FunSuite:
   test("Java Enumeration (not nullable) must work") {
     describe("----------------------\n:  Java Enumeration  :\n----------------------", Console.BLUE)
     describe("+++ Positive Tests +++")
-    pending
+
+    val inst = new JavaEnum()
+    inst.setTemp(Temperature.Hot)
+    val js = sj.render(inst)
+    assertEquals("""{"temp":"Hot"}""".asInstanceOf[JSON], js)
+    assertEquals(inst.getTemp, sj.read[JavaEnum](js).getTemp)
   }  
 
   test("Java Enumeration (not nullable) must fail") {
     describe("--- Negative Tests ---")
-    pending
+
+    val js = """{"temp":"Bogus"}""".asInstanceOf[JSON]
+    interceptMessage[java.lang.IllegalArgumentException]("No enum constant co.blocke.scalajack.Temperature.Bogus"){
+      sj.read[JavaEnum](js)
+    }
   }

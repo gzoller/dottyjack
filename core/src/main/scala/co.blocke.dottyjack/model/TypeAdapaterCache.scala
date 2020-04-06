@@ -38,7 +38,7 @@ object TypeAdapterCache {
       //     ValueClasses will be interpreted as case classes, and case objects
       //     will likewise be hidden (interpreted as regular classes).
       // SealedTraitTypeAdapterFactory,
-      // ValueClassTypeAdapterFactory,
+      ValueClassTypeAdapterFactory,
       CaseClassTypeAdapterFactory,
 
       // TraitTypeAdapterFactory,
@@ -53,7 +53,7 @@ object TypeAdapterCache {
       JavaIntegerTypeAdapterFactory,
       JavaLongTypeAdapterFactory,
       JavaNumberTypeAdapterFactory,
-      JavaShortTypeAdapterFactory
+      JavaShortTypeAdapterFactory,
       // DurationTypeAdapterFactory,
       // InstantTypeAdapterFactory,
       // LocalDateTimeTypeAdapterFactory,
@@ -63,7 +63,7 @@ object TypeAdapterCache {
       // OffsetTimeTypeAdapterFactory,
       // PeriodTypeAdapterFactory,
       // ZonedDateTimeTypeAdapterFactory,
-      // PlainClassTypeAdapterFactory
+      JavaClassTypeAdapterFactory
     )
 }
 
