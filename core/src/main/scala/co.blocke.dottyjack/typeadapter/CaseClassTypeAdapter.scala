@@ -29,10 +29,7 @@ case class CaseClassTypeAdapter[T](
 
   override val isCaseClass = true;
 
-  private val classInfo = info match {
-    case c: ScalaClassInfo => c 
-    case _ => throw new ScalaJackError("Unable to find a type adapter for Process (abstract class or a dependency of an abstract class)")
-  }
+  private val classInfo = info.asInstanceOf[ScalaClassInfo]
   private val orderedFieldNames = classInfo.fields.map(_.name)
 
   val isSJCapture = classInfo.hasMixin("co.blocke.dottyjack.SJCapture")

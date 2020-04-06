@@ -34,6 +34,7 @@ case class AnyTypeAdapter(info: ConcreteType, taCache: TypeAdapterCache) extends
           case i if i.isValidInt      => i.toIntExact
           case i if i.isValidLong     => i.toLongExact
           case d if d.isDecimalDouble => d.toDouble
+          case d if d.ulp == 1        => d.toBigInt
           case d                      => d
         }
       case p if p.nextIsString && jackFlavor.permissivesOk =>

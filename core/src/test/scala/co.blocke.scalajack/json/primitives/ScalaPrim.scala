@@ -332,12 +332,3 @@ class ScalaPrim() extends FunSuite:
       sj.read[SampleUUID](js)
     }
   }
-
-  test("Can't find TypeAdapter for given type") {
-    val js = """{"hey":"you"}""".asInstanceOf[JSON]
-    val msg =
-      "Unable to find a type adapter for Process (abstract class or a dependency of an abstract class)"
-    interceptMessage[co.blocke.dottyjack.ScalaJackError](msg){
-      sj.read[java.lang.Process](js)
-    }
-  }

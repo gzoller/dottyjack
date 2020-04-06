@@ -26,7 +26,6 @@ class JavaPrim() extends FunSuite:
     describe("--------------------------\n:  Java Primitive Tests  :\n--------------------------", Console.BLUE)
     describe("+++ Positive Tests +++")
 
-    // println(Reflector.reflectOn[SampleJBigDecimal])
     val inst = SampleJBigDecimal(
       JBigDecimal.ZERO,
       JBigDecimal.ONE,

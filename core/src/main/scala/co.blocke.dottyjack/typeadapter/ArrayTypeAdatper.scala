@@ -14,10 +14,6 @@ import scala.language.implicitConversions
 
 object ArrayTypeAdapterFactory extends TypeAdapterFactory:
 
-  // trait HasInfoClass {
-  //   def infoClass: Class[_]
-  // }
-
   def matches(concrete: ConcreteType): Boolean = 
     concrete match {
       case _: ArrayInfo => true
