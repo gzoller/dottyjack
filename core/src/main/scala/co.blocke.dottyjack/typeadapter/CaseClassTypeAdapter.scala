@@ -75,20 +75,20 @@ case class CaseClassTypeAdapter[T](
       t:      T,
       writer: Writer[WIRE],
       out:    mutable.Builder[WIRE, WIRE]): Unit = 
+    // TODO
     val extras = Nil
-    /* TODO
-    val extras = typeMembersByName
-      .map {
-        case (typeMemberName, tm) =>
-          (
-            typeMemberName,
-            ExtraFieldValue(
-              taCache.jackFlavor.typeValueModifier.unapply(tm.baseType),
-              taCache.jackFlavor.stringTypeAdapter
-            )
+    /*
+    val extras = typeMembersByName.map {
+      case (typeMemberName, tm) =>
+        (
+          typeMemberName,
+          ExtraFieldValue(
+            taCache.jackFlavor.typeValueModifier.unapply(tm.baseType),
+            taCache.jackFlavor.stringTypeAdapter
           )
-      }
-      */
+        )
+    }
+    */
     writer.writeObject(
       t,
       orderedFieldNames,
@@ -99,20 +99,17 @@ case class CaseClassTypeAdapter[T](
 
   // Used by AnyTypeAdapter to insert type hint (not normally needed) into output so object
   // may be reconstituted on read
-  /* TODO
   def writeWithHint[WIRE](
-      t:      T,
-      writer: Writer[WIRE],
-      out:    mutable.Builder[WIRE, WIRE]): Unit = {
+      jackFlavor: JackFlavor[WIRE],
+      t:          T,
+      writer:     Writer[WIRE],
+      out:        mutable.Builder[WIRE, WIRE]): Unit = 
     val hintValue = t.getClass.getName
-    val hintLabel = taCache.jackFlavor.getHintLabelFor(tt.tpe)
+    val hintLabel = jackFlavor.defaultHint   // TODO  --> .getHintLabelFor(info.name)
     val extra = List(
       (
         hintLabel,
-        ClassHelper
-        .ExtraFieldValue(hintValue, taCache.jackFlavor.stringTypeAdapter)
+        ExtraFieldValue(hintValue, jackFlavor.stringTypeAdapter)
       )
     )
     writer.writeObject(t, orderedFieldNames, fieldMembersByName, out, extra)
-  }
-*/

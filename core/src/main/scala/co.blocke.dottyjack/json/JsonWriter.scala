@@ -3,9 +3,7 @@ package json
 
 import model._
 import scala.collection.mutable
-// import ClassHelper.ExtraFieldValue
 import scala.collection.Map
-// import typeadapter.TupleTypeAdapterFactory
 
 case class JsonWriter() extends Writer[JSON] {
 

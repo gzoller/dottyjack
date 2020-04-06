@@ -13,6 +13,10 @@ case class Person(
     ip_address: String)
 
 
+
+case class FoomX(a: Map[String,Int])
+case class MapSeq( a1: Seq[Map[String,Int]])
+
 object Main {
 
   val people =
@@ -72,12 +76,18 @@ object Main {
 
   def main(args: Array[String]): Unit = {
 
+  //MapSeq(List( Map("a"->1,"b"->2), Map("c"->3,"d"->4) ))
+    println(Reflector.reflectOn[MapSeq])
+
+  /*
+
     for(i <- 0 to 100)
       dj.read[List[Person]](people)
 
     val n = 100000
     for (j <- 0 to 30)
       println(s"Run $n iterations in ${run(n)} ms")
+      */
 
   }
 

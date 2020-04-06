@@ -39,9 +39,9 @@ object TypeAdapterCache {
       //     will likewise be hidden (interpreted as regular classes).
       // SealedTraitTypeAdapterFactory,
       // ValueClassTypeAdapterFactory,
-      CaseClassTypeAdapterFactory
+      CaseClassTypeAdapterFactory,
       // TraitTypeAdapterFactory,
-      // AnyTypeAdapterFactory,
+      AnyTypeAdapterFactory
       // JavaBigDecimalTypeAdapterFactory,
       // JavaBigIntegerTypeAdapterFactory,
       // JavaBooleanTypeAdapterFactory,

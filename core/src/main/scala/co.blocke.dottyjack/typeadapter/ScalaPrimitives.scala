@@ -104,7 +104,7 @@ object ByteTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Byte] 
     writer.writeInt(t, out)
 
 
-object CharTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Char] with ScalarTypeAdapter[Char]:
+object CharTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Char] with ScalarTypeAdapter[Char] with Stringish:
   def matches(concrete: ConcreteType): Boolean = concrete == PrimitiveType.Scala_Char
   def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[Char] = this
 

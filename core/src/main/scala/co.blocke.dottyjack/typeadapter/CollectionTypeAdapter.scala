@@ -2,12 +2,11 @@ package co.blocke.dottyjack
 package typeadapter
 
 import model._
+import collection._
 
-import java.lang.reflect.Method
-import scala.collection.mutable
 import co.blocke.dotty_reflection._
 import co.blocke.dotty_reflection.infos._
-import scala.reflect.ClassTag
+
 
 object CollectionTypeAdapterFactory extends TypeAdapterFactory:
   def matches(concrete: ConcreteType): Boolean = 
@@ -23,49 +22,54 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
         val companionInstance = companionClass.getField("MODULE$").get(companionClass)
         val builderMethod = companionClass.getMethod("newBuilder")
         SeqLikeTypeAdapter(concrete, elementInfo.isInstanceOf[OptionInfo], taCache.typeAdapterOf(elementInfo), companionInstance, builderMethod)
-      // case c: MapLikeInfo =>
+        
+      case c: MapLikeInfo =>
+        val companionClass = Class.forName(c.infoClass.getName+"$")
+        val companionInstance = companionClass.getField("MODULE$").get(companionClass)
+        val builderMethod = companionClass.getMethod("newBuilder")
+
+        val jackFlavor = taCache.jackFlavor
+        val keyTypeAdapter = taCache.typeAdapterOf(c.elementType1.asInstanceOf[ConcreteType])
+        // Wrap Map keys in a StringWrapTypeAdapter?
+        val finalKeyTypeAdapter =
+          if (keyTypeAdapter.isInstanceOf[AnyTypeAdapter])
+            jackFlavor.anyMapKeyTypeAdapter
+          else if (!jackFlavor.stringifyMapKeys
+            || keyTypeAdapter.isInstanceOf[Stringish]
+            // TODO
+            // || keyType <:< typeOf[Enumeration#Value] && !enumsAsInt
+            // || keyTypeAdapter.isInstanceOf[ValueClassTypeAdapter[_, _]] 
+            // && keyTypeAdapter.asInstanceOf[ValueClassTypeAdapter[_, _]].sourceTypeAdapter.isInstanceOf[Stringish]
+            || (keyTypeAdapter.isInstanceOf[OptionTypeAdapter[_]] && keyTypeAdapter.asInstanceOf[OptionTypeAdapter[_]].valueIsStringish()))
+            keyTypeAdapter
+          else 
+            jackFlavor.stringWrapTypeAdapterFactory(keyTypeAdapter)
+        val valueTypeAdapter = taCache.typeAdapterOf(c.elementType2.asInstanceOf[ConcreteType])
+
+        // Note: We include Any here because Any *could* be an Option, so we must include it as a possibility
+        val keyIsOptionalOrAny =
+          keyTypeAdapter.isInstanceOf[OptionTypeAdapter[_]] ||
+            (keyTypeAdapter.isInstanceOf[StringWrapTypeAdapter[_]] && keyTypeAdapter
+              .asInstanceOf[StringWrapTypeAdapter[_]]
+              .wrappedTypeAdapter
+              .isInstanceOf[OptionTypeAdapter[_]]) ||
+              keyTypeAdapter == taCache.jackFlavor.anyMapKeyTypeAdapter
+
+        val valueIsOptionalOrAny = valueTypeAdapter
+          .isInstanceOf[OptionTypeAdapter[_]] ||
+          valueTypeAdapter.isInstanceOf[AnyTypeAdapter]
+
+        MapLikeTypeAdapter(
+          concrete, 
+          keyIsOptionalOrAny,
+          valueIsOptionalOrAny,
+          finalKeyTypeAdapter, 
+          valueTypeAdapter,
+          companionInstance, 
+          builderMethod)
+
       // case c: JavaSetInfo =>
       // case c: JavaListInfo =>
       // case c: JavaQueueInfo =>
       // case c: JavaMapInfo =>
-    }
-
-
-case class SeqLikeTypeAdapter[ELEM, TO](
-    info:               ConcreteType,
-    elemIsOptional:     Boolean,
-    elementTypeAdapter: TypeAdapter[ELEM],
-    companionInstance:  Object,
-    builderMethod:      Method
-  ) extends TypeAdapter[TO]:
-
-  def read(parser: Parser): TO =
-    // We have to do some voodoo here and peek ahead for Null.  Some types, e.g. Int, aren't nullable,
-    // but Option[Int] is nullable, so we can't trust the valueTypeAdapter to catch and handle null in
-    // these cases.
-    parser.peekForNull match {
-      case true               => null.asInstanceOf[TO]
-      case _                  => 
-        val builder = builderMethod.invoke(companionInstance).asInstanceOf[mutable.Builder[ELEM,TO]]
-        parser.expectList(
-          elementTypeAdapter,
-          builder
-        )
-        builder.result
-    }
-
-  def write[WIRE](
-      t:      TO,
-      writer: Writer[WIRE],
-      out:    mutable.Builder[WIRE, WIRE]): Unit =
-    t match {
-      case null                => writer.writeNull(out)
-      case _ if elemIsOptional =>
-        writer.writeArray(
-          t.asInstanceOf[Iterable[ELEM]].filterNot(_ == None),
-          elementTypeAdapter,
-          out
-        )
-      case _ =>
-        writer.writeArray(t.asInstanceOf[Iterable[ELEM]], elementTypeAdapter, out)
     }

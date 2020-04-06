@@ -2,7 +2,7 @@ package co.blocke.dottyjack
 package json
 
 import model._
-// import typeadapter.AnyMapKeyTypeAdapter
+import typeadapter.{AnyMapKeyTypeAdapter, StringWrapTypeAdapter}
 
 opaque type JSON = String
 
@@ -31,8 +31,7 @@ case class JsonFlavor(
   private val writer = JsonWriter() 
 
   override val stringifyMapKeys: Boolean = true
-  // override lazy val anyMapKeyTypeAdapter: AnyMapKeyTypeAdapter =
-  //   typeadapter.AnyMapKeyTypeAdapter(this, anyTypeAdapter)
+  override lazy val anyMapKeyTypeAdapter: AnyMapKeyTypeAdapter = AnyMapKeyTypeAdapter(taCache)
 
   // def allowPermissivePrimitives(): JackFlavor[JSON] =
   //   this.copy(permissivesOk = true)

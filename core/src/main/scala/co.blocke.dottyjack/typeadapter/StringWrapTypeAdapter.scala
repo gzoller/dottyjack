@@ -1,5 +1,5 @@
 package co.blocke.dottyjack
-package json
+package typeadapter
 
 import model._
 import co.blocke.dotty_reflection._
@@ -14,7 +14,7 @@ case class StringWrapTypeAdapter[T](
     emptyStringOk:      Boolean        = true
   ) extends TypeAdapter[T] with Stringish {
 
-  val info: ConcreteType = ??? // unused
+  val info: ConcreteType = wrappedTypeAdapter.info
 
   def read(parser: Parser): T =
     parser.expectString() match {

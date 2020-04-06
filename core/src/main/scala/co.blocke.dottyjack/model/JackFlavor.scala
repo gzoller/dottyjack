@@ -117,10 +117,10 @@ trait JackFlavor[WIRE]: // extends Filterable[WIRE] with ViewSplice {
   // Look up any custom hint label for given type, and if none then use default
   // def getHintLabelFor(tpe: TypeStructure): String = hintMap.getOrElse(tpe, defaultHint)
 
-  // def stringWrapTypeAdapterFactory[T](
-  //     wrappedTypeAdapter: TypeAdapter[T],
-  //     emptyStringOk: Boolean = true
-  // )(implicit tt: TypeTag[T]): TypeAdapter[T]
+  def stringWrapTypeAdapterFactory[T](
+      wrappedTypeAdapter: TypeAdapter[T],
+      emptyStringOk: Boolean = true
+    ): TypeAdapter[T]
 
   def enumsAsInts(): JackFlavor[WIRE]
   // def allowPermissivePrimitives(): JackFlavor[WIRE]

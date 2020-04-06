@@ -8,171 +8,172 @@ import TestUtil._
 import munit._
 import munit.internal.console
 import co.blocke.dottyjack.json.JSON
+import scala.collection.immutable._
 
-class Arrays() extends FunSuite:
+class Seqs() extends FunSuite:
 
   val sj = co.blocke.dottyjack.DottyJack()
 
   test("BigDecimal must work") {
-    describe("-----------------------\n:  Scala Array Tests  :\n-----------------------", Console.BLUE)
+    describe("---------------------\n:  Scala Seq Tests  :\n---------------------", Console.BLUE)
     describe("+++ Primitive Types +++")
 
-    val inst = BigDecimalArr(null, Array(BigDecimal(123.456),BigDecimal(78.91)))
+    val inst = BigDecimalSeq(null, Seq(BigDecimal(123.456),BigDecimal(78.91)))
     val js = sj.render(inst)
     assertEquals(
       """{"a1":null,"a2":[123.456,78.91]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[BigDecimalArr](js))
+    assertEquals(inst, sj.read[BigDecimalSeq](js))
   }
 
   test("BigInt must work") {
-    val inst = BigIntArr(null, Array(BigInt(123),BigInt(78)))
+    val inst = BigIntSeq(null, List(BigInt(123),BigInt(78)))
     val js = sj.render(inst)
     assertEquals(
       """{"a1":null,"a2":[123,78]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[BigIntArr](js))
+    assertEquals(inst, sj.read[BigIntSeq](js))
   }
 
   test("Boolean must work") {
-    val inst = BooleanArr(null, Array(true,false))
+    val inst = BooleanSeq(null, scala.collection.mutable.ListBuffer(true,false))
     val js = sj.render(inst)
     assertEquals(
       """{"a1":null,"a2":[true,false]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[BooleanArr](js))
+    assertEquals(inst, sj.read[BooleanSeq](js))
   }
 
-  // No Array[Byte] because that's seen as binary data and treated differently
+  test("Byte must work") {
+    val inst = ByteSeq(null, List(123.toByte,200.toByte))
+    val js = sj.render(inst)
+    assertEquals(
+      """{"a1":null,"a2":[123,-56]}""".asInstanceOf[JSON],
+      js
+    )
+    assertEquals(inst, sj.read[ByteSeq](js))
+  }
+
   test("Char must work") {
-    val inst = CharArr(null, Array('a','b','c'))
+    val inst = CharSeq(null, Queue('a','b','c'))
     val js = sj.render(inst)
     assertEquals(
       """{"a1":null,"a2":["a","b","c"]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[CharArr](js))
+    assertEquals(inst, sj.read[CharSeq](js))
   }
 
   test("Double must work") {
-    val inst = DoubleArr(null, Array(12.34,56.78))
+    val inst = DoubleSeq(null, scala.collection.mutable.ArrayBuffer(12.34,56.78))
     val js = sj.render(inst)
     assertEquals(
       """{"a1":null,"a2":[12.34,56.78]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[DoubleArr](js))
+    assertEquals(inst, sj.read[DoubleSeq](js))
   }
 
   test("Float must work") {
-    val inst = FloatArr(null, Array(12.34F,56.78F))
+    val inst = FloatSeq(null, LinearSeq(12.34F,56.78F))
     val js = sj.render(inst)
     assertEquals(
       """{"a1":null,"a2":[12.34,56.78]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[FloatArr](js))
+    assertEquals(inst, sj.read[FloatSeq](js))
   }
 
   test("Int must work") {
-    val inst = IntArr(null, Array(1,2,3))
+    val inst = IntSeq(null, scala.collection.mutable.IndexedSeq(1,2,3))
     val js = sj.render(inst)
     assertEquals(
       """{"a1":null,"a2":[1,2,3]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[IntArr](js))
+    assertEquals(inst, sj.read[IntSeq](js))
   }
 
   test("Long must work") {
-    val inst = LongArr(null, Array(1L,2L,3L))
+    val inst = LongSeq(null, List(1L,2L,3L))
     val js = sj.render(inst)
     assertEquals(
       """{"a1":null,"a2":[1,2,3]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[LongArr](js))
+    assertEquals(inst, sj.read[LongSeq](js))
   }
 
   test("Short must work") {
-    val inst = ShortArr(null, Array(1.toShort,2.toShort,3.toShort))
+    val inst = ShortSeq(null, List(1.toShort,2.toShort,3.toShort))
     val js = sj.render(inst)
     assertEquals(
       """{"a1":null,"a2":[1,2,3]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[ShortArr](js))
+    assertEquals(inst, sj.read[ShortSeq](js))
   }
 
   test("String must work") {
-    val inst = StringArr(null, Array("a","b","c"))
+    val inst = StringSeq(null, List("a","b","c"))
     val js = sj.render(inst)
     assertEquals(
       """{"a1":null,"a2":["a","b","c"]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[StringArr](js))
+    assertEquals(inst, sj.read[StringSeq](js))
   }
 
   test("Lists must work") {
     describe("+++ Collection Types +++")
-    val inst = ListArr(Array( List(1,2,3), List(4,5,6) ))
+    val inst = SeqSeq(List( List(1,2,3), List(4,5,6) ))
     val js = sj.render(inst)
     assertEquals(
       """{"a1":[[1,2,3],[4,5,6]]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[ListArr](js))
-
-    // Try another Seq variant
-    val inst2 = SetArr(Array( Set(1,2,3), Set(4,5,6) ))
-    val js2 = sj.render(inst2)
-    assertEquals(
-      """{"a1":[[1,2,3],[4,5,6]]}""".asInstanceOf[JSON],
-      js2
-    )
-    assertEquals(inst2, sj.read[SetArr](js2))
+    assertEquals(inst, sj.read[SeqSeq](js))
   }
 
   test("Maps must work") {
-    val inst = MapArr(Array( Map("a"->1,"b"->2), Map("c"->3,"d"->4) ))
+    val inst = MapSeq(List( Map("a"->1,"b"->2), Map("c"->3,"d"->4) ))
     val js = sj.render(inst)
     assertEquals(
       """{"a1":[{"a":1,"b":2},{"c":3,"d":4}]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[MapArr](js))
+    assertEquals(inst, sj.read[MapSeq](js))
   }
 
   test("Classes must work") {
     describe("+++ Class Types +++")
-    val inst = ClassArr(Array(IntArr(null,Array(1,2)), IntArr(null,Array(1,2))))
+    val inst = ClassSeq(List(IntArr(null,Array(1,2)), IntArr(null,Array(1,2))))
     val js = sj.render(inst)
     assertEquals(
       """{"a1":[{"a1":null,"a2":[1,2]},{"a1":null,"a2":[1,2]}]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[ClassArr](js))
+    assertEquals(inst, sj.read[ClassSeq](js))
   }
 
   test("Multidimensional arrays must work") {
     describe("+++ Complex Types +++")
-    val inst = MultiArr(null, Array(Array( Array(1L,2L), Array(3L,4L) ), Array(Array(5L,6L), Array(7L,8L)) ), 
-      Array(Array(BigInt(12),BigInt(13)), Array(BigInt(14),BigInt(15))))
+    val inst = MultiSeq(null, Seq(Seq( Seq(1L,2L), Seq(3L,4L) ), Seq(Seq(5L,6L), Seq(7L,8L)) ), 
+      Seq(Seq(BigInt(12),BigInt(13)), Seq(BigInt(14),BigInt(15))))
     val js = sj.render(inst)
     assertEquals(
       """{"a0":null,"a1":[[[1,2],[3,4]],[[5,6],[7,8]]],"a2":[[12,13],[14,15]]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[MultiArr](js))
+    assertEquals(inst, sj.read[MultiSeq](js))
   }
 
 
   test("BigDecimal must work") {
-    describe("----------------------\n:  Java Array Tests  :\n----------------------", Console.BLUE)
+    describe("--------------------\n:  Java Seq Tests  :\n--------------------", Console.BLUE)
     describe("+++ Primitive Types +++")
     pending
   }
