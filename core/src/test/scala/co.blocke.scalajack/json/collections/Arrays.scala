@@ -171,14 +171,50 @@ class Arrays() extends FunSuite:
   }
 
 
-  test("BigDecimal must work") {
+  test("Java primitives must work") {
     describe("----------------------\n:  Java Array Tests  :\n----------------------", Console.BLUE)
     describe("+++ Primitive Types +++")
-    pending
+    val inst = JavaArray()
+    inst.setBigDecs(Array(java.math.BigDecimal.valueOf(123.4),java.math.BigDecimal.valueOf(456.7)))
+    inst.setBigInts(Array(java.math.BigInteger.valueOf(123),java.math.BigInteger.valueOf(456)))
+    inst.setBooleans(Array(java.lang.Boolean.valueOf(true),java.lang.Boolean.valueOf("false")))
+    inst.setBytes(Array(java.lang.Byte.valueOf(24.toByte),java.lang.Byte.valueOf(12.toByte)))
+    inst.setCharacters(Array(java.lang.Character.valueOf('a'),java.lang.Character.valueOf('z')))
+    inst.setDoubles(Array(java.lang.Double.valueOf(12.34),java.lang.Double.valueOf(-56.78)))
+    inst.setFloats(Array(java.lang.Float.valueOf(12.34F),java.lang.Float.valueOf(-56.78F)))
+    inst.setIntegers(Array(java.lang.Integer.valueOf(1),java.lang.Integer.valueOf(2)))
+    inst.setLongs(Array(java.lang.Long.valueOf(1),java.lang.Long.valueOf(2)))
+    inst.setShorts(Array(java.lang.Short.valueOf(1.toShort),java.lang.Short.valueOf(2.toShort)))
+    inst.setMulti(Array(Array(java.math.BigInteger.valueOf(123),java.math.BigInteger.valueOf(456)), 
+      Array(java.math.BigInteger.valueOf(543),java.math.BigInteger.valueOf(222))))
+    val js = sj.render(inst)
+    assertEquals(
+      """{"bigDecs":[123.4,456.7],"bigInts":[123,456],"booleans":[true,false],"bytes":[24,12],"characters":["a","z"],"doubles":[12.34,-56.78],"floats":[12.34,-56.78],"integers":[1,2],"longs":[1,2],"multi":[[123,456],[543,222]],"shorts":[1,2]}""".asInstanceOf[JSON],
+      js)
+    val readIn = sj.read[JavaArray](js)
+    assertEquals(inst.getBigDecs, readIn.getBigDecs)
+    assertEquals(inst.getBigInts, readIn.getBigInts)
+    assertEquals(inst.getBooleans, readIn.getBooleans)
+    assertEquals(inst.getBytes, readIn.getBytes)
+    assertEquals(inst.getCharacters, readIn.getCharacters)
+    assertEquals(inst.getDoubles, readIn.getDoubles)
+    assertEquals(inst.getFloats, readIn.getFloats)
+    assertEquals(inst.getIntegers, readIn.getIntegers)
+    assertEquals(inst.getLongs, readIn.getLongs)
+    assertEquals(inst.getShorts, readIn.getShorts)
+    assertEquals(inst.getMulti, readIn.getMulti)
   }
 
   test("Lists must work") {
     describe("+++ Collection Types +++")
+    pending
+  }
+
+  test("Sets must work") {
+    pending
+  }
+
+  test("Queues must work") {
     pending
   }
 
@@ -188,10 +224,5 @@ class Arrays() extends FunSuite:
 
   test("Classes must work") {
     describe("+++ Class Types +++")
-    pending
-  }
-
-  test("Multidimensional arrays must work") {
-    describe("+++ Complex Types +++")
     pending
   }

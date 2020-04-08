@@ -17,30 +17,41 @@ object ArrayTypeAdapterFactory extends TypeAdapterFactory:
   def matches(concrete: ConcreteType): Boolean = 
     concrete match {
       case _: ArrayInfo => true
+      case _: JavaArrayInfo => true
       case _ => false
     }
 
   def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] = 
-    val elementInfo = concrete.asInstanceOf[ArrayInfo].elementType.asInstanceOf[ConcreteType]
-    ArrayTypeAdapter(
-      concrete, 
-      elementInfo.isInstanceOf[OptionInfo],
-      taCache.typeAdapterOf(elementInfo))
+    concrete match {
+      case arrInfo: ArrayInfo =>
+        val elementInfo = arrInfo.elementType.asInstanceOf[ConcreteType]
+        ArrayTypeAdapter(
+          concrete, 
+          elementInfo.isInstanceOf[OptionInfo],
+          elementInfo,
+          taCache.typeAdapterOf(elementInfo))
+      case javaInfo: JavaArrayInfo =>
+        val elementInfo = javaInfo.elementType.asInstanceOf[ConcreteType]
+        ArrayTypeAdapter(
+          concrete, 
+          false, // TODO: Support java.Optional ==>  elementInfo.isInstanceOf[OptionInfo],
+          elementInfo,
+          taCache.typeAdapterOf(elementInfo))
+    }
 
 
 case class ArrayTypeAdapter[ELEM](
     info:               ConcreteType,
     elemIsOptional:     Boolean,
+    elementType:        ConcreteType,
     elementTypeAdapter: TypeAdapter[ELEM]
   ) extends TypeAdapter[Array[ELEM]] with ScalarTypeAdapter[Array[ELEM]]:
-
-  val arrayInfo = info.asInstanceOf[ArrayInfo]
 
   def read(parser: Parser): Array[ELEM] = 
     parser.peekForNull match {
       case true               => null
       case _                  => 
-        val classtag = ClassTag[ELEM](arrayInfo.elementType.asInstanceOf[ConcreteType].infoClass)
+        val classtag = ClassTag[ELEM](elementType.asInstanceOf[ConcreteType].infoClass)
         val builder: mutable.Builder[ELEM,Array[ELEM]] = Array.newBuilder[ELEM](classtag.asInstanceOf[ClassTag[ELEM]]).asInstanceOf[mutable.Builder[ELEM,Array[ELEM]]]
         val values = parser.expectList(elementTypeAdapter, builder)
         builder.result

@@ -5,7 +5,7 @@ import scala.math._
 import scala.collection.Map
 import scala.collection.Seq
 
-//------ Arrays
+//------ Arrays (Scala)
 case class BigDecimalArr( a1: Array[BigDecimal], a2: Array[BigDecimal] )
 case class BigIntArr( a1: Array[BigInt], a2: Array[BigInt] )
 case class BooleanArr( a1: Array[Boolean], a2: Array[Boolean] )
@@ -24,7 +24,7 @@ case class ListArr( a1: Array[List[Int]])
 case class SetArr( a1: Array[Set[Int]])
 case class MapArr( a1: Array[Map[String,Int]])
 
-//------ Seqs
+//------ Seqs (Scala)
 case class BigDecimalSeq( a1: Seq[BigDecimal], a2: Seq[BigDecimal] )
 case class BigIntSeq( a1: Seq[BigInt], a2: Seq[BigInt] )
 case class BooleanSeq( a1: Seq[Boolean], a2: Seq[Boolean] )
@@ -42,6 +42,21 @@ case class ClassSeq( a1: Seq[IntArr] )
 
 case class SeqSeq( a1: Seq[List[Int]])
 case class MapSeq( a1: Seq[Map[String,Int]])
+
+//------ Seqs (Java)
+case class JBigDecimalSeq( a1: java.util.LinkedList[BigDecimal], a2: java.util.LinkedList[BigDecimal] )
+case class JBigIntSeq( a1: java.util.Vector[BigInt], a2: java.util.Vector[BigInt] )
+case class JBooleanSeq( a1: java.util.ArrayList[Boolean], a2: java.util.ArrayList[Boolean] )
+// These tests would simply be redundant... we've already confirmed Java primtivie serializations.
+// case class JByteSeq( a1: Seq[Byte], a2: Seq[Byte] )
+// case class JCharSeq( a1: Seq[Char], a2: Seq[Char] )
+// case class JDoubleSeq( a1: Seq[Double], a2: Seq[Double] )
+// case class JFloatSeq( a1: Seq[Float], a2: Seq[Float] )
+// case class JIntSeq( a1: Seq[Int], a2: Seq[Int] )
+// case class JLongSeq( a1: Seq[Long], a2: Seq[Long] )
+// case class JShortSeq( a1: Seq[Short], a2: Seq[Short] )
+// case class JStringSeq( a1: Seq[String], a2: Seq[String] )
+
 
 //------ Maps (Some "2" variants to avoid same-name collision with Scala collection classes)
 case class BigDecimalMap( a0: Map[BigDecimal,String], a1: Map[BigDecimal,String], a2: Map[String,BigDecimal] )

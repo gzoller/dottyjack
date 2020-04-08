@@ -9,6 +9,8 @@ import munit._
 import munit.internal.console
 import co.blocke.dottyjack.json.JSON
 import scala.collection.immutable._
+import collection.JavaConverters._
+import scala.language.implicitConversions
 
 class Seqs() extends FunSuite:
 
@@ -172,15 +174,43 @@ class Seqs() extends FunSuite:
   }
 
 
-  test("BigDecimal must work") {
+  test("BigDecimal (LinkedList) must work") {
     describe("--------------------\n:  Java Seq Tests  :\n--------------------", Console.BLUE)
-    describe("+++ Primitive Types +++")
-    pending
+    describe("+++ Primitive Types (Mix of List/Set/Queue +++")
+
+    val inst = JBigDecimalSeq(null, new java.util.LinkedList(List(BigDecimal(123.456),BigDecimal(78.91)).asJava))
+    val js = sj.render(inst)
+    assertEquals(
+      """{"a1":null,"a2":[123.456,78.91]}""".asInstanceOf[JSON],
+      js
+    )
+    val readIn = sj.read[JBigDecimalSeq](js)
+    assertEquals(inst.a1, readIn.a1)
+    assertEquals(inst.a2, readIn.a2)
   }
 
-  test("Lists must work") {
-    describe("+++ Collection Types +++")
-    pending
+  test("BigInt (Vector) must work") {
+    val inst = JBigIntSeq(null, new java.util.Vector(List(BigInt(123),BigInt(78)).asJava))
+    val js = sj.render(inst)
+    assertEquals(
+      """{"a1":null,"a2":[123,78]}""".asInstanceOf[JSON],
+      js
+    )
+    val readIn = sj.read[JBigIntSeq](js)
+    assertEquals(inst.a1, readIn.a1)
+    assertEquals(inst.a2, readIn.a2)
+  }
+
+  test("Boolean (ArrayList) must work") {
+    val inst = JBooleanSeq(null, new java.util.ArrayList(List(true,false).asJava))
+    val js = sj.render(inst)
+    assertEquals(
+      """{"a1":null,"a2":[true,false]}""".asInstanceOf[JSON],
+      js
+    )
+    val readIn = sj.read[JBooleanSeq](js)
+    assertEquals(inst.a1, readIn.a1)
+    assertEquals(inst.a2, readIn.a2)
   }
 
   test("Maps must work") {
@@ -189,10 +219,5 @@ class Seqs() extends FunSuite:
 
   test("Classes must work") {
     describe("+++ Class Types +++")
-    pending
-  }
-
-  test("Multidimensional arrays must work") {
-    describe("+++ Complex Types +++")
     pending
   }
