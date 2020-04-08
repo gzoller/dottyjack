@@ -204,25 +204,3 @@ class Arrays() extends FunSuite:
     assertEquals(inst.getShorts, readIn.getShorts)
     assertEquals(inst.getMulti, readIn.getMulti)
   }
-
-  test("Lists must work") {
-    describe("+++ Collection Types +++")
-    pending
-  }
-
-  test("Sets must work") {
-    pending
-  }
-
-  test("Queues must work") {
-    pending
-  }
-
-  test("Maps must work") {
-    pending
-  }
-
-  test("Classes must work") {
-    describe("+++ Class Types +++")
-    pending
-  }

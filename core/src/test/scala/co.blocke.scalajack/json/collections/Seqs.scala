@@ -10,7 +10,7 @@ import munit.internal.console
 import co.blocke.dottyjack.json.JSON
 import scala.collection.immutable._
 import collection.JavaConverters._
-import scala.language.implicitConversions
+import scala.language.implicitConversions._
 
 class Seqs() extends FunSuite:
 
@@ -213,11 +213,52 @@ class Seqs() extends FunSuite:
     assertEquals(inst.a2, readIn.a2)
   }
 
+  test("Char (PriorityQueue) must work") {
+    val inst = JCharSeq(null, new java.util.PriorityQueue(List('a','b','c').asJava))
+    val js = sj.render(inst)
+    assertEquals(
+      """{"a1":null,"a2":["a","b","c"]}""".asInstanceOf[JSON],
+      js
+    )
+    val readIn = sj.read[JCharSeq](js)
+    assertEquals(inst.a1, readIn.a1)
+    assertEquals(inst.a2, readIn.a2)
+  }
+  //case class JIntSeq( a1: java.util.Stack[Int], a2: java.util.Stack[Int] )
+
+  test("Int (Stack) must work") {
+    val stack = new java.util.Stack[Int]()
+    stack.push(1)
+    stack.push(2)
+    stack.push(3)
+    val inst = JIntSeq(null, stack)
+    val js = sj.render(inst)
+    assertEquals(
+      """{"a1":null,"a2":[1,2,3]}""".asInstanceOf[JSON],
+      js
+    )
+    val readIn = sj.read[JIntSeq](js)
+    assertEquals(inst.a1, readIn.a1)
+    assertEquals(inst.a2, readIn.a2)
+  }
+
   test("Maps must work") {
-    pending
+    val inst = JMapSeq(java.util.ArrayList( List(Map("a"->1,"b"->2), Map("c"->3,"d"->4)).asJava ))
+    val js = sj.render(inst)
+    assertEquals(
+      """{"a1":[{"a":1,"b":2},{"c":3,"d":4}]}""".asInstanceOf[JSON],
+      js
+    )
+    assertEquals(inst.a1.asScala, sj.read[JMapSeq](js).a1.asScala)
   }
 
   test("Classes must work") {
     describe("+++ Class Types +++")
-    pending
+    val inst = JClassSeq( new java.util.LinkedList(List(IntArr(null,Array(1,2)), IntArr(null,Array(1,2))).asJava))
+    val js = sj.render(inst)
+    assertEquals(
+      """{"a1":[{"a1":null,"a2":[1,2]},{"a1":null,"a2":[1,2]}]}""".asInstanceOf[JSON],
+      js
+    )
+    assertEquals(inst.a1.asScala, sj.read[JClassSeq](js).a1.asScala)
   }

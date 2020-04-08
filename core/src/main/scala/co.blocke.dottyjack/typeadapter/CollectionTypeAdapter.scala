@@ -127,6 +127,25 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
           toArrayMethod
         )
 
+      case c: JavaStackInfo =>
+        val elementInfo = c.elementType.asInstanceOf[ConcreteType]
+        // For List-like Java collections, use a ListBuilder then convert later to the Java collection
+        val companionClass = Class.forName("scala.collection.immutable.List$")
+        val companionInstance = companionClass.getField("MODULE$").get(companionClass)
+        val builderMethod = companionClass.getMethod("newBuilder")
+        val javaCollectionConstructor = c.infoClass.getConstructors.head
+        val toArrayMethod = c.infoClass.getMethod("toArray")
+        
+        JavaStackTypeAdapter(
+          concrete,
+          false, // TODO (support java.Optional) elemIsOptional:     Boolean,
+          taCache.typeAdapterOf(elementInfo),
+          companionInstance,
+          builderMethod,
+          javaCollectionConstructor,
+          toArrayMethod
+        )
+  
       case c: JavaMapInfo =>
         val companionClass = Class.forName("scala.collection.immutable.Map$")
         val companionInstance = companionClass.getField("MODULE$").get(companionClass)

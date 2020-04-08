@@ -9,6 +9,8 @@ import munit._
 import munit.internal.console
 import co.blocke.dottyjack.json.JSON
 import scala.collection.immutable._
+import collection.JavaConverters._
+import scala.language.implicitConversions
 
 class Maps() extends FunSuite:
 
@@ -163,24 +165,157 @@ class Maps() extends FunSuite:
   test("BigDecimal must work") {
     describe("--------------------\n:  Java Map Tests  :\n--------------------", Console.BLUE)
     describe("+++ Primitive Types +++")
-    pending
+
+    val inst = JBigDecimalMap(null, new java.util.HashMap( Map(BigDecimal(123.456)->"a",BigDecimal(78.91)->"b").asJava ), java.util.HashMap( Map("a"->BigDecimal(123.456),"b"->BigDecimal(78.91)).asJava ))
+    val js = sj.render(inst)
+    assertEquals(
+      """{"a0":null,"a1":{"123.456":"a","78.91":"b"},"a2":{"a":123.456,"b":78.91}}""".asInstanceOf[JSON],
+      js
+    )
+    assertEquals(inst, sj.read[JBigDecimalMap](js))
+  }
+
+  test("BigInt must work") {
+    val inst = JBigIntMap(null, new java.util.HashMap(Map(BigInt(123)->"a",BigInt(456)->"b").asJava), new java.util.HashMap(Map("a"->BigInt(789),"b"->BigInt(321)).asJava))
+    val js = sj.render(inst)
+    assertEquals(
+      """{"a0":null,"a1":{"456":"b","123":"a"},"a2":{"a":789,"b":321}}""".asInstanceOf[JSON],
+      js
+    )
+    assertEquals(inst, sj.read[JBigIntMap](js))
+  }
+
+  test("Boolean must work") {
+    val inst = JBooleanMap(null, java.util.HashMap(Map(true->"a",false->"b").asJava), java.util.HashMap(Map("a"->true,"b"->false).asJava))
+    val js = sj.render(inst)
+    assertEquals(
+      """{"a0":null,"a1":{"false":"b","true":"a"},"a2":{"a":true,"b":false}}""".asInstanceOf[JSON],
+      js
+    )
+    assertEquals(inst, sj.read[JBooleanMap](js))
+  }
+
+  test("Byte must work") {
+    val inst = JByteMap(null, java.util.HashMap(Map(250.toByte->"a",200.toByte->"b").asJava), java.util.HashMap(Map("a"->150.toByte,"b"->100.toByte).asJava))
+    val js = sj.render(inst)
+    assertEquals(
+      """{"a0":null,"a1":{"-6":"a","-56":"b"},"a2":{"a":-106,"b":100}}""".asInstanceOf[JSON],
+      js
+    )
+    assertEquals(inst, sj.read[JByteMap](js))
+  }
+
+  test("Char must work") {
+    val inst = JCharMap(null, java.util.HashMap(Map('t'->"a",'u'->"b").asJava), java.util.HashMap(Map("a"->'v',"b"->'w').asJava))
+    val js = sj.render(inst)
+    assertEquals(
+      """{"a0":null,"a1":{"t":"a","u":"b"},"a2":{"a":"v","b":"w"}}""".asInstanceOf[JSON],
+      js
+    )
+    assertEquals(inst, sj.read[JCharMap](js))
+  }
+
+  test("Double must work") {
+    val inst = JDoubleMap(null, java.util.HashMap(Map(12.34->"a",45.67->"b").asJava), java.util.HashMap(Map("a"->67.89,"b"->1923.432).asJava))
+    val js = sj.render(inst)
+    assertEquals(
+      """{"a0":null,"a1":{"45.67":"b","12.34":"a"},"a2":{"a":67.89,"b":1923.432}}""".asInstanceOf[JSON],
+      js
+    )
+    assertEquals(inst, sj.read[JDoubleMap](js))
+  }
+
+  test("Float must work") {
+    val inst = JFloatMap(null, java.util.HashMap(Map(12.34F->"a",45.67F->"b").asJava), java.util.HashMap(Map("a"->67.89F,"b"->1923.432F).asJava))
+    val js = sj.render(inst)
+    assertEquals(
+      """{"a0":null,"a1":{"12.34":"a","45.67":"b"},"a2":{"a":67.89,"b":1923.432}}""".asInstanceOf[JSON],
+      js
+    )
+    assertEquals(inst, sj.read[JFloatMap](js))
+  }
+
+  test("Int must work") {
+    val inst = JIntMap2(null, java.util.HashMap(Map(12->"a",-45->"b").asJava), java.util.HashMap(Map("a"->67,"b"->1923).asJava))
+    val js = sj.render(inst)
+    assertEquals(
+      """{"a0":null,"a1":{"12":"a","-45":"b"},"a2":{"a":67,"b":1923}}""".asInstanceOf[JSON],
+      js
+    )
+    assertEquals(inst, sj.read[JIntMap2](js))
+  }
+
+  test("Long must work") {
+    val inst = JLongMap2(null, java.util.HashMap(Map(12L->"a",-45L->"b").asJava), java.util.HashMap(Map("a"->67L,"b"->1923L).asJava))
+    val js = sj.render(inst)
+    assertEquals(
+      """{"a0":null,"a1":{"12":"a","-45":"b"},"a2":{"a":67,"b":1923}}""".asInstanceOf[JSON],
+      js
+    )
+    assertEquals(inst, sj.read[JLongMap2](js))
+  }
+
+  test("Short must work") {
+    val inst = JShortMap2(null, java.util.HashMap(Map(12.toShort->"a",-45.toShort->"b").asJava), java.util.HashMap(Map("a"->67.toShort,"b"->19.toShort).asJava))
+    val js = sj.render(inst)
+    assertEquals(
+      """{"a0":null,"a1":{"12":"a","-45":"b"},"a2":{"a":67,"b":19}}""".asInstanceOf[JSON],
+      js
+    )
+    assertEquals(inst, sj.read[JShortMap2](js))
   }
 
   test("Lists must work") {
-    describe("+++ Collection Types +++")
-    pending
-  }
-
-  test("Maps must work") {
-    pending
+    val hm1 = new java.util.HashMap[String,scala.collection.mutable.Seq[Int]]()
+    hm1.put("a",scala.collection.mutable.Seq(1,2,3) )
+    hm1.put("b",scala.collection.mutable.Seq(4,5,6) )
+    val hm2 = new java.util.HashMap[scala.collection.mutable.Seq[Int],String]()
+    hm2.put(scala.collection.mutable.Seq(1,2,3),"a" )
+    hm2.put(scala.collection.mutable.Seq(4,5,6),"b" )
+    
+    val inst = JSeqMap2(hm1, hm2)
+    val js = sj.render(inst)
+    assertEquals(
+      """{"a1":{"a":[1,2,3],"b":[4,5,6]},"a2":{"[1,2,3]":"a","[4,5,6]":"b"}}""".asInstanceOf[JSON],
+      js
+    )
+    assertEquals(inst, sj.read[JSeqMap2](js))
   }
 
   test("Classes must work") {
     describe("+++ Class Types +++")
-    pending
+
+    val hm1 = new java.util.HashMap[String,IntSeq]()
+    hm1.put("a",IntSeq(List(1,2),null))
+    hm1.put("b",IntSeq(List(3,4),null))
+    val hm2 = new java.util.HashMap[IntSeq,String]()
+    hm2.put(IntSeq(List(1,2),null),"a")
+    hm2.put(IntSeq(List(3,4),null),"b")
+
+    val inst = JClassMap(hm1, hm2)
+    val js = sj.render(inst)
+    assertEquals(
+      """{"a1":{"a":{"a1":[1,2],"a2":null},"b":{"a1":[3,4],"a2":null}},"a2":{"{\"a1\":[1,2],\"a2\":null}":"a","{\"a1\":[3,4],\"a2\":null}":"b"}}""".asInstanceOf[JSON],
+      js
+    )
+    assertEquals(inst, sj.read[JClassMap](js))
   }
 
   test("Multidimensional arrays must work") {
     describe("+++ Complex Types +++")
-    pending
+
+    val inst = JMultiMap(
+      java.util.HashMap(
+        Map(java.util.HashMap( Map("a"->true,"b"->false).asJava) -> 1, java.util.HashMap(Map("c"->true,"d"->false).asJava) -> 2).asJava
+      ), 
+      java.util.HashMap(
+        Map(1 ->java.util.HashMap( Map("a"->true,"b"->false).asJava), 2 -> java.util.HashMap(Map("c"->true,"d"->false).asJava)).asJava
+      )
+    )
+    val js = sj.render(inst)
+    assertEquals(
+      """{"a1":{"{\"a\":true,\"b\":false}":1,"{\"d\":false,\"c\":true}":2},"a2":{"1":{"a":true,"b":false},"2":{"d":false,"c":true}}}""".asInstanceOf[JSON],
+      js
+    )
+    assertEquals(inst, sj.read[JMultiMap](js))
   }

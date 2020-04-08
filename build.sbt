@@ -17,6 +17,9 @@ lazy val basicSettings = Seq(
     "UTF8",
     "-unchecked"
   ),
+  scalacOptions in Test ++= Seq(
+    "-language:implicitConversions"
+  ),
   testFrameworks += new TestFramework("munit.Framework"),
   testOptions in Test += Tests.Argument("-oDF")
 )
@@ -46,7 +49,7 @@ lazy val scalajack = project
     libraryDependencies ++= 
       Seq(
         "commons-codec" % "commons-codec" % "1.12",
-        "co.blocke" %% "dotty-reflection" % "171df3_SNAPSHOT",
+        "co.blocke" %% "dotty-reflection" % "138595_SNAPSHOT",
         "munit" %% "munit" % "0.6.z-3" % "test"   // special build of munit compatible with Dotty 0.24
       )
   )
