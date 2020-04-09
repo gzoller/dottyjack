@@ -10,13 +10,15 @@ import co.blocke.dottyjack.json.JSON
 import scala.collection.immutable._
 import collection.JavaConverters._
 import scala.language.implicitConversions
+import java.util.Optional
 
 class Options() extends FunSuite:
 
   val sj = co.blocke.dottyjack.DottyJack()
   
   test("Option of primitive (naked)") {
-    describe("------------------\n:  Option Tests  :\n------------------", Console.BLUE)
+    describe("--------------------------------------------\n:  Option (Scala) & Optional (Java) Tests  :\n--------------------------------------------", Console.BLUE)
+    describe("+++ Scala Options")
 
     val inst: Option[BigInt] = Some(BigInt(5))
     val js = sj.render(inst)
@@ -122,15 +124,64 @@ class Options() extends FunSuite:
 
   test("Option of Trait") {
     pending
+    /*
+      val inst: Option[Person] = Some(SomeClass("Mike", 2))
+      val js = sj.render(inst)
+      assertResult(
+        """{"_hint":"co.blocke.scalajack.json.collections.SomeClass","name":"Mike","age":2}"""
+      ) { js }
+      assertResult(inst) {
+        sj.read[Option[Person]](js)
+      }
+
+      val inst2: Option[Person] = None
+      val js2 = sj.render(inst2)
+      assertResult("") { js2 }
+      // Can't read nothing into something
+
+      val inst3: Map[Option[Person], Int] =
+        Map(None -> 2, Some(SomeClass("Mike", 2)) -> 1)
+      val js3 = sj.render(inst3)
+      assertResult(
+        """{"{\"_hint\":\"co.blocke.scalajack.json.collections.SomeClass\",\"name\":\"Mike\",\"age\":2}":1}"""
+      ) { js3 }
+      assertResult(Map(Some(SomeClass("Mike", 2)) -> 1)) {
+        sj.read[Map[Option[Person], Int]](js3)
+      }
+      */
   }
 
   test("Option of Parameterized Trait") {
     pending
+    /*
+      val inst: Option[Thing[String, Int]] = Some(AThing("wow", 5))
+      val js = sj.render(inst)
+      assertResult(
+        """{"_hint":"co.blocke.scalajack.json.collections.AThing","a":"wow","b":5}"""
+      ) { js }
+      assertResult(inst) {
+        sj.read[Option[Thing[String, Int]]](js)
+      }
+
+      val inst2: Option[Thing[String, Int]] = None
+      val js2 = sj.render(inst2)
+      assertResult("") { js2 }
+
+      val inst3: Map[Option[Thing[String, Int]], Int] =
+        Map(None -> 2, Some(AThing("wow", 5)) -> 1)
+      val js3 = sj.render(inst3)
+      assertResult(
+        """{"{\"_hint\":\"co.blocke.scalajack.json.collections.AThing\",\"a\":\"wow\",\"b\":5}":1}"""
+      ) { js3 }
+      assertResult(Map(Some(AThing("wow", 5)) -> 1)) {
+        sj.read[Map[Option[Thing[String, Int]], Int]](js3)
+      }
+    */
   }
 
   //------------------- None tests
   test("Option is None (in class)") {
-    describe("+++ None/null tests")
+    describe("+++ Scala None/null tests")
 
     val inst = OptionClass("Mike", None)
     val js = sj.render(inst)
@@ -200,56 +251,179 @@ class Options() extends FunSuite:
       ),sj.read[List[OptionTuple]](js))
   }
 
-/* TODO
-    it("Option of Trait") {
-      val inst: Option[Person] = Some(SomeClass("Mike", 2))
-      val js = sj.render(inst)
-      assertResult(
-        """{"_hint":"co.blocke.scalajack.json.collections.SomeClass","name":"Mike","age":2}"""
-      ) { js }
-      assertResult(inst) {
-        sj.read[Option[Person]](js)
-      }
+  //-------------- Java
+  
+  test("Option of primitive (naked)") {
+    describe("++++ Java Optional")
 
-      val inst2: Option[Person] = None
-      val js2 = sj.render(inst2)
-      assertResult("") { js2 }
-      // Can't read nothing into something
+    val inst: Optional[BigInt] = Optional.of(BigInt(5))
+    val js = sj.render(inst)
+    assertEquals("5".asInstanceOf[JSON],js)
+    assertEquals(inst, sj.read[Optional[BigInt]](js))
+  }
 
-      val inst3: Map[Option[Person], Int] =
-        Map(None -> 2, Some(SomeClass("Mike", 2)) -> 1)
-      val js3 = sj.render(inst3)
-      assertResult(
-        """{"{\"_hint\":\"co.blocke.scalajack.json.collections.SomeClass\",\"name\":\"Mike\",\"age\":2}":1}"""
-      ) { js3 }
-      assertResult(Map(Some(SomeClass("Mike", 2)) -> 1)) {
-        sj.read[Map[Option[Person], Int]](js3)
-      }
-    }
+  test("Optional of primitive (in class)") {
+    val inst = OptionalBigInt(Optional.of(BigInt(5)))
+    val js = sj.render(inst)
+    assertEquals("""{"o":5}""".asInstanceOf[JSON],js)
+    assertEquals(inst, sj.read[OptionalBigInt](js))
+  }
 
-    it("Option of Parameterized Trait") {
-      val inst: Option[Thing[String, Int]] = Some(AThing("wow", 5))
-      val js = sj.render(inst)
-      assertResult(
-        """{"_hint":"co.blocke.scalajack.json.collections.AThing","a":"wow","b":5}"""
-      ) { js }
-      assertResult(inst) {
-        sj.read[Option[Thing[String, Int]]](js)
-      }
+  test("Optional of List") {
+    val inst: Optional[List[Int]] = Optional.of(List(1, 2, 3))
+    val js = sj.render(inst)
+    assertEquals("""[1,2,3]""".asInstanceOf[JSON],js)
+    assertEquals(inst, sj.read[Optional[List[Int]]](js))
 
-      val inst2: Option[Thing[String, Int]] = None
-      val js2 = sj.render(inst2)
-      assertResult("") { js2 }
+    val inst2: Optional[List[Int]] = Optional.empty[List[Int]]
+    val js2 = sj.render(inst2)
+    assertEquals("".asInstanceOf[JSON],js2)
+    // Can't read nothing into something
 
-      val inst3: Map[Option[Thing[String, Int]], Int] =
-        Map(None -> 2, Some(AThing("wow", 5)) -> 1)
-      val js3 = sj.render(inst3)
-      assertResult(
-        """{"{\"_hint\":\"co.blocke.scalajack.json.collections.AThing\",\"a\":\"wow\",\"b\":5}":1}"""
-      ) { js3 }
-      assertResult(Map(Some(AThing("wow", 5)) -> 1)) {
-        sj.read[Map[Option[Thing[String, Int]], Int]](js3)
-      }
-    }
+    val inst3 = Map(Optional.empty[List[Int]] -> 2, Optional.of(List(1, 2, 3)) -> 1)
+    val js3 = sj.render(inst3)
+    assertEquals("""{"[1,2,3]":1}""".asInstanceOf[JSON],js3)
+    assert(Map(Optional.of(List(1, 2, 3)) -> 1) == sj.read[Map[Optional[List[Int]], Int]](js3))
+  }
 
-}*/
+  test("Optional of Map") {
+    val inst: Optional[Map[String, Boolean]] =
+      Optional.of(Map("hey" -> true, "you" -> false))
+    val js = sj.render(inst)
+    assertEquals("""{"hey":true,"you":false}""".asInstanceOf[JSON],js)
+    assertEquals(inst, sj.read[Optional[Map[String, Boolean]]](js))
+
+    val inst2: Option[Map[String, Boolean]] = None
+    val js2 = sj.render(inst2)
+    assertEquals("".asInstanceOf[JSON],js2)
+    // Can't read nothing into something
+
+    val inst3: Map[Option[Map[String, Boolean]], Int] =
+      Map(None -> 2, Some(Map("hey" -> true, "you" -> false)) -> 1)
+    val js3 = sj.render(inst3)
+    assertEquals("""{"{\"hey\":true,\"you\":false}":1}""".asInstanceOf[JSON],js3)
+    assertEquals(Map(Some(Map("hey" -> true, "you" -> false)) -> 1), sj.read[Map[Option[Map[String, Boolean]], Int]](js3))
+  }
+
+  test("Optional of Tuple") {
+    val inst: Optional[(String, Boolean)] = Optional.of(("a", true))
+    val js = sj.render(inst)
+    assertEquals("""["a",true]""".asInstanceOf[JSON],js)
+    assertEquals(inst, sj.read[Optional[(String, Boolean)]](js))
+
+    val inst2: Optional[(String, Boolean)] = Optional.empty[(String,Boolean)]
+    val js2 = sj.render(inst2)
+    assertEquals("".asInstanceOf[JSON],js2)
+    // Can't read nothing into something
+
+    val inst3: Map[Optional[(String, Boolean)], Int] =
+      Map(Optional.empty[(String, Boolean)] -> 2, Optional.of(("a", true)) -> 1)
+    val js3 = sj.render(inst3)
+    assertEquals("""{"[\"a\",true]":1}""".asInstanceOf[JSON],js3)
+    assertEquals(Map(Optional.of(("a", true)) -> 1), sj.read[Map[Optional[(String, Boolean)], Int]](js3))
+  }
+
+  test("Optional of Case Class") {
+    val inst: Optional[SomeClass] = Optional.of(SomeClass("Mike", 2))
+    val js = sj.render(inst)
+    assertEquals("""{"name":"Mike","age":2}""".asInstanceOf[JSON],js)
+    assertEquals(inst,sj.read[Optional[SomeClass]](js))
+
+    val inst2: Optional[SomeClass] = Optional.empty[SomeClass]
+    val js2 = sj.render(inst2)
+    assertEquals("".asInstanceOf[JSON],js2)
+    // Can't read nothing into something
+
+    val inst3: Map[Optional[SomeClass], Int] = Map(Optional.empty[SomeClass] -> 2, Optional.of(SomeClass("Mike", 2)) -> 1)
+    val js3 = sj.render(inst3)
+    assertEquals("""{"{\"name\":\"Mike\",\"age\":2}":1}""".asInstanceOf[JSON],js3)
+    assertEquals(Map(Optional.of(SomeClass("Mike", 2)) -> 1),sj.read[Map[Optional[SomeClass], Int]](js3))
+  }
+
+  test("Optional of Parameterized Class") {
+    val inst: Optional[AThing[Int, String]] = Optional.of(AThing("wow", 5))
+    val js = sj.render(inst)
+    assertEquals("""{"a":"wow","b":5}""".asInstanceOf[JSON],js)
+    assertEquals(inst, sj.read[Optional[AThing[Int, String]]](js))
+
+    val inst2: Optional[AThing[Int, String]] = Optional.empty[AThing[Int, String]]
+    val js2 = sj.render(inst2)
+    assertEquals("".asInstanceOf[JSON],js2)
+
+    val inst3: Map[Optional[AThing[Int, String]], Int] =
+      Map(Optional.empty[AThing[Int, String]] -> 2, Optional.of(AThing("wow", 5)) -> 1)
+    val js3 = sj.render(inst3)
+    assertEquals("""{"{\"a\":\"wow\",\"b\":5}":1}""".asInstanceOf[JSON],js3)
+    assertEquals(Map(Optional.of(AThing("wow", 5)) -> 1), sj.read[Map[Optional[AThing[Int, String]], Int]](js3))
+  }
+
+  test("Optional is None (in class)") {
+    describe("+++ Java Empty/null tests")
+
+    val inst = OptionalClass("Mike", Optional.empty[Int])
+    val js = sj.render(inst)
+    assertEquals("""{"name":"Mike"}""".asInstanceOf[JSON],js)
+    assertEquals(inst, sj.read[OptionalClass](js))
+  }
+
+  test("Optional is None (in List)") {
+    val inst: List[Optional[Int]] = List(Optional.of(1), Optional.empty[Int], Optional.of(2))
+    val js = sj.render(inst)
+    assertEquals("""[1,2]""".asInstanceOf[JSON],js)
+    assertEquals(List(Optional.of(1), Optional.of(2)).asInstanceOf[List[Optional[Int]]], sj.read[List[Optional[Int]]](js))  // None gets erased here
+  }
+
+  test("Optional is None (value in Map)") {
+    val inst: Map[Int, Optional[String]] = Map(1 -> Optional.of("one"), 2 -> Optional.empty[String], 3 -> Optional.of("three"))
+    val js = sj.render(inst)
+    assertEquals("""{"1":"one","3":"three"}""".asInstanceOf[JSON],js)
+    assert(Map(1 -> Optional.of("one"), 3 -> Optional.of("three")).asInstanceOf[Map[Int,Option[String]]] == sj.read[Map[Int, Optional[String]]](js)) // None gets erased here
+  }
+
+  test("Optional is None (key in Map)") {
+    val inst: Map[Optional[String], Int] =
+      Map(Optional.of("one") -> 1, Optional.empty[String] -> 2, Optional.of("three") -> 3)
+    val js = sj.render(inst)
+    assertEquals("""{"one":1,"three":3}""".asInstanceOf[JSON],js)
+    assertEquals(Map(Optional.of("one") -> 1, Optional.of("three") -> 3),sj.read[Map[Optional[String], Int]](js))
+  }
+
+  test("Optional is Empty (in Tuple)") {
+    val inst = List(
+      OptionalTuple(1, (true, Optional.of("ok"), 2)),
+      OptionalTuple(5, (false, Optional.empty[String], 3))
+    )
+    val js = sj.render(inst)
+    assertEquals(
+      """[{"foo":1,"t":[true,"ok",2]},{"foo":5,"t":[false,null,3]}]""".asInstanceOf[JSON],js)
+    assertEquals(inst,sj.read[List[OptionalTuple]](js))
+  }
+
+  test("Reading null into Optional (naked)") {
+    val js = "null".asInstanceOf[JSON]
+    assertEquals(null.asInstanceOf[Optional[Int]], sj.read[Optional[Int]](js))
+  }
+
+  test("Reading null into Optional class field") {
+    val js = """{"name":"Mike","age":null}""".asInstanceOf[JSON]
+    assertEquals(OptionalClass("Mike", null), sj.read[OptionalClass](js))
+  }
+
+  test("Reading null into Optional List item") {
+    val js = """[1,null,2]""".asInstanceOf[JSON]
+    assertEquals(List(Optional.of(1), null, Optional.of(2)).asInstanceOf[List[Optional[Int]]],sj.read[List[Optional[Int]]](js))
+  }
+
+  test("Reading null into Optional Map item") {
+    val js = """{"1":"one","2":null,"3":"three"}""".asInstanceOf[JSON]
+    assertEquals(Map(1 -> Optional.of("one"), 2 -> Optional.empty[String], 3 -> Optional.of("three")),sj.read[Map[Int, Optional[String]]](js))
+  }
+
+  test("Reading null into Optional Tuple item") {
+    val js = """[{"foo":1,"t":[true,"ok",2]},{"foo":5,"t":[false,null,3]}]""".asInstanceOf[JSON]
+    assertEquals(
+      List(
+        OptionalTuple(1, (true, Optional.of("ok"), 2)),
+        OptionalTuple(5, (false, Optional.empty[String], 3))
+      ),sj.read[List[OptionalTuple]](js))
+  }

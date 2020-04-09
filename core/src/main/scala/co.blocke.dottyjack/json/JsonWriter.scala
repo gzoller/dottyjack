@@ -106,15 +106,18 @@ case class JsonWriter() extends Writer[JSON] {
   ): Boolean = {
     var first = isFirst
     for ((label, value, valueTypeAdapter) <- fields)
-      if (value != None) {
-        if (first)
-          first = false
-        else
-          out += ",".asInstanceOf[JSON]
-        writeString(label, out)
-        out += ":".asInstanceOf[JSON]
-        valueTypeAdapter.write(value, this, out)
-      }
+      value match {
+        case None => // do nothing (skip this field)
+        case o: java.util.Optional[_] if !o.isPresent => // do nothing (skip this field)
+        case _ =>
+          if (first)
+            first = false
+          else
+            out += ",".asInstanceOf[JSON]
+          writeString(label, out)
+          out += ":".asInstanceOf[JSON]
+          valueTypeAdapter.write(value, this, out)
+        }
     first
   }
 

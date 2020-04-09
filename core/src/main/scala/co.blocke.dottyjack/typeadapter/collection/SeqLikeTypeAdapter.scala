@@ -40,7 +40,11 @@ case class SeqLikeTypeAdapter[ELEM, TO](
       case null                => writer.writeNull(out)
       case _ if elemIsOptional =>
         writer.writeArray(
-          t.asInstanceOf[Iterable[ELEM]].filterNot(_ == None),
+          t.asInstanceOf[Iterable[ELEM]].filterNot{ case v => v match {
+            case None => true
+            case v: java.util.Optional[_] if !v.isPresent => true
+            case _ => false
+          }},
           elementTypeAdapter,
           out
         )

@@ -6,6 +6,7 @@ import model._
 import scala.collection.mutable
 import co.blocke.dotty_reflection._
 import co.blocke.dotty_reflection.infos._
+import java.util.Optional
 
 /*
  O, the exquisite pain of mapping Option (None) to something in JSON!
@@ -32,12 +33,15 @@ object OptionTypeAdapterFactory extends TypeAdapterFactory:
       case _ => false
     }
   def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
-    val opti = concrete.asInstanceOf[OptionInfo]
-    val wrapped = opti.optionParamType match {
-      case c: ConcreteType => c
+    val optiBase = concrete.asInstanceOf[OptionInfo]
+    val wrapped = optiBase.optionParamType match {
+      case c: ConcreteType => taCache.typeAdapterOf(c)
       case c => throw new ScalaJackError(s"Unexpected non-concrete type in option: ${c.getClass.getName}")
     }
-    OptionTypeAdapter(concrete, taCache.typeAdapterOf(wrapped))
+    concrete match {
+      case opti: ScalaOptionInfo   => OptionTypeAdapter(concrete, wrapped)
+      case jopti: JavaOptionalInfo => JavaOptionalTypeAdapter(concrete, wrapped)
+    }
 
 
 case class OptionTypeAdapter[E](
@@ -72,3 +76,41 @@ case class OptionTypeAdapter[E](
     }
 
   def convertNullToNone(): OptionTypeAdapter[E] = this.copy(nullIsNone = true)
+
+
+
+case class JavaOptionalTypeAdapter[E](
+    info:             ConcreteType,
+    valueTypeAdapter: TypeAdapter[E],
+    nullIsNone:       Boolean        = false
+  ) extends TypeAdapter[Optional[E]]:
+
+  val empty = Optional.empty[E]()
+  override def defaultValue: Option[Optional[E]] = Some(empty)
+
+  def valueIsStringish(): Boolean = valueTypeAdapter.isInstanceOf[Stringish]
+
+  def read(parser: Parser): Optional[E] =
+    // We have to do some voodoo here and peek ahead for Null.  Some types, e.g. Int, aren't nullable,
+    // but Option[Int] is nullable, so we can't trust the valueTypeAdapter to catch and handle null in
+    // these cases.
+    parser.peekForNull match {
+      case true if nullIsNone => empty
+      case true               => null
+      case _                  => Optional.of[E](valueTypeAdapter.read(parser))
+    }
+
+  def write[WIRE](
+      t:      Optional[E],
+      writer: Writer[WIRE],
+      out:    mutable.Builder[WIRE, WIRE]): Unit =
+    if t == null then
+      writer.writeNull(out)
+    else
+      if t.isPresent then
+        valueTypeAdapter.write(t.get, writer, out)
+      else if nullIsNone then
+        writer.writeNull(out)
+      // else write nothing
+
+  def convertNullToNone(): JavaOptionalTypeAdapter[E] = this.copy(nullIsNone = true)

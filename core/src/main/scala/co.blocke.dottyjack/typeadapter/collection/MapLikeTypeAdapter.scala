@@ -43,15 +43,21 @@ case class MapLikeTypeAdapter[KEY, VALUE, TO <: Map[KEY, VALUE]](
       case _    =>
         val filterKey = 
           if (keyIsOptionalOrAny && t != null)
-            t.asInstanceOf[Map[KEY, VALUE]].filterNot { case (k, v) => k == None }
+            t.asInstanceOf[Map[KEY, VALUE]].filterNot { case (k, v) => k match {
+              case None => true
+              case k: java.util.Optional[_] if !k.isPresent => true
+              case _ => false
+            }}
           else
             t
 
         val filterValue = 
           if (valueIsOptionalOrAny && t != null)
-            filterKey.asInstanceOf[Map[KEY, VALUE]].filterNot {
-              case (k, v) => v == None
-            }
+            filterKey.asInstanceOf[Map[KEY, VALUE]].filterNot { case (k, v) => v match {
+              case None => true
+              case k: java.util.Optional[_] if !k.isPresent => true
+              case _ => false
+            }}
           else
             filterKey
 

@@ -26,6 +26,7 @@ object TupleTypeAdapterFactory extends TypeAdapterFactory:
         javaClassField.setAccessible(true)
         val typeAdapter = taCache.typeAdapterOf(c) match {
           case ta: OptionTypeAdapter[_] => ta.convertNullToNone()
+          case ta: JavaOptionalTypeAdapter[_] => ta.convertNullToNone()
           case ta => ta
         }
         TupleField(idx+1, javaClassField, typeAdapter)

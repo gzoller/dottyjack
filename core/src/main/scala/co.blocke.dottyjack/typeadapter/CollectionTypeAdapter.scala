@@ -15,6 +15,9 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
         true
       case _ => false
     }
+
+  inline def isOptionalTA(ta: TypeAdapter[_]) = ta.isInstanceOf[OptionTypeAdapter[_]] || ta.isInstanceOf[JavaOptionalTypeAdapter[_]] 
+
   def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
     concrete match {
       case c: SeqLikeInfo => 
@@ -41,27 +44,26 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
             // || keyType <:< typeOf[Enumeration#Value] && !enumsAsInt
             // || keyTypeAdapter.isInstanceOf[ValueClassTypeAdapter[_, _]] 
             // && keyTypeAdapter.asInstanceOf[ValueClassTypeAdapter[_, _]].sourceTypeAdapter.isInstanceOf[Stringish]
-            || (keyTypeAdapter.isInstanceOf[OptionTypeAdapter[_]] && keyTypeAdapter.asInstanceOf[OptionTypeAdapter[_]].valueIsStringish()))
+            || (keyTypeAdapter.isInstanceOf[OptionTypeAdapter[_]] && keyTypeAdapter.asInstanceOf[OptionTypeAdapter[_]].valueIsStringish())
+            || (keyTypeAdapter.isInstanceOf[JavaOptionalTypeAdapter[_]] && keyTypeAdapter.asInstanceOf[JavaOptionalTypeAdapter[_]].valueIsStringish()))
             keyTypeAdapter
           else 
             jackFlavor.stringWrapTypeAdapterFactory(keyTypeAdapter)
         val valueTypeAdapter = taCache.typeAdapterOf(c.elementType2.asInstanceOf[ConcreteType]) match {
           case ta: OptionTypeAdapter[_] => ta.convertNullToNone()
+          case ta: JavaOptionalTypeAdapter[_] => ta.convertNullToNone()
           case ta => ta
         }
 
         // Note: We include Any here because Any *could* be an Option, so we must include it as a possibility
         val keyIsOptionalOrAny =
-          keyTypeAdapter.isInstanceOf[OptionTypeAdapter[_]] ||
-            (keyTypeAdapter.isInstanceOf[StringWrapTypeAdapter[_]] && keyTypeAdapter
+          isOptionalTA(keyTypeAdapter) ||
+            (keyTypeAdapter.isInstanceOf[StringWrapTypeAdapter[_]] && isOptionalTA(keyTypeAdapter
               .asInstanceOf[StringWrapTypeAdapter[_]]
-              .wrappedTypeAdapter
-              .isInstanceOf[OptionTypeAdapter[_]]) ||
+              .wrappedTypeAdapter)) ||
               keyTypeAdapter == taCache.jackFlavor.anyMapKeyTypeAdapter
 
-        val valueIsOptionalOrAny = valueTypeAdapter
-          .isInstanceOf[OptionTypeAdapter[_]] ||
-          valueTypeAdapter.isInstanceOf[AnyTypeAdapter]
+        val valueIsOptionalOrAny = isOptionalTA(valueTypeAdapter) || valueTypeAdapter.isInstanceOf[AnyTypeAdapter]
 
         MapLikeTypeAdapter(
           concrete, 
@@ -81,11 +83,12 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
         val builderMethod = companionClass.getMethod("newBuilder")
         val javaCollectionConstructor = c.infoClass.getConstructor(Class.forName("java.util.Collection"))
         val toArrayMethod = c.infoClass.getMethod("toArray")
-        
+        val elementTA = taCache.typeAdapterOf(elementInfo)
+
         JavaSeqLikeTypeAdapter(
           concrete,
-          false, // TODO (support java.Optional) elemIsOptional:     Boolean,
-          taCache.typeAdapterOf(elementInfo),
+          isOptionalTA(elementTA), 
+          elementTA,
           companionInstance,
           builderMethod,
           javaCollectionConstructor,
@@ -100,11 +103,12 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
         val builderMethod = companionClass.getMethod("newBuilder")
         val javaCollectionConstructor = c.infoClass.getConstructor(Class.forName("java.util.Collection"))
         val toArrayMethod = c.infoClass.getMethod("toArray")
+        val elementTA = taCache.typeAdapterOf(elementInfo)
         
         JavaSeqLikeTypeAdapter(
           concrete,
-          false, // TODO (support java.Optional) elemIsOptional:     Boolean,
-          taCache.typeAdapterOf(elementInfo),
+          isOptionalTA(elementTA), // TODO (support java.Optional) elemIsOptional:     Boolean,
+          elementTA,
           companionInstance,
           builderMethod,
           javaCollectionConstructor,
@@ -119,11 +123,12 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
         val builderMethod = companionClass.getMethod("newBuilder")
         val javaCollectionConstructor = c.infoClass.getConstructor(Class.forName("java.util.Collection"))
         val toArrayMethod = c.infoClass.getMethod("toArray")
+        val elementTA = taCache.typeAdapterOf(elementInfo)
         
         JavaSeqLikeTypeAdapter(
           concrete,
-          false, // TODO (support java.Optional) elemIsOptional:     Boolean,
-          taCache.typeAdapterOf(elementInfo),
+          isOptionalTA(elementTA), // TODO (support java.Optional) elemIsOptional:     Boolean,
+          elementTA,
           companionInstance,
           builderMethod,
           javaCollectionConstructor,
@@ -138,10 +143,11 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
         val builderMethod = companionClass.getMethod("newBuilder")
         val javaCollectionConstructor = c.infoClass.getConstructors.head
         val toArrayMethod = c.infoClass.getMethod("toArray")
+        val elementTA = taCache.typeAdapterOf(elementInfo)
         
         JavaStackTypeAdapter(
           concrete,
-          false, // TODO (support java.Optional) elemIsOptional:     Boolean,
+          isOptionalTA(elementTA), // TODO (support java.Optional) elemIsOptional:     Boolean,
           taCache.typeAdapterOf(elementInfo),
           companionInstance,
           builderMethod,
@@ -167,27 +173,26 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
             // || keyType <:< typeOf[Enumeration#Value] && !enumsAsInt
             // || keyTypeAdapter.isInstanceOf[ValueClassTypeAdapter[_, _]] 
             // && keyTypeAdapter.asInstanceOf[ValueClassTypeAdapter[_, _]].sourceTypeAdapter.isInstanceOf[Stringish]
-            || (keyTypeAdapter.isInstanceOf[OptionTypeAdapter[_]] && keyTypeAdapter.asInstanceOf[OptionTypeAdapter[_]].valueIsStringish()))
+            || (keyTypeAdapter.isInstanceOf[OptionTypeAdapter[_]] && keyTypeAdapter.asInstanceOf[OptionTypeAdapter[_]].valueIsStringish())
+            || (keyTypeAdapter.isInstanceOf[JavaOptionalTypeAdapter[_]] && keyTypeAdapter.asInstanceOf[JavaOptionalTypeAdapter[_]].valueIsStringish()))
             keyTypeAdapter
           else 
             jackFlavor.stringWrapTypeAdapterFactory(keyTypeAdapter)
         val valueTypeAdapter = taCache.typeAdapterOf(c.elementType2.asInstanceOf[ConcreteType]) match {
           case ta: OptionTypeAdapter[_] => ta.convertNullToNone()
+          case ta: JavaOptionalTypeAdapter[_] => ta.convertNullToNone()
           case ta => ta
         }
 
         // Note: We include Any here because Any *could* be an Option, so we must include it as a possibility
         val keyIsOptionalOrAny =
-          keyTypeAdapter.isInstanceOf[OptionTypeAdapter[_]] ||
-            (keyTypeAdapter.isInstanceOf[StringWrapTypeAdapter[_]] && keyTypeAdapter
+          isOptionalTA(keyTypeAdapter) ||
+            (keyTypeAdapter.isInstanceOf[StringWrapTypeAdapter[_]] && isOptionalTA(keyTypeAdapter
               .asInstanceOf[StringWrapTypeAdapter[_]]
-              .wrappedTypeAdapter
-              .isInstanceOf[OptionTypeAdapter[_]]) ||
+              .wrappedTypeAdapter)) ||
               keyTypeAdapter == taCache.jackFlavor.anyMapKeyTypeAdapter
 
-        val valueIsOptionalOrAny = valueTypeAdapter
-          .isInstanceOf[OptionTypeAdapter[_]] ||
-          valueTypeAdapter.isInstanceOf[AnyTypeAdapter]
+        val valueIsOptionalOrAny = isOptionalTA(valueTypeAdapter) || valueTypeAdapter.isInstanceOf[AnyTypeAdapter]
 
         JavaMapLikeTypeAdapter(
           concrete, 

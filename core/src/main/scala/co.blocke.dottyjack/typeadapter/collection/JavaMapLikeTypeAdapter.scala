@@ -46,15 +46,21 @@ case class JavaMapLikeTypeAdapter[KEY, VALUE, TO <: java.util.Map[KEY, VALUE]](
         val tScala = t.asScala
         val filterKey = 
           if (keyIsOptionalOrAny && tScala != null)
-            tScala.asInstanceOf[Map[KEY, VALUE]].filterNot { case (k, v) => k == None }
+            tScala.asInstanceOf[Map[KEY, VALUE]].filterNot { case (k, v) => k match {
+              case None => true
+              case k: java.util.Optional[_] if !k.isPresent => true
+              case _ => false
+            }}
           else
             tScala
 
         val filterValue = 
           if (valueIsOptionalOrAny && tScala != null)
-            filterKey.asInstanceOf[Map[KEY, VALUE]].filterNot {
-              case (k, v) => v == None
-            }
+            filterKey.asInstanceOf[Map[KEY, VALUE]].filterNot { case (k, v) => v match {
+              case None => true
+              case k: java.util.Optional[_] if !k.isPresent => true
+              case _ => false
+            }}
           else
             filterKey
 

@@ -96,3 +96,7 @@ case class AThing[Y, X](a: X, b: Y) extends Thing[X, Y]
 case class OptionBigInt(o: Option[BigInt])
 case class OptionClass(name: String, age: Option[Int])
 case class OptionTuple(foo: Int, t: (Boolean, Option[String], Int))
+
+case class OptionalBigInt(o: java.util.Optional[BigInt])
+case class OptionalClass(name: String, age: java.util.Optional[Int])
+case class OptionalTuple(foo: Int, t: (Boolean, java.util.Optional[String], Int))
