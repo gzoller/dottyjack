@@ -87,3 +87,12 @@ case class JMultiMap( a1: java.util.HashMap[java.util.HashMap[String,Boolean],In
 case class JClassMap( a1: java.util.HashMap[String,IntSeq], a2: java.util.HashMap[IntSeq,String] )
 case class JArrayMap( a1: java.util.HashMap[String,Array[Int]], a2:java.util.HashMap[Array[Int],String])
 case class JSeqMap2( a1: java.util.HashMap[String,scala.collection.mutable.Seq[Int]], a2: java.util.HashMap[scala.collection.mutable.Seq[Int],String])
+
+//------- Options
+trait Person { val name: String }
+case class SomeClass(name: String, age: Int) extends Person
+trait Thing[A, B] { val a: A; val b: B }
+case class AThing[Y, X](a: X, b: Y) extends Thing[X, Y]
+case class OptionBigInt(o: Option[BigInt])
+case class OptionClass(name: String, age: Option[Int])
+case class OptionTuple(foo: Int, t: (Boolean, Option[String], Int))

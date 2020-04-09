@@ -8,8 +8,6 @@ import scala.collection.mutable
 import scala.jdk.CollectionConverters._
 
 
-// case class IntArr( a: Array[Int] )
-// case class JSeqMap2( a1: java.util.HashMap[String,Seq[Int]])
 
 object Main {
 
@@ -17,12 +15,6 @@ object Main {
 
     val dj = DottyJack()
 
-    // val hm1 = new java.util.HashMap[String,Seq[Int]]()
-    // hm1.put("a",List(1,2,3) )
-    // hm1.put("b",List(4,5,6) )
-
-    // val inst = JSeqMap2(hm1)
-    // println(dj.render(inst))
 
 
   def constructors(clazz: Class[_]): String = 

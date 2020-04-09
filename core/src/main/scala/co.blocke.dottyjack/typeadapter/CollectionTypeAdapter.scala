@@ -45,7 +45,10 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
             keyTypeAdapter
           else 
             jackFlavor.stringWrapTypeAdapterFactory(keyTypeAdapter)
-        val valueTypeAdapter = taCache.typeAdapterOf(c.elementType2.asInstanceOf[ConcreteType])
+        val valueTypeAdapter = taCache.typeAdapterOf(c.elementType2.asInstanceOf[ConcreteType]) match {
+          case ta: OptionTypeAdapter[_] => ta.convertNullToNone()
+          case ta => ta
+        }
 
         // Note: We include Any here because Any *could* be an Option, so we must include it as a possibility
         val keyIsOptionalOrAny =
@@ -168,7 +171,10 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
             keyTypeAdapter
           else 
             jackFlavor.stringWrapTypeAdapterFactory(keyTypeAdapter)
-        val valueTypeAdapter = taCache.typeAdapterOf(c.elementType2.asInstanceOf[ConcreteType])
+        val valueTypeAdapter = taCache.typeAdapterOf(c.elementType2.asInstanceOf[ConcreteType]) match {
+          case ta: OptionTypeAdapter[_] => ta.convertNullToNone()
+          case ta => ta
+        }
 
         // Note: We include Any here because Any *could* be an Option, so we must include it as a possibility
         val keyIsOptionalOrAny =
