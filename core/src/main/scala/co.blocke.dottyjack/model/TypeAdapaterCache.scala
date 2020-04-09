@@ -27,7 +27,7 @@ object TypeAdapterCache {
       OptionTypeAdapterFactory,
       // TryTypeAdapterFactory,
       TupleTypeAdapterFactory,
-      // EitherTypeAdapterFactory, // Either must precede SealedTraitTypeAdapter
+      EitherTypeAdapterFactory, // Either must precede SealedTraitTypeAdapter
       // UnionTypeAdapterFactory,
       ArrayTypeAdapterFactory,
       EnumTypeAdapterFactory,

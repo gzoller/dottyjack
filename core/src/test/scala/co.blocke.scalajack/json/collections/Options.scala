@@ -3,7 +3,6 @@ package json.collections
 
 import co.blocke.dotty_reflection._
 import scala.math._
-import java.util.UUID
 import TestUtil._
 import munit._
 import munit.internal.console
