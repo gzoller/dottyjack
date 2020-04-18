@@ -5,11 +5,11 @@ import model._
 import collection._
 
 import co.blocke.dotty_reflection._
-import co.blocke.dotty_reflection.infos._
+import co.blocke.dotty_reflection.info._
 
 
 object CollectionTypeAdapterFactory extends TypeAdapterFactory:
-  def matches(concrete: ConcreteType): Boolean = 
+  def matches(concrete: RType): Boolean = 
     concrete match {
       case _: CollectionType => 
         true
@@ -18,10 +18,10 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
 
   inline def isOptionalTA(ta: TypeAdapter[_]) = ta.isInstanceOf[OptionTypeAdapter[_]] || ta.isInstanceOf[JavaOptionalTypeAdapter[_]] 
 
-  def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
     concrete match {
       case c: SeqLikeInfo => 
-        val elementInfo = c.elementType.asInstanceOf[ConcreteType]
+        val elementInfo = c.elementType
         val companionClass = Class.forName(c.infoClass.getName+"$")
         val companionInstance = companionClass.getField("MODULE$").get(companionClass)
         val builderMethod = companionClass.getMethod("newBuilder")
@@ -33,7 +33,7 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
         val builderMethod = companionClass.getMethod("newBuilder")
 
         val jackFlavor = taCache.jackFlavor
-        val keyTypeAdapter = taCache.typeAdapterOf(c.elementType1.asInstanceOf[ConcreteType])
+        val keyTypeAdapter = taCache.typeAdapterOf(c.elementType)
         // Wrap Map keys in a StringWrapTypeAdapter?
         val finalKeyTypeAdapter =
           if (keyTypeAdapter.isInstanceOf[AnyTypeAdapter])
@@ -49,7 +49,7 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
             keyTypeAdapter
           else 
             jackFlavor.stringWrapTypeAdapterFactory(keyTypeAdapter)
-        val valueTypeAdapter = taCache.typeAdapterOf(c.elementType2.asInstanceOf[ConcreteType]) match {
+        val valueTypeAdapter = taCache.typeAdapterOf(c.elementType2) match {
           case ta: OptionTypeAdapter[_] => ta.convertNullToNone()
           case ta: JavaOptionalTypeAdapter[_] => ta.convertNullToNone()
           case ta => ta
@@ -76,7 +76,7 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
 
        
       case c: JavaListInfo =>
-        val elementInfo = c.elementType.asInstanceOf[ConcreteType]
+        val elementInfo = c.elementType
         // For List-like Java collections, use a ListBuilder then convert later to the Java collection
         val companionClass = Class.forName("scala.collection.immutable.List$")
         val companionInstance = companionClass.getField("MODULE$").get(companionClass)
@@ -96,7 +96,7 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
         )
 
       case c: JavaSetInfo =>
-        val elementInfo = c.elementType.asInstanceOf[ConcreteType]
+        val elementInfo = c.elementType
         // For List-like Java collections, use a ListBuilder then convert later to the Java collection
         val companionClass = Class.forName("scala.collection.immutable.List$")
         val companionInstance = companionClass.getField("MODULE$").get(companionClass)
@@ -107,7 +107,7 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
         
         JavaSeqLikeTypeAdapter(
           concrete,
-          isOptionalTA(elementTA), // TODO (support java.Optional) elemIsOptional:     Boolean,
+          isOptionalTA(elementTA),
           elementTA,
           companionInstance,
           builderMethod,
@@ -116,7 +116,7 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
         )
 
       case c: JavaQueueInfo =>
-        val elementInfo = c.elementType.asInstanceOf[ConcreteType]
+        val elementInfo = c.elementType
         // For List-like Java collections, use a ListBuilder then convert later to the Java collection
         val companionClass = Class.forName("scala.collection.immutable.List$")
         val companionInstance = companionClass.getField("MODULE$").get(companionClass)
@@ -127,7 +127,7 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
         
         JavaSeqLikeTypeAdapter(
           concrete,
-          isOptionalTA(elementTA), // TODO (support java.Optional) elemIsOptional:     Boolean,
+          isOptionalTA(elementTA),
           elementTA,
           companionInstance,
           builderMethod,
@@ -136,7 +136,7 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
         )
 
       case c: JavaStackInfo =>
-        val elementInfo = c.elementType.asInstanceOf[ConcreteType]
+        val elementInfo = c.elementType
         // For List-like Java collections, use a ListBuilder then convert later to the Java collection
         val companionClass = Class.forName("scala.collection.immutable.List$")
         val companionInstance = companionClass.getField("MODULE$").get(companionClass)
@@ -147,7 +147,7 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
         
         JavaStackTypeAdapter(
           concrete,
-          isOptionalTA(elementTA), // TODO (support java.Optional) elemIsOptional:     Boolean,
+          isOptionalTA(elementTA), 
           taCache.typeAdapterOf(elementInfo),
           companionInstance,
           builderMethod,
@@ -162,7 +162,7 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
         val javaMapConstructor = c.infoClass.getConstructor(Class.forName("java.util.Map"))
 
         val jackFlavor = taCache.jackFlavor
-        val keyTypeAdapter = taCache.typeAdapterOf(c.elementType1.asInstanceOf[ConcreteType])
+        val keyTypeAdapter = taCache.typeAdapterOf(c.elementType)
         // Wrap Map keys in a StringWrapTypeAdapter?
         val finalKeyTypeAdapter =
           if (keyTypeAdapter.isInstanceOf[AnyTypeAdapter])
@@ -178,7 +178,7 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
             keyTypeAdapter
           else 
             jackFlavor.stringWrapTypeAdapterFactory(keyTypeAdapter)
-        val valueTypeAdapter = taCache.typeAdapterOf(c.elementType2.asInstanceOf[ConcreteType]) match {
+        val valueTypeAdapter = taCache.typeAdapterOf(c.elementType2) match {
           case ta: OptionTypeAdapter[_] => ta.convertNullToNone()
           case ta: JavaOptionalTypeAdapter[_] => ta.convertNullToNone()
           case ta => ta
@@ -196,8 +196,8 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
 
         JavaMapLikeTypeAdapter(
           concrete, 
-          false, // TODO keyIsOptionalOrAny,
-          false, // TODO valueIsOptionalOrAny,
+          keyIsOptionalOrAny,
+          valueIsOptionalOrAny,
           finalKeyTypeAdapter, 
           valueTypeAdapter,
           companionInstance, 

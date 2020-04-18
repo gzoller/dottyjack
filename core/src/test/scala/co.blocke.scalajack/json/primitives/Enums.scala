@@ -12,6 +12,7 @@ import co.blocke.dottyjack.json.JSON
 class Enums() extends FunSuite:
 
   val sj = co.blocke.dottyjack.DottyJack()
+  val sj2 = sj.enumsAsInts()
 
   test("Enumeration (Scala 2.x) must work (not nullable)") {
     describe("-----------------\n:  Scala Enums  :\n-----------------", Console.BLUE)
@@ -28,11 +29,32 @@ class Enums() extends FunSuite:
     assertEquals(inst, sj.read[SampleEnum](js2))
   }
 
+  test("Ordinal Enumeration (Scala 2.x) must work (not nullable)") {
+    import SizeWithType._
+    val inst = SampleEnum(Size.Small, Size.Medium, Size.Large, null, Size.Medium, Little)
+    val js = sj2.render(inst)
+    assertEquals(
+      """{"e1":0,"e2":1,"e3":2,"e4":null,"e5":1,"e6":0}""".asInstanceOf[JSON],
+      js)
+    // mutate e5 into an ordinal...
+    val js2 = js.asInstanceOf[String].replaceAll(""""e5":"Medium"""", """"e5":1""").asInstanceOf[JSON]
+    assertEquals(inst, sj.read[SampleEnum](js2))
+  }
+
   test("Enum (Scala 3.x) must work (not nullable)") {
     val inst = TVColors(null, Color.Red)
     val js = sj.render(inst)
     assertEquals(
       """{"color1":null,"color2":"Red"}""".asInstanceOf[JSON],
+      js)
+    assertEquals(inst, sj.read[TVColors](js))
+  }
+
+  test("Ordinal Enum (Scala 3.x) must work (not nullable)") {
+    val inst = TVColors(null, Color.Red)
+    val js = sj2.render(inst)
+    assertEquals(
+      """{"color1":null,"color2":1}""".asInstanceOf[JSON],
       js)
     assertEquals(inst, sj.read[TVColors](js))
   }

@@ -1,7 +1,7 @@
 package co.blocke.dottyjack
 
 import co.blocke.dotty_reflection._
-import co.blocke.dotty_reflection.infos._
+import co.blocke.dotty_reflection.info._
 import org.apache.commons.codec.binary.Base64
 
 case class Person(

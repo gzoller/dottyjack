@@ -134,14 +134,14 @@ case class JsonWriter() extends Writer[JSON] {
       out += "{".asInstanceOf[JSON]
       val wasFirst = writeFields(
         isFirst = true,
-        extras.map(
+        extras.map{
           e =>
             (
               e._1,
               e._2.value,
               e._2.valueTypeAdapter.asInstanceOf[TypeAdapter[Any]]
-          )
-        ),
+            )
+        },
         out
       )
       val wasFirst2 = writeFields(

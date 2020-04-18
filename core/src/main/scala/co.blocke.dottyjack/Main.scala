@@ -1,15 +1,28 @@
 package co.blocke.dottyjack
 
 import co.blocke.dotty_reflection._
-import co.blocke.dotty_reflection.infos._
+import co.blocke.dotty_reflection.info._
 import org.apache.commons.codec.binary.Base64
 
 import scala.collection.mutable
 import scala.jdk.CollectionConverters._
 
-import java.util.Optional
 
-case class GeneralHolder[T](o: T)
+/*
+trait Animal[T]{
+  val name: String
+  val numLegs: T
+}
+case class Dog(name: String, numLegs: Int, likesWalks: Boolean) extends Animal[Int]
+
+trait Thing[A, B] { val a: A; val b: B }
+case class AThing[Y, X](a: X, b: Y) extends Thing[X, Y]
+*/
+
+case class Bar2[X](id: X)
+case class Foo2[A](x: Bar2[A], b: Int)
+
+
 
 object Main {
 
@@ -17,13 +30,32 @@ object Main {
 
     val sj = DottyJack()
 
-    val inst = Map(Optional.of("one") -> 1, Optional.empty[String] -> 2, Optional.of("three") -> 3)
-    val js = sj.render(inst)
-    println(js)
+    println(Reflector.reflectOn[Foo2[Long]])
+    // val inst = Foo2(Bar2(123L), 19)
+    // val js = sj.render(inst)
+    // println(js)
 
-    val inst2 = Map(Some("one") -> 1, None -> 2, Some("three") -> 3)
-    val js2 = sj.render(inst2)
-    println(js2)
+
+    /*
+    Note: In ScalaJack behavior like this:
+      trait Foom
+      trait Thing[A, B] { val a: A; val b: B }
+      case class AThing[Y, X](a: X, b: Y) extends Thing[X, Y] with Foom
+      object Size extends Enumeration {
+        val Small, Medium, Large = Value
+      }
+      import Size._
+
+      val f: Foom = AThing("Wow",Medium)
+      val js = sj.render(f)
+      println(js)
+      val i = sj.read[Foom](js)
+      println(i)
+      println(i.asInstanceOf[AThing[_,_]].b.getClass)
+
+      The Size-type is converted to a String here.  Since Foom has no type params, AThing's X and Y params default to Any.
+    */
+
 
   def constructors(clazz: Class[_]): String = 
     s"=== Constructors: ${clazz.getName} ===\n   " + clazz.getConstructors.toList.mkString("\n   ")

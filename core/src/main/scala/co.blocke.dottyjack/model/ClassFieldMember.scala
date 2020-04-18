@@ -1,7 +1,7 @@
 package co.blocke.dottyjack
 package model
 
-import co.blocke.dotty_reflection.infos._
+import co.blocke.dotty_reflection.info._
 
 
 case class ClassFieldMember[T](

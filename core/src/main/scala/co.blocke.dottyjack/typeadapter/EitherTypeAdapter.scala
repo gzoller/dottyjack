@@ -3,24 +3,24 @@ package typeadapter
 
 import model._
 import co.blocke.dotty_reflection._
-import co.blocke.dotty_reflection.infos.EitherInfo
-import co.blocke.dotty_reflection.impl.Clazzes._
+import co.blocke.dotty_reflection.info.EitherInfo
+import co.blocke.dotty_reflection.Clazzes._
 
 import scala.collection.mutable.Builder
 import scala.util.{ Failure, Success, Try }
 
 object EitherTypeAdapterFactory extends TypeAdapterFactory:
 
-  def matches(concrete: ConcreteType): Boolean = 
+  def matches(concrete: RType): Boolean = 
     concrete match {
       case _: EitherInfo => true
       case _ => false
     }
 
-  def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
     val eitherInfo = concrete.asInstanceOf[EitherInfo]
-    val leftInfo = eitherInfo.leftParamType.asInstanceOf[ConcreteType]
-    val rightInfo = eitherInfo.rightParamType.asInstanceOf[ConcreteType]
+    val leftInfo = eitherInfo.leftType
+    val rightInfo = eitherInfo.rightType
 
     if( leftInfo.infoClass <:< rightInfo.infoClass || rightInfo.infoClass <:< leftInfo.infoClass)
       throw new IllegalArgumentException(
@@ -36,7 +36,7 @@ object EitherTypeAdapterFactory extends TypeAdapterFactory:
 
 
 case class EitherTypeAdapter[L, R](
-    info: ConcreteType,
+    info: RType,
     leftTypeAdapter:  TypeAdapter[L],
     rightTypeAdapter: TypeAdapter[R])
   extends TypeAdapter[Either[L, R]] {

@@ -28,7 +28,7 @@ val pubSettings = Seq(
   publishMavenStyle := true,
   bintrayOrganization := Some("blocke"),
   bintrayReleaseOnPublish in ThisBuild := true,
-  licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
+  licenses += ("MIT", url("https://opensource.org/licenses/MIT")),
   bintrayRepository := "releases",
   bintrayPackageLabels := Seq("scala", "dotty", "json")
 )
@@ -49,7 +49,7 @@ lazy val scalajack = project
     libraryDependencies ++= 
       Seq(
         "commons-codec" % "commons-codec" % "1.12",
-        "co.blocke" %% "dotty-reflection" % "33f2bc_SNAPSHOT",
+        "co.blocke" %% "dotty-reflection" % "tracing_763d15", //"44e613_SNAPSHOT",
         "munit" %% "munit" % "0.6.z-3" % "test"   // special build of munit compatible with Dotty 0.24
       )
   )

@@ -11,7 +11,7 @@ import scala.jdk.CollectionConverters._
 
 
 case class JavaMapLikeTypeAdapter[KEY, VALUE, TO <: java.util.Map[KEY, VALUE]](
-    info:                 ConcreteType,
+    info:                 RType,
     keyIsOptionalOrAny:   Boolean,
     valueIsOptionalOrAny: Boolean,
     keyTypeAdapter:       TypeAdapter[KEY],

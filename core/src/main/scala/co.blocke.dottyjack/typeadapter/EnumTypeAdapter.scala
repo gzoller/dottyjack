@@ -7,21 +7,22 @@ import scala.collection.mutable
 import scala.util.{Try, Success, Failure}
 import java.lang.reflect.Method
 import co.blocke.dotty_reflection._
-import co.blocke.dotty_reflection.infos._
+import co.blocke.dotty_reflection.info._
 
 object EnumTypeAdapterFactory extends TypeAdapterFactory:
-  def matches(concrete: ConcreteType): Boolean = 
+  def matches(concrete: RType): Boolean = 
     concrete match {
       case _: ScalaEnumInfo => true
+      case _: ScalaEnumerationInfo => true
       case _: JavaEnumInfo => true
       case _ => false
     }
 
-  def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
     val enumsAsInt = taCache.jackFlavor.enumsAsInt
     concrete match {
       // Scala 2.x Enumeration support
-      case scalaOld: ScalaEnumeration => 
+      case scalaOld: ScalaEnumerationInfo => 
         val erasedEnumClassName = scalaOld.name + "$"
         val enumInstance = Class
           .forName(erasedEnumClassName)
@@ -31,7 +32,7 @@ object EnumTypeAdapterFactory extends TypeAdapterFactory:
         ScalaEnumerationTypeAdapter(enumInstance, concrete, enumsAsInt)
 
       // Scala 3.x Enum support
-      case scalaNew: ScalaEnum => 
+      case scalaNew: ScalaEnumInfo => 
         ScalaEnumTypeAdapter(concrete, enumsAsInt)
 
       // Java Enum support
@@ -42,7 +43,7 @@ object EnumTypeAdapterFactory extends TypeAdapterFactory:
 
 case class ScalaEnumerationTypeAdapter[E <: Enumeration](
     e:           E,
-    info:        ConcreteType,
+    info:        RType,
     enumsAsInt:  Boolean
   ) extends TypeAdapter[e.Value]:
 
@@ -93,11 +94,11 @@ case class ScalaEnumerationTypeAdapter[E <: Enumeration](
 
 
 case class ScalaEnumTypeAdapter[E <: Enum](
-    info:        ConcreteType,
+    info:        RType,
     enumsAsInt:  Boolean
   ) extends TypeAdapter[E]:
 
-  val scalaEnum = info.asInstanceOf[ScalaEnum]
+  val scalaEnum = info.asInstanceOf[ScalaEnumInfo]
   
   def read(parser: Parser): E = 
     if (parser.nextIsNumber) {
@@ -146,7 +147,7 @@ case class ScalaEnumTypeAdapter[E <: Enum](
   
 
 case class JavaEnumTypeAdapter[E <: java.lang.Enum[_]](
-    info:        ConcreteType,
+    info:        RType,
     enumsAsInt:  Boolean
   ) extends TypeAdapter[E]:
 

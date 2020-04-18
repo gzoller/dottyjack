@@ -3,20 +3,20 @@ package typeadapter
 
 import model._
 import co.blocke.dotty_reflection._
-import co.blocke.dotty_reflection.impl.Clazzes._
-import co.blocke.dotty_reflection.infos.JavaClassInfo
+import co.blocke.dotty_reflection.Clazzes._
+import co.blocke.dotty_reflection.info.JavaClassInfo
 import java.util.UUID
 import scala.collection.mutable
 import scala.util.{ Failure, Success, Try }
 
 object UUIDTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[UUID] with Stringish:
   val uuidClass = classOf[UUID]
-  def matches(concrete: ConcreteType): Boolean = 
+  def matches(concrete: RType): Boolean = 
     concrete match {
       case j: JavaClassInfo if j.infoClass <:< uuidClass => true
       case _ => false
     }
-  def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[UUID] = this
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[UUID] = this
 
   val info = Reflector.reflectOn[java.util.UUID]
   def read(parser: Parser): UUID =
@@ -29,8 +29,7 @@ object UUIDTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[UUID] 
         case Failure(uuid) =>
           parser.backspace()
           throw new ScalaJackError(
-            parser
-              .showError(s"Failed to create UUID value from parsed text ${u}")
+            parser.showError(s"Failed to create UUID value from parsed text ${u}")
           )
       }
     }

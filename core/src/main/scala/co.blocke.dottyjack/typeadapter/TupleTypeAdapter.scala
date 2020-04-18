@@ -3,7 +3,7 @@ package typeadapter
 
 import model._
 import co.blocke.dotty_reflection._
-import co.blocke.dotty_reflection.infos.TupleInfo
+import co.blocke.dotty_reflection.info.TupleInfo
 import java.lang.reflect.Method
 import scala.collection.mutable
 import scala.util.matching.Regex
@@ -12,16 +12,17 @@ object TupleTypeAdapterFactory extends TypeAdapterFactory:
 
   private val tupleFullName: Regex = """scala.Tuple(\d+)""".r
 
-  def matches(concrete: ConcreteType): Boolean = 
+  def matches(concrete: RType): Boolean = 
     concrete match {
       case ti: TupleInfo => true
       case _ => false
     }
 
-  def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
     val ti = concrete.asInstanceOf[TupleInfo]
     val fields = ti.tupleTypes.zipWithIndex.map{ (f,idx) => f match {
-      case c: ConcreteType => 
+      case _: TypeSymbolInfo => throw new ScalaJackError(s"Unexpected non-Concrete tuple type ${f.getClass.getName}")
+      case c => 
         val javaClassField = ti.infoClass.getDeclaredField(s"_${idx+1}")
         javaClassField.setAccessible(true)
         val typeAdapter = taCache.typeAdapterOf(c) match {
@@ -30,13 +31,12 @@ object TupleTypeAdapterFactory extends TypeAdapterFactory:
           case ta => ta
         }
         TupleField(idx+1, javaClassField, typeAdapter)
-      case f => throw new ScalaJackError(s"Unexpected non-Concrete tuple type ${f.getClass.getName}")
       }}
     TupleTypeAdapter(concrete, fields, ti.infoClass.getConstructors.head)
 
 
 case class TupleTypeAdapter[T](
-  info:        ConcreteType,
+  info:        RType,
   fields:      List[TupleField[_]],
   constructor: java.lang.reflect.Constructor[T]
   ) extends TypeAdapter[T] with Collectionish {

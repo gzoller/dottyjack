@@ -4,8 +4,8 @@ package model
 import scala.collection.mutable
 import scala.reflect.ClassTag
 import co.blocke.dotty_reflection._
-import co.blocke.dotty_reflection.infos._
-import co.blocke.dotty_reflection.impl.Clazzes._
+import co.blocke.dotty_reflection.info._
+import co.blocke.dotty_reflection.Clazzes._
 
 
 /**
@@ -25,35 +25,10 @@ import co.blocke.dotty_reflection.impl.Clazzes._
  * in this case.  With strict matching String != Phone.
  *
  */
- /*
-object TypeAdapter {
-
- /*
-  abstract class ===[X](implicit ttFactory: TypeTag[X])
-    extends TypeAdapterFactory.===[X]
-    with ScalarTypeAdapter[X] {
-    val scalarType = ttFactory.tpe
-    override def create(next: TypeAdapterFactory)(
-        implicit
-        tt: TypeTag[X]
-    ): TypeAdapter[X] = this
-  }
-  */
-
-  // abstract class =:=[X]
-  //   extends TypeAdapterFactory {
-  //   self: TypeAdapter[X] =>
-  //   def matches(tpe: TypeStructure): Boolean = myTpe.className == tpe.className
-  //   def makeTypeAdapter(tpe: TypeStructure): TypeAdapter[X] = self
-  // }
-
-}
-*/
-
-trait TypeAdapter[T] {
+ trait TypeAdapter[T] {
   self =>
 
-  val info: ConcreteType
+  val info: RType
   def resolved: TypeAdapter[T] = this // Might be something else during Lazy construction
   
   def defaultValue: Option[T] = None

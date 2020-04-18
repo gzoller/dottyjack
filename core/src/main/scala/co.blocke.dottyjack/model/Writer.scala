@@ -3,7 +3,7 @@ package model
 
 import scala.collection.Map
 import scala.collection.mutable
-import co.blocke.dotty_reflection.infos.FieldInfo
+import co.blocke.dotty_reflection.info.FieldInfo
 
 case class ExtraFieldValue[T](value: T, valueTypeAdapter: TypeAdapter[T])
 

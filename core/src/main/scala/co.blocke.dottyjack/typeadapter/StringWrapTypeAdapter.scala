@@ -3,7 +3,7 @@ package typeadapter
 
 import model._
 import co.blocke.dotty_reflection._
-import co.blocke.dotty_reflection.infos._
+import co.blocke.dotty_reflection.info._
 
 import scala.collection.mutable
 
@@ -14,7 +14,7 @@ case class StringWrapTypeAdapter[T](
     emptyStringOk:      Boolean        = true
   ) extends TypeAdapter[T] with Stringish {
 
-  val info: ConcreteType = wrappedTypeAdapter.info
+  val info: RType = wrappedTypeAdapter.info
 
   def read(parser: Parser): T =
     parser.expectString() match {

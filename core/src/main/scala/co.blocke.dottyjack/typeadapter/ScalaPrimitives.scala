@@ -3,8 +3,8 @@ package typeadapter
 
 import model._
 
-import co.blocke.dotty_reflection.impl.Clazzes._
-import co.blocke.dotty_reflection.infos._
+import co.blocke.dotty_reflection.Clazzes._
+import co.blocke.dotty_reflection.info._
 import co.blocke.dotty_reflection._
 
 import org.apache.commons.codec.binary.Base64
@@ -13,12 +13,12 @@ import scala.language.implicitConversions
 
 
 object BigDecimalTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[BigDecimal] with ScalarTypeAdapter[BigDecimal]:
-  def matches(concrete: ConcreteType): Boolean = 
+  def matches(concrete: RType): Boolean = 
     concrete match {
       case u: UnknownInfo if u.infoClass.getName == "scala.math.BigDecimal" => true
       case _ => false
     }
-  def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[BigDecimal] = this
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[BigDecimal] = this
 
   val info = Reflector.reflectOn[scala.math.BigDecimal]
   def read(parser: Parser): BigDecimal = 
@@ -31,12 +31,12 @@ object BigDecimalTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[
 
 
 object BigIntTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[BigInt] with ScalarTypeAdapter[BigInt]:
-  def matches(concrete: ConcreteType): Boolean = 
+  def matches(concrete: RType): Boolean = 
     concrete match {
       case u: UnknownInfo if u.infoClass.getName == "scala.math.BigInt" => true
       case _ => false
     }
-  def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[BigInt] = this
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[BigInt] = this
 
   val info = Reflector.reflectOn[scala.math.BigInt]
   def read(parser: Parser): BigInt = 
@@ -51,12 +51,12 @@ object BigIntTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[BigI
 
 
 object BinaryTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Array[Byte]] with ScalarTypeAdapter[Array[Byte]]:
-  def matches(concrete: ConcreteType): Boolean = 
+  def matches(concrete: RType): Boolean = 
     concrete match {
       case ArrayInfo("[B", _, PrimitiveType.Scala_Byte) => true
       case c => false
     }
-  def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[Array[Byte]] = this
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Array[Byte]] = this
 
   val info = Reflector.reflectOn[Array[Byte]]
   def read(parser: Parser): Array[Byte] =
@@ -73,8 +73,8 @@ object BinaryTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Arra
 
 
 object BooleanTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Boolean] with ScalarTypeAdapter[Boolean]:
-  def matches(concrete: ConcreteType): Boolean = concrete == PrimitiveType.Scala_Boolean
-  def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[Boolean] = this
+  def matches(concrete: RType): Boolean = concrete == PrimitiveType.Scala_Boolean
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Boolean] = this
 
   val info = Reflector.reflectOn[Boolean]
   def read(parser: Parser): Boolean = parser.expectBoolean()
@@ -83,8 +83,8 @@ object BooleanTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Boo
 
 
 object ByteTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Byte] with ScalarTypeAdapter[Byte]:
-  def matches(concrete: ConcreteType): Boolean = concrete == PrimitiveType.Scala_Byte
-  def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[Byte] = this
+  def matches(concrete: RType): Boolean = concrete == PrimitiveType.Scala_Byte
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Byte] = this
 
   val info = Reflector.reflectOn[Byte]
   def read(parser: Parser): Byte =
@@ -101,8 +101,8 @@ object ByteTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Byte] 
 
 
 object CharTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Char] with ScalarTypeAdapter[Char] with Stringish:
-  def matches(concrete: ConcreteType): Boolean = concrete == PrimitiveType.Scala_Char
-  def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[Char] = this
+  def matches(concrete: RType): Boolean = concrete == PrimitiveType.Scala_Char
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Char] = this
 
   val info = Reflector.reflectOn[Char]
   def read(parser: Parser): Char =
@@ -124,8 +124,8 @@ object CharTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Char] 
 
 
 object DoubleTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Double] with ScalarTypeAdapter[Double]:
-  def matches(concrete: ConcreteType): Boolean = concrete == PrimitiveType.Scala_Double
-  def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[Double] = this
+  def matches(concrete: RType): Boolean = concrete == PrimitiveType.Scala_Double
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Double] = this
 
   val info = Reflector.reflectOn[Double]
   def read(parser: Parser): Double =
@@ -144,8 +144,8 @@ object DoubleTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Doub
 
 
 object FloatTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Float] with ScalarTypeAdapter[Float]:
-  def matches(concrete: ConcreteType): Boolean = concrete == PrimitiveType.Scala_Float
-  def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[Float] = this
+  def matches(concrete: RType): Boolean = concrete == PrimitiveType.Scala_Float
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Float] = this
 
   val info = Reflector.reflectOn[Float]
   def read(parser: Parser): Float =
@@ -164,8 +164,8 @@ object FloatTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Float
 
 
 object IntTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Int] with ScalarTypeAdapter[Int]:
-  def matches(concrete: ConcreteType): Boolean = concrete == PrimitiveType.Scala_Int
-  def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[Int] = this
+  def matches(concrete: RType): Boolean = concrete == PrimitiveType.Scala_Int
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Int] = this
 
   val info = Reflector.reflectOn[Int]
   def read(parser: Parser): Int =
@@ -184,8 +184,8 @@ object IntTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Int] wi
 
 
 object LongTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Long] with ScalarTypeAdapter[Long]:
-  def matches(concrete: ConcreteType): Boolean = concrete == PrimitiveType.Scala_Long
-  def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[Long] = this
+  def matches(concrete: RType): Boolean = concrete == PrimitiveType.Scala_Long
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Long] = this
 
   val info = Reflector.reflectOn[Long]
   def read(parser: Parser): Long =
@@ -204,8 +204,8 @@ object LongTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Long] 
 
 
 object ShortTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Short] with ScalarTypeAdapter[Short]:
-  def matches(concrete: ConcreteType): Boolean = concrete == PrimitiveType.Scala_Short
-  def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[Short] = this
+  def matches(concrete: RType): Boolean = concrete == PrimitiveType.Scala_Short
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Short] = this
 
   val info = Reflector.reflectOn[Short]
   def read(parser: Parser): Short =
@@ -224,8 +224,8 @@ object ShortTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Short
 
 
 object StringTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[String] with ScalarTypeAdapter[String] with Stringish:
-  def matches(concrete: ConcreteType): Boolean = concrete == PrimitiveType.Scala_String
-  def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[String] = this
+  def matches(concrete: RType): Boolean = concrete == PrimitiveType.Scala_String
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[String] = this
 
   val info = Reflector.reflectOn[String]
   def read(parser: Parser): String = parser.expectString()

@@ -13,7 +13,7 @@ import co.blocke.dottyjack.json.JSON
 class Eithers() extends FunSuite:
 
   val sj = co.blocke.dottyjack.DottyJack()
-
+  
   test("Left - two class types") {
     describe("------------------\n:  Either Tests  :\n------------------",Console.BLUE)
     describe("+++ Positive Tests +++")
@@ -62,48 +62,37 @@ class Eithers() extends FunSuite:
   }
 
   test("Handles traits - Right") {
-    pending
-    /*
     val inst = EitherHolder[String, Pet](Right(Dog("Fido", 13)))
     val js = sj.render(inst)
     assertEquals(
-      """{"either":{"_hint":"co.blocke.scalajack.json.misc.Dog","name":"Fido","kind":13}}""".asInstanceOf[JSON],js)
+      """{"either":{"_hint":"co.blocke.scalajack.json.structures.Dog","name":"Fido","kind":13}}""".asInstanceOf[JSON],js)
     assertEquals(inst,sj.read[EitherHolder[String, Pet]](js))
-    */
   }
 
   test("Handles traits - Left") {
-    pending
-    /*
     val inst = EitherHolder[Pet, String](Left(Dog("Fido", 13)))
     val js = sj.render(inst)
     assertEquals(
-      """{"either":{"_hint":"co.blocke.scalajack.json.misc.Dog","name":"Fido","kind":13}}""".asInstanceOf[JSON],js)
+      """{"either":{"_hint":"co.blocke.scalajack.json.structures.Dog","name":"Fido","kind":13}}""".asInstanceOf[JSON],js)
     assertEquals(inst,sj.read[EitherHolder[Pet, String]](js))
-    */
   }
 
-
-/*
-
-    describe("--- Negative Tests ---") {
-      it("Same instance Left and Right") {
-        val js = "\"foo\""
-        val msg =
-          """Types String and String are not mutually exclusive""".stripMargin
-        the[IllegalArgumentException] thrownBy sj.read[Either[String, String]](
-          js
-        ) should have message msg
-      }
-      it("Neither value works") {
-        val js = "25"
-        val msg = """Failed to read either side of Either
-                    |25
-                    |^""".stripMargin
-        the[ScalaJackError] thrownBy sj
-          .read[Either[String, Boolean]](js) should have message msg
-      }
-    }
+  test("Same instance Left and Right") {
+    describe("--- Negative Tests ---",Console.BLUE)
+    val js = "\"foo\""
+    val msg =
+      """Types java.lang.String and java.lang.String are not mutually exclusive""".stripMargin
+    interceptMessage[IllegalArgumentException](msg){
+      sj.read[Either[String, String]](js.asInstanceOf[JSON])
+    }        
   }
-}
-*/
+
+  test("Neither value works") {
+    val js = "25"
+    val msg = """Failed to read either side of Either
+                |25
+                |^""".stripMargin
+    interceptMessage[co.blocke.dottyjack.ScalaJackError](msg){
+      sj.read[Either[String, Boolean]](js.asInstanceOf[JSON])
+    }        
+  }

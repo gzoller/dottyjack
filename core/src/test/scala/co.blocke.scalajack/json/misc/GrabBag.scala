@@ -2,8 +2,6 @@ package co.blocke.scalajack
 package json.misc
 
 import co.blocke.dotty_reflection._
-import scala.math.BigDecimal
-import java.util.UUID
 import TestUtil._
 import munit._
 import munit.internal.console

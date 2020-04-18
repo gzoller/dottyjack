@@ -2,23 +2,23 @@ package co.blocke.dottyjack
 package typeadapter
 
 import model._
-import co.blocke.dotty_reflection.infos._
+import co.blocke.dotty_reflection.info._
 import co.blocke.dotty_reflection._
 import scala.collection.mutable
 
 object ValueClassTypeAdapterFactory extends TypeAdapterFactory:
-  def matches(concrete: ConcreteType): Boolean = concrete match {
+  def matches(concrete: RType): Boolean = concrete match {
     case c: ScalaClassInfo if c.isValueClass => true
     case _ => false
   }
 
-  def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
-    val elementType = concrete.asInstanceOf[ScalaClassInfo].fields(0).fieldType.asInstanceOf[ConcreteType]
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
+    val elementType = concrete.asInstanceOf[ScalaClassInfo].fields(0).fieldType
     ValueClassTypeAdapter(concrete, taCache.typeAdapterOf(elementType))
 
 
 case class ValueClassTypeAdapter[VC, Value](
-    info:               ConcreteType,
+    info:               RType,
     elementTypeAdapter: TypeAdapter[Value]
 ) extends TypeAdapter[VC] {
   private val vcInfo = info.asInstanceOf[ScalaClassInfo]

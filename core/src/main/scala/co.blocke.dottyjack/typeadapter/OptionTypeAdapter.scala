@@ -5,7 +5,7 @@ import model._
 
 import scala.collection.mutable
 import co.blocke.dotty_reflection._
-import co.blocke.dotty_reflection.infos._
+import co.blocke.dotty_reflection.info._
 import java.util.Optional
 
 /*
@@ -27,16 +27,16 @@ import java.util.Optional
  */
 
 object OptionTypeAdapterFactory extends TypeAdapterFactory:
-  def matches(concrete: ConcreteType): Boolean = 
+  def matches(concrete: RType): Boolean = 
     concrete match {
       case _: OptionInfo => true
       case _ => false
     }
-  def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
     val optiBase = concrete.asInstanceOf[OptionInfo]
     val wrapped = optiBase.optionParamType match {
-      case c: ConcreteType => taCache.typeAdapterOf(c)
-      case c => throw new ScalaJackError(s"Unexpected non-concrete type in option: ${c.getClass.getName}")
+      case c: TypeSymbolInfo => throw new ScalaJackError(s"Unexpected non-concrete type in option: ${c.name}")
+      case c => taCache.typeAdapterOf(c)
     }
     concrete match {
       case opti: ScalaOptionInfo   => OptionTypeAdapter(concrete, wrapped)
@@ -45,7 +45,7 @@ object OptionTypeAdapterFactory extends TypeAdapterFactory:
 
 
 case class OptionTypeAdapter[E](
-    info:             ConcreteType,
+    info:             RType,
     valueTypeAdapter: TypeAdapter[E],
     nullIsNone:       Boolean        = false
   ) extends TypeAdapter[Option[E]]:
@@ -80,7 +80,7 @@ case class OptionTypeAdapter[E](
 
 
 case class JavaOptionalTypeAdapter[E](
-    info:             ConcreteType,
+    info:             RType,
     valueTypeAdapter: TypeAdapter[E],
     nullIsNone:       Boolean        = false
   ) extends TypeAdapter[Optional[E]]:

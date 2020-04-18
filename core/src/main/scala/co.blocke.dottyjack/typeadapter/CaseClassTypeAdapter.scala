@@ -2,7 +2,7 @@ package co.blocke.dottyjack
 package typeadapter
 
 import model._
-import co.blocke.dotty_reflection.infos._
+import co.blocke.dotty_reflection.info._
 import co.blocke.dotty_reflection._
 
 import scala.collection.mutable
@@ -10,7 +10,7 @@ import scala.collection.mutable
 
 // For case classes and Java/Scala plain classes, but not traits
 trait ClassTypeAdapterBase[T] extends TypeAdapter[T] with Classish:
-  val info:               ConcreteType
+  val info:               RType
   val argsTemplate:       Array[Object]
   val fieldBitsTemplate:  mutable.BitSet
   val isSJCapture:        Boolean
@@ -19,7 +19,7 @@ trait ClassTypeAdapterBase[T] extends TypeAdapter[T] with Classish:
 
 
 case class CaseClassTypeAdapter[T](
-    info:               ConcreteType,
+    info:               RType,
     // typeMembersByName:  Map[String, ClassHelper.TypeMember[T]],
     fieldMembersByName: Map[String, ClassFieldMember[_]],
     argsTemplate:       Array[Object],
@@ -30,7 +30,7 @@ case class CaseClassTypeAdapter[T](
   override val isCaseClass = true;
 
   private val classInfo = info.asInstanceOf[ScalaClassInfo]
-  private val orderedFieldNames = classInfo.fields.map(_.name)
+  val orderedFieldNames = classInfo.fields.map(_.name)
 
   val isSJCapture = classInfo.hasMixin("co.blocke.dottyjack.SJCapture")
 

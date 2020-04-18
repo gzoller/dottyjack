@@ -10,3 +10,5 @@ object DottyJack:
 
 class ScalaJackError(msg: String)                           extends Exception(msg)
 class ScalaJackValueError(val value: Any, cause: Throwable) extends Exception(cause.getMessage)
+
+type HintBijective = util.BijectiveFunction[String, Class[_]]

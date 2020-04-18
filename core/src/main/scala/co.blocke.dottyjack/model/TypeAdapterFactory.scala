@@ -4,5 +4,5 @@ package model
 import co.blocke.dotty_reflection._
 
 trait TypeAdapterFactory:
-  def matches(concrete: ConcreteType): Boolean
-  def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[_]
+  def matches(concrete: RType): Boolean
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_]

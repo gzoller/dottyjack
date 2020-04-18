@@ -315,9 +315,8 @@ case class JsonParser(jsRaw: JSON, jackFlavor: JackFlavor[JSON]) extends Parser 
       true
     } else false
 
-    /*
   // NOTE: Expectation here is we're sitting on beginning of object, '{'.  This is called from TraitTypeAdapter
-  def scanForHint(hint: String, converterFn: HintBijective): Type = {
+  def scanForHint(hint: String, converterFn: HintBijective): Class[_] = {
     val mark = i
     whitespace()
     if (i == max || jsChars(i) != '{')
@@ -359,7 +358,6 @@ case class JsonParser(jsRaw: JSON, jackFlavor: JackFlavor[JSON]) extends Parser 
     i = mark // we found hint, but go back to parse object
     hintType
   }
-  */
 
   /*
   def resolveTypeMembers(

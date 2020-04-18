@@ -27,8 +27,7 @@ trait Parser {
   def expectBoolean(): Boolean
   def expectNumber(nullOK: Boolean = false): String
   def peekForNull: Boolean // peek-ahead to find null
-  // TODO
-  //def scanForHint(hint: String, converterFn: HintBijective): Type
+  def scanForHint(hint: String, converterFn: HintBijective): Class[_]
 
   // For embedded type members.  Convert the type member into runtime "actual" type, e.g. T --> Foo
   // TODO

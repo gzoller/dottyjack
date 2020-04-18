@@ -9,17 +9,17 @@ import scala.collection.mutable.ListBuffer
 import scala.util.{Success, Try}
 
 object AnyTypeAdapterFactory extends TypeAdapterFactory:
-  def matches(concrete: ConcreteType): Boolean = 
+  def matches(concrete: RType): Boolean = 
     concrete match {
       case PrimitiveType.Scala_Any => true
       case _ => false
     }
 
-  def makeTypeAdapter(concrete: ConcreteType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =  
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =  
     AnyTypeAdapter(concrete, taCache)
 
 
-case class AnyTypeAdapter(info: ConcreteType, taCache: TypeAdapterCache) extends TypeAdapter[Any] {
+case class AnyTypeAdapter(info: RType, taCache: TypeAdapterCache) extends TypeAdapter[Any] {
   val jackFlavor = taCache.jackFlavor
   lazy val mapAnyTypeAdapter: TypeAdapter[Map[Any, Any]]  = taCache.typeAdapterOf[Map[Any, Any]]
   lazy val listAnyTypeAdapter: TypeAdapter[List[Any]]     = taCache.typeAdapterOf[List[Any]]
@@ -102,7 +102,7 @@ case class AnyMapKeyTypeAdapter(
     taCache: TypeAdapterCache
   ) extends TypeAdapter[Any]:
 
-  val info: ConcreteType = Reflector.reflectOn[Any]
+  val info: RType = Reflector.reflectOn[Any]
   val jackFlavor = taCache.jackFlavor
   val anyTA: TypeAdapter[Any] = taCache.typeAdapterOf[Any]
 
@@ -141,9 +141,8 @@ case class AnyMapKeyTypeAdapter(
   def write[WIRE](t: Any, writer: Writer[WIRE], out: mutable.Builder[WIRE, WIRE]): Unit =
     t match {
       // Null not needed: null Map keys are inherently invalid in SJ
-      // TODO
-      // case enum: Enumeration#Value =>
-      //   writer.writeString(enum.toString, out)
+      case e if e.getClass.getName =="scala.Enumeration$Val" => writer.writeString(t.toString, out)
+      case _: scala.Enum => writer.writeString(t.toString, out)
       case _: Map[_, _] =>
         jackFlavor
           .stringWrapTypeAdapterFactory(mapAnyTypeAdapter)

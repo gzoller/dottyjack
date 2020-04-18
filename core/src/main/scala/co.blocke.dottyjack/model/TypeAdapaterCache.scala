@@ -4,7 +4,7 @@ package model
 import typeadapter._
 import scala.util.{ Success, Try }
 import co.blocke.dotty_reflection._
-import co.blocke.dotty_reflection.infos._
+import co.blocke.dotty_reflection.info._
 
 
 object TypeAdapterCache {
@@ -41,7 +41,7 @@ object TypeAdapterCache {
       ValueClassTypeAdapterFactory,
       CaseClassTypeAdapterFactory,
 
-      // TraitTypeAdapterFactory,
+      TraitTypeAdapterFactory,
       AnyTypeAdapterFactory,
       JavaBigDecimalTypeAdapterFactory,
       JavaBigIntegerTypeAdapterFactory,
@@ -77,7 +77,7 @@ case class TypeAdapterCache(
   case class Initialized(typeAdapterAttempt: Try[TypeAdapter[_]]) extends Phase
 
 
-  class TypeEntry(tpe: ConcreteType):
+  class TypeEntry(tpe: RType):
     @volatile
     private var phase: Phase = Uninitialized
 
@@ -110,7 +110,7 @@ case class TypeAdapterCache(
       attempt.get
 
 
-  private val typeEntries = new java.util.concurrent.ConcurrentHashMap[ConcreteType, TypeEntry]
+  private val typeEntries = new java.util.concurrent.ConcurrentHashMap[RType, TypeEntry]
 
   def withFactory(factory: TypeAdapterFactory): TypeAdapterCache =
     copy(factories = factories :+ factory)
@@ -118,7 +118,7 @@ case class TypeAdapterCache(
   def typeAdapterOf(tpe: TypeStructure): TypeAdapter[_] = 
     typeAdapterOf(Reflector.reflectOnType(tpe))
 
-  def typeAdapterOf(concreteType: ConcreteType): TypeAdapter[_] =
+  def typeAdapterOf(concreteType: RType): TypeAdapter[_] =
     typeEntries.computeIfAbsent(concreteType, ConcreteTypeEntryFactory).typeAdapter
 
   inline def typeAdapterOf[T]: TypeAdapter[T] =
@@ -126,6 +126,6 @@ case class TypeAdapterCache(
 
   val self = this 
 
-  object ConcreteTypeEntryFactory extends java.util.function.Function[ConcreteType, TypeEntry]:
-    override def apply(concrete: ConcreteType): TypeEntry = 
+  object ConcreteTypeEntryFactory extends java.util.function.Function[RType, TypeEntry]:
+    override def apply(concrete: RType): TypeEntry = 
       new TypeEntry(concrete)

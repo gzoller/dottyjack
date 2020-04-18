@@ -123,60 +123,42 @@ class Options() extends FunSuite:
   }
 
   test("Option of Trait") {
-    pending
-    /*
-      val inst: Option[Person] = Some(SomeClass("Mike", 2))
-      val js = sj.render(inst)
-      assertResult(
-        """{"_hint":"co.blocke.scalajack.json.collections.SomeClass","name":"Mike","age":2}"""
-      ) { js }
-      assertResult(inst) {
-        sj.read[Option[Person]](js)
-      }
+    val inst: Option[Person] = Some(SomeClass("Mike", 2))
+    val js = sj.render(inst)
+    assertEquals(
+      """{"_hint":"co.blocke.scalajack.json.collections.SomeClass","name":"Mike","age":2}""".asInstanceOf[JSON],js)
+    assertEquals(inst,sj.read[Option[Person]](js))
 
-      val inst2: Option[Person] = None
-      val js2 = sj.render(inst2)
-      assertResult("") { js2 }
-      // Can't read nothing into something
+    val inst2: Option[Person] = None
+    val js2 = sj.render(inst2)
+    assertEquals("".asInstanceOf[JSON],js2)
+    // Can't read nothing into something
 
-      val inst3: Map[Option[Person], Int] =
-        Map(None -> 2, Some(SomeClass("Mike", 2)) -> 1)
-      val js3 = sj.render(inst3)
-      assertResult(
-        """{"{\"_hint\":\"co.blocke.scalajack.json.collections.SomeClass\",\"name\":\"Mike\",\"age\":2}":1}"""
-      ) { js3 }
-      assertResult(Map(Some(SomeClass("Mike", 2)) -> 1)) {
-        sj.read[Map[Option[Person], Int]](js3)
-      }
-      */
+    val inst3: Map[Option[Person], Int] =
+      Map(None -> 2, Some(SomeClass("Mike", 2)) -> 1)
+    val js3 = sj.render(inst3)
+    assertEquals(
+      """{"{\"_hint\":\"co.blocke.scalajack.json.collections.SomeClass\",\"name\":\"Mike\",\"age\":2}":1}""".asInstanceOf[JSON],js3)
+    assertEquals(Map(Some(SomeClass("Mike", 2)) -> 1),sj.read[Map[Option[Person], Int]](js3))
   }
 
   test("Option of Parameterized Trait") {
-    pending
-    /*
-      val inst: Option[Thing[String, Int]] = Some(AThing("wow", 5))
-      val js = sj.render(inst)
-      assertResult(
-        """{"_hint":"co.blocke.scalajack.json.collections.AThing","a":"wow","b":5}"""
-      ) { js }
-      assertResult(inst) {
-        sj.read[Option[Thing[String, Int]]](js)
-      }
+    val inst: Option[Thing[String, Int]] = Some(AThing("wow", 5))
+    val js = sj.render(inst)
+    assertEquals(
+      """{"_hint":"co.blocke.scalajack.json.collections.AThing","a":"wow","b":5}""".asInstanceOf[JSON],js)
+    assertEquals(inst,sj.read[Option[Thing[String, Int]]](js))
 
-      val inst2: Option[Thing[String, Int]] = None
-      val js2 = sj.render(inst2)
-      assertResult("") { js2 }
+    val inst2: Option[Thing[String, Int]] = None
+    val js2 = sj.render(inst2)
+    assertEquals("".asInstanceOf[JSON],js2)
 
-      val inst3: Map[Option[Thing[String, Int]], Int] =
-        Map(None -> 2, Some(AThing("wow", 5)) -> 1)
-      val js3 = sj.render(inst3)
-      assertResult(
-        """{"{\"_hint\":\"co.blocke.scalajack.json.collections.AThing\",\"a\":\"wow\",\"b\":5}":1}"""
-      ) { js3 }
-      assertResult(Map(Some(AThing("wow", 5)) -> 1)) {
-        sj.read[Map[Option[Thing[String, Int]], Int]](js3)
-      }
-    */
+    val inst3: Map[Option[Thing[String, Int]], Int] =
+      Map(None -> 2, Some(AThing("wow", 5)) -> 1)
+    val js3 = sj.render(inst3)
+    assertEquals(
+      """{"{\"_hint\":\"co.blocke.scalajack.json.collections.AThing\",\"a\":\"wow\",\"b\":5}":1}""".asInstanceOf[JSON],js3)
+    assertEquals(Map(Some(AThing("wow", 5)) -> 1),sj.read[Map[Option[Thing[String, Int]], Int]](js3))
   }
 
   //------------------- None tests

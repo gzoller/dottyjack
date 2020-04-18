@@ -6,7 +6,7 @@ import scala.collection.mutable
 
 /** This helps fix the concurrent/recursion error on maps.  This lets the TypeAdapter resolve later (i.e. Lazy)
  */
-case class LazyTypeAdapter[T](taCache: TypeAdapterCache, info: ConcreteType)
+case class LazyTypeAdapter[T](taCache: TypeAdapterCache, info: RType)
   extends TypeAdapter[T] {
 
   var resolvedTypeAdapter: TypeAdapter[T] = _

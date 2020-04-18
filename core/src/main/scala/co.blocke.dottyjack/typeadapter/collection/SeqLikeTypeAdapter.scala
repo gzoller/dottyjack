@@ -10,7 +10,7 @@ import java.lang.reflect.Method
 
 
 case class SeqLikeTypeAdapter[ELEM, TO](
-    info:               ConcreteType,
+    info:               RType,
     elemIsOptional:     Boolean,
     elementTypeAdapter: TypeAdapter[ELEM],
     companionInstance:  Object,
