@@ -12,7 +12,7 @@ case class JsonFlavor(
 //    override val customAdapters:     List[TypeAdapterFactory]     = List.empty[TypeAdapterFactory],
 //    override val hintMap:            Map[Type, String]            = Map.empty[Type, String],
 //    override val hintValueModifiers: Map[Type, HintValueModifier] = Map.empty[Type, HintValueModifier],
-//    override val typeValueModifier:  HintValueModifier            = DefaultHintModifier,
+    override val typeValueModifier:  HintValueModifier            = DefaultHintModifier,
 //    override val parseOrElseMap:     Map[Type, Type]              = Map.empty[Type, Type],
     override val enumsAsInt:         Boolean                      = false
 ) extends JackFlavor[JSON] {
@@ -33,8 +33,8 @@ case class JsonFlavor(
   override val stringifyMapKeys: Boolean = true
   override lazy val anyMapKeyTypeAdapter: AnyMapKeyTypeAdapter = AnyMapKeyTypeAdapter(taCache)
 
-  // def allowPermissivePrimitives(): JackFlavor[JSON] =
-  //   this.copy(permissivesOk = true)
+  def allowPermissivePrimitives(): JackFlavor[JSON] =
+    this.copy(permissivesOk = true)
   def enumsAsInts(): JackFlavor[JSON] = this.copy(enumsAsInt = true)
   // def parseOrElse(poe: (Type, Type)*): JackFlavor[JSON] =
   //   this.copy(parseOrElseMap = this.parseOrElseMap ++ poe)
@@ -46,8 +46,8 @@ case class JsonFlavor(
   //   this.copy(hintMap = this.hintMap ++ h)
   // def withHintModifiers(hm: (Type, HintValueModifier)*): JackFlavor[JSON] =
   //   this.copy(hintValueModifiers = this.hintValueModifiers ++ hm)
-  // def withTypeValueModifier(tm: HintValueModifier): JackFlavor[JSON] =
-  //   this.copy(typeValueModifier = tm)
+  def withTypeValueModifier(tm: HintValueModifier): JackFlavor[JSON] =
+    this.copy(typeValueModifier = tm)
 
   def stringWrapTypeAdapterFactory[T](
       wrappedTypeAdapter: TypeAdapter[T],

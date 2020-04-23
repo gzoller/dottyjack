@@ -179,3 +179,6 @@ case class VCShort(vc: Short) extends AnyVal
 case class VCString(vc: String) extends AnyVal
 case class VCUUID(vc: UUID) extends AnyVal
 case class VCNumber(vc: Number) extends AnyVal
+
+// === Permissives test
+case class Holder[T](value: T)

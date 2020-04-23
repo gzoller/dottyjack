@@ -79,7 +79,7 @@ case class TraitTypeAdapter[T](
       writer.writeNull(out)
     else {
       val ccta = calcTA(t.getClass)
-      val hintValue = DefaultHintModifier.unapply(t.getClass) // TODO: Wire up hint value modifiers
+      val hintValue = DefaultHintModifier.unapply(t.getClass.getName) // TODO: Wire up hint value modifiers
       writer.writeObject(
         t, 
         ccta.orderedFieldNames, 

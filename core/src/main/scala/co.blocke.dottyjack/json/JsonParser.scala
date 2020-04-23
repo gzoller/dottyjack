@@ -3,6 +3,7 @@ package json
 
 import model._
 import typeadapter.ClassTypeAdapterBase
+import co.blocke.dotty_reflection._
 
 import scala.collection.mutable
 import scala.jdk.CollectionConverters._
@@ -356,19 +357,18 @@ case class JsonParser(jsRaw: JSON, jackFlavor: JackFlavor[JSON]) extends Parser 
         )
     }
     i = mark // we found hint, but go back to parse object
-    hintType
+    Class.forName(hintType)
   }
 
-  /*
   def resolveTypeMembers(
-      typeMembersByName: Map[String, ClassHelper.TypeMember[_]],
+      typeMembersByName: Map[String, TypeMemberInfo],
       converterFn: HintBijective
-  ): Map[Type, Type] = {
+  ): Map[String, TypeMemberInfo] = {
     val mark = i
     whitespace()
     if (i == max || jsChars(i) != '{')
       throw new ScalaJackError(showError("Expected start of object here"))
-    val collected = new java.util.HashMap[Type, Type]()
+    val collected = new java.util.HashMap[String, TypeMemberInfo]()
     i += 1 // skip over {
     var done = false
     while (!done) {
@@ -381,8 +381,8 @@ case class JsonParser(jsRaw: JSON, jackFlavor: JackFlavor[JSON]) extends Parser 
       if (typeMembersByName.contains(key)) {
         whitespace()
         collected.put(
-          typeMembersByName(key).typeSignature,
-          converterFn.apply(expectString())
+          key,
+          TypeMemberInfo(key, typeMembersByName(key).typeSymbol, Reflector.reflectOnClass(Class.forName(converterFn.apply(expectString()))))
         )
       } else
         skipOverElement()
@@ -397,7 +397,6 @@ case class JsonParser(jsRaw: JSON, jackFlavor: JackFlavor[JSON]) extends Parser 
     i = mark // go back to parse object
     collected.asScala.toMap
   }
-  */
 
   def showError(msg: String): String = {
     val (clip, dashes) = i match {

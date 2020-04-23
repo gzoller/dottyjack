@@ -29,6 +29,7 @@ object TypeAdapterCache {
       TupleTypeAdapterFactory,
       EitherTypeAdapterFactory, // Either must precede SealedTraitTypeAdapter
       // UnionTypeAdapterFactory,
+      // IntersectionTypeAdapterFactory,
       ArrayTypeAdapterFactory,
       EnumTypeAdapterFactory,
       UUIDTypeAdapterFactory,
@@ -54,15 +55,15 @@ object TypeAdapterCache {
       JavaLongTypeAdapterFactory,
       JavaNumberTypeAdapterFactory,
       JavaShortTypeAdapterFactory,
-      // DurationTypeAdapterFactory,
-      // InstantTypeAdapterFactory,
-      // LocalDateTimeTypeAdapterFactory,
-      // LocalDateTypeAdapterFactory,
-      // LocalTimeTypeAdapterFactory,
-      // OffsetDateTimeTypeAdapterFactory,
-      // OffsetTimeTypeAdapterFactory,
-      // PeriodTypeAdapterFactory,
-      // ZonedDateTimeTypeAdapterFactory,
+      DurationTypeAdapterFactory,
+      InstantTypeAdapterFactory,
+      LocalDateTimeTypeAdapterFactory,
+      LocalDateTypeAdapterFactory,
+      LocalTimeTypeAdapterFactory,
+      OffsetDateTimeTypeAdapterFactory,
+      OffsetTimeTypeAdapterFactory,
+      PeriodTypeAdapterFactory,
+      ZonedDateTimeTypeAdapterFactory,
       JavaClassTypeAdapterFactory
     )
 }

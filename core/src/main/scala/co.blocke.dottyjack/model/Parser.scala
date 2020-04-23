@@ -3,6 +3,7 @@ package model
 
 import typeadapter.ClassTypeAdapterBase
 import scala.collection.mutable
+import co.blocke.dotty_reflection.TypeMemberInfo
 
 trait Parser {
   type WIRE
@@ -30,11 +31,10 @@ trait Parser {
   def scanForHint(hint: String, converterFn: HintBijective): Class[_]
 
   // For embedded type members.  Convert the type member into runtime "actual" type, e.g. T --> Foo
-  // TODO
-  // def resolveTypeMembers(
-  //     typeMembersByName: Map[String, ClassHelper.TypeMember[_]],
-  //     converterFn:       HintBijective
-  // ): Map[Type, Type] // Returns Map[Type Signature Type (e.g. 'T'), Type]
+  def resolveTypeMembers(
+      typeMembersByName: Map[String, TypeMemberInfo],
+      converterFn:       HintBijective
+  ): Map[String, TypeMemberInfo] // Returns Map[Type Signature Type (e.g. 'T'), Type]
 
   def showError(msg: String): String
   def backspace(): Unit

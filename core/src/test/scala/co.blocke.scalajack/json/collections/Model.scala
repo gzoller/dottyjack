@@ -100,3 +100,6 @@ case class OptionTuple(foo: Int, t: (Boolean, Option[String], Int))
 case class OptionalBigInt(o: java.util.Optional[BigInt])
 case class OptionalClass(name: String, age: java.util.Optional[Int])
 case class OptionalTuple(foo: Int, t: (Boolean, java.util.Optional[String], Int))
+
+//------- Any
+case class Player(name: String, age: Int)

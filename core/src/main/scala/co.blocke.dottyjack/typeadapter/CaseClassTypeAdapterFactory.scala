@@ -14,7 +14,7 @@ object CaseClassTypeAdapterFactory extends TypeAdapterFactory:
   }
   
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
-    val classInfo = concrete.asInstanceOf[ClassInfo]
+    val classInfo = concrete.asInstanceOf[ScalaClassInfo]
     val bits = mutable.BitSet()
     val args = new Array[Object](classInfo.fields.size)
 
@@ -28,10 +28,12 @@ object CaseClassTypeAdapterFactory extends TypeAdapterFactory:
           }
 
           // See if there's a default value set and blip bits/args accordingly to "pre-set" these values
-          fieldTypeAdapter.defaultValue.map{ default =>
-            args(f.index) = default.asInstanceOf[Object]
+          if f.defaultValueAccessor.isDefined then
+            args(f.index) = f.defaultValueAccessor.get()
             bits -= f.index
-          }
+          else if fieldTypeAdapter.defaultValue.isDefined then
+            args(f.index) = fieldTypeAdapter.defaultValue.get.asInstanceOf[Object]
+            bits -= f.index
 
           ClassFieldMember(
             f,
@@ -47,5 +49,6 @@ object CaseClassTypeAdapterFactory extends TypeAdapterFactory:
       concrete,
       fieldMembersByName,
       args,
-      bits
+      bits,
+      classInfo.typeMembers.map( tmem => (tmem.name, tmem.asInstanceOf[TypeMemberInfo]) ).toMap
     )

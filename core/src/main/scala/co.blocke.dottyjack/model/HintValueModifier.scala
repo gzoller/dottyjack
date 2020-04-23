@@ -9,9 +9,13 @@ trait HintValueModifier extends HintBijective
  * Do-nothing modifier (default if none specified
  */
 object DefaultHintModifier extends HintValueModifier {
-  def apply(rawHint: String): Class[_] = Class.forName(rawHint)
-  def unapply(hintFieldType: Class[_]): String = hintFieldType.getName
+  def apply(rawHint: String): String = rawHint
+  def unapply(hintFieldType: String): String = hintFieldType
 }
+// object DefaultHintModifier extends HintValueModifier {
+//   def apply(rawHint: String): Class[_] = Class.forName(rawHint)
+//   def unapply(hintFieldType: Class[_]): String = hintFieldType.getName
+// }
 
 /* TODO
 /**

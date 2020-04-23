@@ -1,7 +1,7 @@
 package co.blocke.dottyjack
 package model
 
-//import typeadapter._
+import typeadapter._
 import scala.collection.mutable
 import co.blocke.dotty_reflection._
 
@@ -17,7 +17,7 @@ trait JackFlavor[WIRE]: // extends Filterable[WIRE] with ViewSplice {
   // val hintMap: Map[Type, String] = Map.empty[Type, String]
   // val hintValueModifiers: Map[Type, HintValueModifier] =
   //   Map.empty[Type, HintValueModifier]
-  // val typeValueModifier: HintValueModifier     = DefaultHintModifier
+  val typeValueModifier: HintValueModifier     = DefaultHintModifier
   val enumsAsInt: Boolean                      = false
   // val customAdapters: List[TypeAdapterFactory] = List.empty[TypeAdapterFactory]
   // val parseOrElseMap: Map[Type, Type]          = Map.empty[Type, Type]
@@ -26,11 +26,37 @@ trait JackFlavor[WIRE]: // extends Filterable[WIRE] with ViewSplice {
   lazy val taCache: TypeAdapterCache = bakeCache()
 
   def bakeCache(): TypeAdapterCache = 
+    val permissives =
+      if (permissivesOk)
+        List(
+          PermissiveBigDecimalTypeAdapterFactory,
+          PermissiveBigIntTypeAdapterFactory,
+          PermissiveBooleanTypeAdapterFactory,
+          PermissiveByteTypeAdapterFactory,
+          PermissiveDoubleTypeAdapterFactory,
+          PermissiveFloatTypeAdapterFactory,
+          PermissiveIntTypeAdapterFactory,
+          PermissiveLongTypeAdapterFactory,
+          PermissiveShortTypeAdapterFactory,
+          PermissiveJavaBigDecimalTypeAdapterFactory,
+          PermissiveJavaBigIntegerTypeAdapterFactory,
+          PermissiveJavaBooleanTypeAdapterFactory,
+          PermissiveJavaByteTypeAdapterFactory,
+          PermissiveJavaDoubleTypeAdapterFactory,
+          PermissiveJavaFloatTypeAdapterFactory,
+          PermissiveJavaIntTypeAdapterFactory,
+          PermissiveJavaLongTypeAdapterFactory,
+          PermissiveJavaNumberTypeAdapterFactory,
+          PermissiveJavaShortTypeAdapterFactory
+        )
+      else
+        List.empty[TypeAdapterFactory]
     TypeAdapterCache(
       this,
-      TypeAdapterCache.StandardFactories
+      permissives ::: TypeAdapterCache.StandardFactories
     )
-    /* TODO
+
+      /* TODO
     {
     val intermediateContext = TypeAdapterCache(
       this,
@@ -64,36 +90,11 @@ trait JackFlavor[WIRE]: // extends Filterable[WIRE] with ViewSplice {
             }
         }
     }.toList
+    */
 
-    val permissives =
-      if (permissivesOk)
-        List(
-          PermissiveBigDecimalTypeAdapterFactory,
-          PermissiveBigIntTypeAdapterFactory,
-          PermissiveBooleanTypeAdapterFactory,
-          PermissiveByteTypeAdapterFactory,
-          PermissiveDoubleTypeAdapterFactory,
-          PermissiveFloatTypeAdapterFactory,
-          PermissiveIntTypeAdapterFactory,
-          PermissiveLongTypeAdapterFactory,
-          PermissiveShortTypeAdapterFactory,
-          PermissiveJavaBigDecimalTypeAdapterFactory,
-          PermissiveJavaBigIntegerTypeAdapterFactory,
-          PermissiveJavaBooleanTypeAdapterFactory,
-          PermissiveJavaByteTypeAdapterFactory,
-          PermissiveJavaDoubleTypeAdapterFactory,
-          PermissiveJavaFloatTypeAdapterFactory,
-          PermissiveJavaIntTypeAdapterFactory,
-          PermissiveJavaLongTypeAdapterFactory,
-          PermissiveJavaNumberTypeAdapterFactory,
-          PermissiveJavaShortTypeAdapterFactory
-        )
-      else
-        List.empty[TypeAdapterFactory]
-
+    /* TODO
     val staged = parseOrElseFactories ::: permissives ::: intermediateContext.factories.toList
     intermediateContext.copy(factories = NonEmptyList(staged.head, staged.tail))
-  }
   */
 
   final inline def read[T](input: WIRE): T =
@@ -123,13 +124,13 @@ trait JackFlavor[WIRE]: // extends Filterable[WIRE] with ViewSplice {
     ): TypeAdapter[T]
 
   def enumsAsInts(): JackFlavor[WIRE]
-  // def allowPermissivePrimitives(): JackFlavor[WIRE]
+  def allowPermissivePrimitives(): JackFlavor[WIRE]
   // def parseOrElse(poe: (Type, Type)*): JackFlavor[WIRE]
   // def withAdapters(ta: TypeAdapterFactory*): JackFlavor[WIRE]
   // def withDefaultHint(hint: String): JackFlavor[WIRE]
   // def withHints(h: (Type, String)*): JackFlavor[WIRE]
   // def withHintModifiers(hm: (Type, HintValueModifier)*): JackFlavor[WIRE]
-  // def withTypeValueModifier(tm: HintValueModifier): JackFlavor[WIRE]
+  def withTypeValueModifier(tm: HintValueModifier): JackFlavor[WIRE]
 
   // Need WIRE-specific Builder instance.  By default this is StringBuilder.  Mongo will overwrite this.
   def getBuilder: mutable.Builder[WIRE, WIRE] =
