@@ -21,7 +21,6 @@ trait ClassTypeAdapterBase[T] extends TypeAdapter[T] with Classish:
 
 case class CaseClassTypeAdapter[T](
     info:               RType,
-    // typeMembersByName:  Map[String, ClassHelper.TypeMember[T]],
     fieldMembersByName: Map[String, ClassFieldMember[_]],
     argsTemplate:       Array[Object],
     fieldBitsTemplate:  mutable.BitSet,
@@ -76,12 +75,11 @@ case class CaseClassTypeAdapter[T](
       t:      T,
       writer: Writer[WIRE],
       out:    mutable.Builder[WIRE, WIRE]): Unit = 
-    val extras = classInfo.typeMembers.map { tpeMember =>
+    val extras = classInfo.filterTraitTypeParams.typeMembers.map { tpeMember =>
       (
         tpeMember.name,
         ExtraFieldValue(
-          tpeMember.asInstanceOf[TypeMemberInfo].memberType.name,
-          // taCache.jackFlavor.typeValueModifier.unapply(tm.baseType),  // TODO
+          taCache.jackFlavor.typeValueModifier.unapply(tpeMember.asInstanceOf[TypeMemberInfo].memberType.name),
           taCache.jackFlavor.stringTypeAdapter
         )
       )
@@ -120,7 +118,11 @@ case class CaseClassTypeAdapter[T](
       typeMembersByName,
       taCache.jackFlavor.typeValueModifier
     )
-    if (typeMembersByName.size != foundByParser.size)
+    // Filter any non-trait/class type members... we ignore these so they don't mess up type hint modifiers
+    val filtered = typeMembersByName.collect {
+      case (k,tm) if tm.memberType.isInstanceOf[TraitInfo] || tm.memberType.isInstanceOf[ScalaClassInfo] => (k,tm)
+    }
+    if (filtered.size != foundByParser.size)
       throw new ScalaJackError(
         parser.showError(
           "Did not find required type member(s): " + typeMembersByName.keySet
@@ -138,13 +140,11 @@ case class CaseClassTypeAdapter[T](
         // handle wrapped types (Option, Fallback, Collections, etc.)
         // NOTE: This is sub-optimal and not "deep".  Need a better solution to sew past Level-0
         val fixedTypeAdapter = fm.valueTypeAdapter match {
-          // TODO
-          // case fallback: FallbackTypeAdapter[_, _] =>
-          //   FallbackTypeAdapter(
-          //     fallback.taCache,
-          //     Some(actualTypeAdapter.asInstanceOf[TypeAdapter[Any]]),
-          //     fallback.orElseType
-          //   )
+          case fallback: FallbackTypeAdapter[_, _] =>
+            FallbackTypeAdapter(
+              actualTypeAdapter.asInstanceOf[TypeAdapter[Any]],
+              fallback.orElseTypeAdapter.asInstanceOf[TypeAdapter[Any]]
+            )
           case op: OptionTypeAdapter[_] => op.copy(valueTypeAdapter = actualTypeAdapter)
           // TODO: EitherTypeAdapter
           // TODO: ArrayTypeAdapter

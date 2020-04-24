@@ -20,7 +20,7 @@ trait JackFlavor[WIRE]: // extends Filterable[WIRE] with ViewSplice {
   val typeValueModifier: HintValueModifier     = DefaultHintModifier
   val enumsAsInt: Boolean                      = false
   // val customAdapters: List[TypeAdapterFactory] = List.empty[TypeAdapterFactory]
-  // val parseOrElseMap: Map[Type, Type]          = Map.empty[Type, Type]
+  val parseOrElseMap: Map[RType, RType]        = Map.empty[RType, RType]
   val permissivesOk: Boolean                   = false
 
   lazy val taCache: TypeAdapterCache = bakeCache()
@@ -51,51 +51,36 @@ trait JackFlavor[WIRE]: // extends Filterable[WIRE] with ViewSplice {
         )
       else
         List.empty[TypeAdapterFactory]
-    TypeAdapterCache(
-      this,
-      permissives ::: TypeAdapterCache.StandardFactories
-    )
 
-      /* TODO
-    {
-    val intermediateContext = TypeAdapterCache(
-      this,
-      List(
-        typeadapter.CollectionTypeAdapterFactory(this, enumsAsInt),
-        customAdapters ::: TypeAdapterCache.StandardFactories
-      )
-    )
+    // TODO
+    // val intermediateContext = TypeAdapterCache(
+    //   this,
+    //   List(
+    //     typeadapter.CollectionTypeAdapterFactory(this, enumsAsInt),
+    //     customAdapters ::: TypeAdapterCache.StandardFactories
+    //   )
+    // )
 
     // ParseOrElse functionality
-    val parseOrElseFactories = parseOrElseMap.map {
-      case (attemptedType, fallbackType @ _) =>
-        val attemptedTypeAdapter =
-          intermediateContext.typeAdapter(attemptedType)
-
+    val parseOrElseFactories: List[TypeAdapterFactory] = parseOrElseMap.map {
+      case (attemptedType, fallbackType) => //@ _) =>
         new TypeAdapterFactory {
-          override def typeAdapterOf[T](next: TypeAdapterFactory)(
-              implicit
-              taCache: TypeAdapterCache,
-              typeTag: TypeTag[T]
-          ): TypeAdapter[T] =
-            if (typeTag.tpe =:= attemptedType) {
-              val primary = attemptedTypeAdapter.asInstanceOf[TypeAdapter[T]]
-              FallbackTypeAdapter[T, T](
-                () => taCache, // We use an accessor function here because taCache isn't baked at this point!
-                Some(primary),
-                fallbackType
-              )
-            } else {
-              next.typeAdapterOf[T]
-            }
+          def matches(concrete: RType): Boolean = concrete == attemptedType
+        
+          def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] = 
+            FallbackTypeAdapter( taCache.typeAdapterOf(concrete), taCache.typeAdapterOf(fallbackType) )
         }
     }.toList
-    */
+
+    TypeAdapterCache(
+      this,
+      parseOrElseFactories ::: permissives ::: TypeAdapterCache.StandardFactories
+    )
 
     /* TODO
     val staged = parseOrElseFactories ::: permissives ::: intermediateContext.factories.toList
     intermediateContext.copy(factories = NonEmptyList(staged.head, staged.tail))
-  */
+    */
 
   final inline def read[T](input: WIRE): T =
     val typeAdapter = taCache.typeAdapterOf[T]
@@ -125,7 +110,7 @@ trait JackFlavor[WIRE]: // extends Filterable[WIRE] with ViewSplice {
 
   def enumsAsInts(): JackFlavor[WIRE]
   def allowPermissivePrimitives(): JackFlavor[WIRE]
-  // def parseOrElse(poe: (Type, Type)*): JackFlavor[WIRE]
+  def parseOrElse(poe: (RType, RType)*): JackFlavor[WIRE]
   // def withAdapters(ta: TypeAdapterFactory*): JackFlavor[WIRE]
   // def withDefaultHint(hint: String): JackFlavor[WIRE]
   // def withHints(h: (Type, String)*): JackFlavor[WIRE]

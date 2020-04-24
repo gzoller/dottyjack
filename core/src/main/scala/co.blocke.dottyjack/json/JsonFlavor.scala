@@ -2,19 +2,20 @@ package co.blocke.dottyjack
 package json
 
 import model._
+import co.blocke.dotty_reflection.RType
 import typeadapter.{AnyMapKeyTypeAdapter, StringWrapTypeAdapter}
 
 opaque type JSON = String
 
 case class JsonFlavor(
-    override val defaultHint:        String                       = "_hint",
-    override val permissivesOk:      Boolean                      = false,
+  override val defaultHint:        String                       = "_hint",
+  override val permissivesOk:      Boolean                      = false,
 //    override val customAdapters:     List[TypeAdapterFactory]     = List.empty[TypeAdapterFactory],
 //    override val hintMap:            Map[Type, String]            = Map.empty[Type, String],
 //    override val hintValueModifiers: Map[Type, HintValueModifier] = Map.empty[Type, HintValueModifier],
-    override val typeValueModifier:  HintValueModifier            = DefaultHintModifier,
-//    override val parseOrElseMap:     Map[Type, Type]              = Map.empty[Type, Type],
-    override val enumsAsInt:         Boolean                      = false
+  override val typeValueModifier:  HintValueModifier            = DefaultHintModifier,
+  override val parseOrElseMap:     Map[RType, RType]            = Map.empty[RType, RType],
+  override val enumsAsInt:         Boolean                      = false
 ) extends JackFlavor[JSON] {
 
   def _read[T](input: JSON, typeAdapter: TypeAdapter[T]): T =
@@ -36,8 +37,8 @@ case class JsonFlavor(
   def allowPermissivePrimitives(): JackFlavor[JSON] =
     this.copy(permissivesOk = true)
   def enumsAsInts(): JackFlavor[JSON] = this.copy(enumsAsInt = true)
-  // def parseOrElse(poe: (Type, Type)*): JackFlavor[JSON] =
-  //   this.copy(parseOrElseMap = this.parseOrElseMap ++ poe)
+  def parseOrElse(poe: (RType, RType)*): JackFlavor[JSON] =
+    this.copy(parseOrElseMap = this.parseOrElseMap ++ poe)
   // def withAdapters(ta: TypeAdapterFactory*): JackFlavor[JSON] =
   //   this.copy(customAdapters = this.customAdapters ++ ta.toList)
   // def withDefaultHint(hint: String): JackFlavor[JSON] =

@@ -49,7 +49,7 @@ lazy val scalajack = project
     libraryDependencies ++= 
       Seq(
         "commons-codec" % "commons-codec" % "1.12",
-        "co.blocke" %% "dotty-reflection" % "tracing_a5e83e", //"44e613_SNAPSHOT",
+        "co.blocke" %% "dotty-reflection" % "tracing_b24488", //"44e613_SNAPSHOT",
         "munit" %% "munit" % "0.6.z-3" % "test"   // special build of munit compatible with Dotty 0.24
       )
   )

@@ -15,7 +15,7 @@ case class Boo[T <: Thing]( a: T )
 class TypeMembers extends FunSuite:
 
   val sj = co.blocke.dottyjack.DottyJack()
-  // val sj2 = ScalaJack().parseOrElse((typeOf[Body] -> typeOf[DefaultBody]))
+  val sj2 = co.blocke.dottyjack.DottyJack().parseOrElse((RType.of[Body] -> RType.of[DefaultBody]))
 
   test("Read and match") {
     describe("-----------------------------\n:  Externalized Type Tests  :\n-----------------------------",Console.BLUE)
@@ -55,60 +55,38 @@ class TypeMembers extends FunSuite:
   }
 
   test("Type modifier works") {
-    pending
-    // val sjm = ScalaJack().withTypeValueModifier(
-    //   ClassNameHintModifier(
-    //     (hint: String) => "co.blocke.scalajack.json.structures." + hint,
-    //     (cname: String) => cname.spltest('.').last
-    //   )
-    // )
-    // val value: Envelope[Body] = Envelope("DEF", FancyBody("BOO"))
-    // val js = sjm.render[Envelope[Body]](value)
-    // assertEquals(
-    //   """{"Giraffe":"Body","id":"DEF","body":{"_hint":"co.blocke.scalajack.json.structures.FancyBody","message":"BOO"}}""".asInstanceOf[JSON]
-    // ) {
-    //     js
-    //   }
-    // assertEquals(value) {
-    //   sjm.read[Envelope[Body]](js)
-    // }
+    val sjm = co.blocke.dottyjack.DottyJack().withTypeValueModifier(
+      co.blocke.dottyjack.model.ClassNameHintModifier(
+        (hint: String) => "co.blocke.scalajack.json.structures." + hint,
+        (cname: String) => cname.split('.').last
+      )
+    )
+    val value: Envelope[Body] = Envelope("DEF", FancyBody("BOO"))
+    val js = sjm.render[Envelope[Body]](value)
+    assertEquals(
+      """{"Giraffe":"Body","id":"DEF","body":{"_hint":"co.blocke.scalajack.json.structures.FancyBody","message":"BOO"}}""".asInstanceOf[JSON], js)
+    assertEquals(value, sjm.read[Envelope[Body]](js))
   }
 
   test("Handles mutliple externalized types (bonus: with modifier)") {
-    pending
-    // val sjm = ScalaJack().withTypeValueModifier(
-    //   ClassNameHintModifier(
-    //     (hint: String) => "co.blocke.scalajack.json.structures." + hint,
-    //     (cname: String) => cname.spltest('.').last
-    //   )
-    // )
-    // val value: BigEnvelope[Body, Hobby, Int] =
-    //   BigEnvelope("DEF", FancyBody("BOO"), InsideHobby("stamps"))
-    // val js = sjm.render[BigEnvelope[Body, Hobby, Int]](value)
-    // assertEquals(
-    //   """{"Hippo":"Hobby","Giraffe":"Body","id":"DEF","body":{"_hint":"co.blocke.scalajack.json.structures.FancyBody","message":"BOO"},"hobby":{"_hint":"co.blocke.scalajack.json.structures.InsideHobby","desc":"stamps"}}""".asInstanceOf[JSON]
-    // ) {
-    //     js
-    //   }
-    // assertEquals(value) {
-    //   sjm.read[BigEnvelope[Body, Hobby, Int]](js)
-    // }
+    val sjm = co.blocke.dottyjack.DottyJack().withTypeValueModifier(
+      co.blocke.dottyjack.model.ClassNameHintModifier(
+        (hint: String) => "co.blocke.scalajack.json.structures." + hint,
+        (cname: String) => cname.split('.').last
+      )
+    )
+    val value: BigEnvelope[Body, Hobby, Int] =
+      BigEnvelope("DEF", FancyBody("BOO"), InsideHobby("stamps"))
+    val js = sjm.render[BigEnvelope[Body, Hobby, Int]](value)
+    assertEquals(
+      """{"Giraffe":"Body","Hippo":"Hobby","id":"DEF","body":{"_hint":"co.blocke.scalajack.json.structures.FancyBody","message":"BOO"},"hobby":{"_hint":"co.blocke.scalajack.json.structures.InsideHobby","desc":"stamps"}}""".asInstanceOf[JSON],
+      js)
+    assertEquals(value, sjm.read[BigEnvelope[Body, Hobby, Int]](js))
   }
   
-  // test("In case we need to use TypeTags vs a type [T] for read") {
-  //   val json =
-  //     """{"Giraffe":"co.blocke.scalajack.json.structures.FancyBody","id":"ABC","body":{"message":"Hello"}}""".asInstanceOf[JSON]
-  //   val expected: Envelope[Body] = Envelope("ABC", FancyBody("Hello"))
-  //   assertEquals(expected, sj.read(json)(TypeTags.of(typeOf[Envelope[Body]])))
-  // }
-
   test("Works with ParseOrElse") {
-    pending
-    // val js =
-    //   """{"Giraffe":"co.blocke.scalajack.json.structures.FancyBody","id":"DEF","body":{"bogus":"BOO"}}""".asInstanceOf[JSON]
-    // val expected: Envelope[Body] =
-    //   Envelope("DEF", DefaultBody("Unknown body"))
-    // assertEquals(expected) {
-    //   sj2.read[Envelope[Body]](js)
-    // }
+    val js =
+      """{"Giraffe":"co.blocke.scalajack.json.structures.FancyBody","id":"DEF","body":{"bogus":"BOO"}}""".asInstanceOf[JSON]
+    val expected: Envelope[Body] = Envelope("DEF", DefaultBody("Unknown body"))
+    assertEquals(expected,sj2.read[Envelope[Body]](js))
   }
