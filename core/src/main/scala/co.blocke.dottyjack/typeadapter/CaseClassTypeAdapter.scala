@@ -51,12 +51,12 @@ case class CaseClassTypeAdapter[T](
 
       if (foundBits.isEmpty) then
         val asBuilt = 
+          val const = classInfo.infoClass.getConstructors.head // <-- NOTE: head here isn't bullet-proof, but a generally safe assumption for case classes.  (Req because of arg typing mess.)
           if (classInfo.typeMembers.nonEmpty) then
             val originalArgTypes = classInfo.fields.map(_.fieldType.infoClass)
-            val const = classInfo.infoClass.getConstructors.head // <-- NOTE: head here isn't bullet-proof, but a generally safe assumption for case classes.  (Req because of arg typing mess.)
             const.newInstance(args:_*).asInstanceOf[T]
           else
-            classInfo.constructWith[T](args)
+            const.newInstance(args:_*).asInstanceOf[T]
         if isSJCapture
           asBuilt.asInstanceOf[SJCapture].captured = captured
         asBuilt
@@ -75,19 +75,44 @@ case class CaseClassTypeAdapter[T](
       t:      T,
       writer: Writer[WIRE],
       out:    mutable.Builder[WIRE, WIRE]): Unit = 
-    val extras = classInfo.filterTraitTypeParams.typeMembers.map { tpeMember =>
-      (
-        tpeMember.name,
-        ExtraFieldValue(
-          taCache.jackFlavor.typeValueModifier.unapply(tpeMember.asInstanceOf[TypeMemberInfo].memberType.name),
-          taCache.jackFlavor.stringTypeAdapter
-        )
-      )
-    }
+
+    // Resolve actual types (in t) of any type members
+    val filteredTypeMembers = classInfo.filterTraitTypeParams.typeMembers
+    val (extras, resolvedFieldMembersByName) =
+      if filteredTypeMembers.nonEmpty then
+        val xtras = filteredTypeMembers.map{ tm =>
+          val foundActualField = classInfo.fields.find( _.asInstanceOf[ScalaFieldInfo].originalSymbol == Some(tm.typeSymbol) )
+          val resolvedTypeMember = foundActualField.map{ a => 
+            val actualRtype = Reflector.reflectOnClass(a.valueAccessor.invoke(t).getClass)
+            tm.copy(memberType = actualRtype)
+          }.getOrElse(tm)
+          (
+            resolvedTypeMember.name,
+            ExtraFieldValue(
+              taCache.jackFlavor.typeValueModifier.unapply(resolvedTypeMember.asInstanceOf[TypeMemberInfo].memberType.name),
+              taCache.jackFlavor.stringTypeAdapter
+            )
+          )
+        }
+
+        val filteredTypeMemberSymbols = filteredTypeMembers.map(_.typeSymbol)
+        val resolvedFields = fieldMembersByName.map{ case (fname, aField) =>        
+          val aScalaField = aField.info.asInstanceOf[ScalaFieldInfo]
+          if aScalaField.originalSymbol.isDefined && filteredTypeMemberSymbols.contains(aScalaField.originalSymbol.get) then
+            val actualRtype = Reflector.reflectOnClass(aScalaField.valueAccessor.invoke(t).getClass)
+            fname -> aField.copy( info = aScalaField.copy( fieldType = actualRtype ), valueTypeAdapter = taCache.typeAdapterOf(actualRtype) )
+          else
+            fname -> aField
+        }
+
+        (xtras, resolvedFields)
+      else
+        (Nil, fieldMembersByName)
+
     writer.writeObject(
       t,
       orderedFieldNames,
-      fieldMembersByName,
+      resolvedFieldMembersByName,
       out,
       extras.toList
     )
@@ -134,28 +159,21 @@ case class CaseClassTypeAdapter[T](
     // Map[TypeSymbol,TypeSymbolInfo] 
     val invertedBySymbol = foundByParser.map( (name, tpeInfo) => (tpeInfo.typeSymbol, tpeInfo))
 
+    // NOTE: This is sub-optimal and not "deep".  Need a better solution to sew past Level-1 for a general n-deep solution
+    // As it stands, reflection doesn't provide a way to "sew" types deeply (dynamically).
     fieldMembersByName.map {
       case (name, fm) if fm.info.originalSymbol.flatMap(s => invertedBySymbol.get(s)).isDefined =>
         val actualTypeAdapter = taCache.typeAdapterOf(invertedBySymbol(fm.info.originalSymbol.get).memberType) // get TypeAdapter for actual type
-        // handle wrapped types (Option, Fallback, Collections, etc.)
-        // NOTE: This is sub-optimal and not "deep".  Need a better solution to sew past Level-0
         val fixedTypeAdapter = fm.valueTypeAdapter match {
           case fallback: FallbackTypeAdapter[_, _] =>
             FallbackTypeAdapter(
               actualTypeAdapter.asInstanceOf[TypeAdapter[Any]],
               fallback.orElseTypeAdapter.asInstanceOf[TypeAdapter[Any]]
             )
-          case op: OptionTypeAdapter[_] => op.copy(valueTypeAdapter = actualTypeAdapter)
-          // TODO: EitherTypeAdapter
-          // TODO: ArrayTypeAdapter
-          // TODO: Collections...
-          // TODO: TupleTypeAdapter
-          // TODO: UnionTypeAdapter
-          // TODO: IntersectionTypeAdapter
-          // TODO: Java TypeAdapters
           case _ => actualTypeAdapter
         }
         (name, fm.copy(info = fm.info.asInstanceOf[ScalaFieldInfo].copy(fieldType = invertedBySymbol(fm.info.originalSymbol.get)), valueTypeAdapter = fixedTypeAdapter))
-      case (name, fm) => (name, fm)
+      case (name, fm) =>
+        (name, fm)
     }
 

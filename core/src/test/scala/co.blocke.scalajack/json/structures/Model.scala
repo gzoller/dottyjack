@@ -40,3 +40,16 @@ case class BigEnvelope[T <: Body, H <: Hobby, X](
 }
 
 case class Bigger(foo: Int, env: Envelope[FancyBody])
+
+// === Unions
+case class Person(name: String, age: Int)
+case class Multi2(one: List[Boolean] | List[String])
+case class Multi3(one: List[String] | List[Int] | Boolean)
+case class Multi4(one: List[String] | List[Int] | Boolean | Person)
+
+// === Intersections
+trait InterA{ val a: Int }
+trait InterB{ val b: Boolean }
+trait InterC{ val c: Char }
+case class InterImpl(a: Int, b: Boolean, c: Char) extends InterA with InterB with InterC
+case class IntersectionHolder( a: InterA & InterB & InterC )
