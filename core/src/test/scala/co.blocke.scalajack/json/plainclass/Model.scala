@@ -86,35 +86,29 @@ class UnneededType[T](val a: Int) {
 
 //------------------------------------------------------
 case class VCDouble(vc: Double) extends AnyVal
-class PlayerMix() {
+class PlayerMix(val name: String, val maybe: Option[Int], val age: Option[VCDouble]) {
   def someConfusingThing() = true
-  var name: String = "" // public var member
-  var maybe: Option[Int] = Some(1) // optional member
 
   @Ignore var bogus: String = ""
 
-  private var _age: VCDouble = VCDouble(0.0)
-  @Optional def age: VCDouble = _age // getter/setter member
-  def age_=(a: VCDouble): Unit = _age = a
+  // private var _age: VCDouble = VCDouble(0.0)
+  // @Optional def age: VCDouble = _age // getter/setter member
+  // def age_=(a: VCDouble): Unit = _age = a
 }
 
-class BigPlayer() extends PlayerMix {
+class BigPlayer(
+    override val name: String, 
+    override val maybe: Option[Int], 
+    override val age: Option[VCDouble]) extends PlayerMix(name,maybe,age) 
+  {
   var more: Int = 0
 }
 
 class NotAllVals(val a: Int, b: Int, val c: Int)
 
-class Embed() {
-  var stuff: List[String] = List.empty[String]
-  var num: Int = 0
-}
-class Boom() {
-  var name: String = ""
-  var other: Try[Embed] = Success(null)
-}
+class Embed(val stuff: List[String], val num: Int)
+class Boom(val name: String, val other: Try[Embed])
 
-class Cap() extends SJCapture {
-  var name: String = ""
-}
+class Cap(val name: String) extends SJCapture
 
 case class CaseCap(name: String) extends SJCapture

@@ -50,7 +50,9 @@ lazy val scalajack = project
       Seq(
         "commons-codec" % "commons-codec" % "1.12",
         "co.blocke" %% "dotty-reflection" % "tracing_b24488", //"44e613_SNAPSHOT",
-        "munit" %% "munit" % "0.6.z-3" % "test"   // special build of munit compatible with Dotty 0.24
+        "munit" %% "munit" % "0.6.z-3" % "test",   // special build of munit compatible with Dotty 0.24
+        "org.json4s" % "json4s-core_2.13" % "3.6.6" % "test",
+        "org.json4s" % "json4s-native_2.13" % "3.6.6" % "test"
       )
   )
 
