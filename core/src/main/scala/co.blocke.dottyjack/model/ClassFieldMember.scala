@@ -23,8 +23,3 @@ case class ClassFieldMember[T](
   // valueSetterMethod:       Option[Method], // for Java beans setters
   // hasOptionalAnnotation:   Boolean              = false
 )
-
-
-// object ClassFieldMember:
-//   def apply[T](info: FieldInfo): ClassFieldMember[T] = ???
-    // Challenge:  Get from FieldInfo.fieldType --> TypeAdapter[T]

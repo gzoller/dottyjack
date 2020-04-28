@@ -17,6 +17,10 @@ trait ClassTypeAdapterBase[T] extends TypeAdapter[T] with Classish:
   val isSJCapture:        Boolean
   val fieldMembersByName: Map[String, ClassFieldMember[_]]
   val isCaseClass:        Boolean = false
+  val orderedFieldNames = info.asInstanceOf[ClassInfo].fields.map{ f => 
+    // Re-map field names if @Change annotation is present
+    f.annotations.get("co.blocke.dottyjack.Change").map(_("name")).getOrElse(f.name)
+    }
 
 
 case class CaseClassTypeAdapter[T](
@@ -31,7 +35,7 @@ case class CaseClassTypeAdapter[T](
   override val isCaseClass = true;
 
   private val classInfo = info.asInstanceOf[ScalaClassInfo]
-  val orderedFieldNames = classInfo.fields.map(_.name)
+  // val orderedFieldNames = classInfo.fields.map(_.name)
 
   val isSJCapture = classInfo.hasMixin("co.blocke.dottyjack.SJCapture")
 

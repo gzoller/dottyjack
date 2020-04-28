@@ -13,14 +13,12 @@ class Misc() extends FunSuite:
 
   val sj = co.blocke.dottyjack.DottyJack()
 
-  /*
   test("Read/write null into object") {
     describe("------------------------\n:  Misc Tests (Plain)  :\n------------------------", Console.BLUE)
 
     assert(null == sj.read[PlayerMix]("null".asInstanceOf[JSON]) )
     assert("null".asInstanceOf[JSON] == sj.render[PlayerMix](null) )
   }
-  */
 
   test("Handles type members with modifier") {
     val prependHintMod = ClassNameHintModifier(
@@ -34,43 +32,45 @@ class Misc() extends FunSuite:
     assertEquals(sj2.render(inst), js)
   }
 
-  /*
   test("Fails if no hint for type member") {
-    val js = """{"rose":{"thing":5,"other":6}}"""
+    val js = """{"rose":{"thing":5,"other":6}}""".asInstanceOf[JSON]
     val msg =
       """Did not find required type member(s): flower
       |{"rose":{"thing":5,"other":6}}
       |^""".stripMargin
-    the[ScalaJackError] thrownBy sj.read[WrapTrait[TraitBase]](js) should have message msg
+    interceptMessage[co.blocke.dottyjack.ScalaJackError](msg){
+      sj.read[WrapTrait[TraitBase]](js)
+    }
   }
 
   test("Must accept missing default constructor values") {
-    val js = """{"foobar":3, "quatro":4, "dontForget":1}"""
+    val js = """{"foobar":3, "quatro":4, "dontForget":1}""".asInstanceOf[JSON]
     val inst = sj.read[InheritSimpleBase](js)
-    inst.one should be("blather")
+    assertEquals(inst.one, "blather")
   }
 
   test("Must accept missing optional constructor values") {
-    val js = """{}"""
+    val js = """{}""".asInstanceOf[JSON]
     val inst = sj.read[OptConst](js)
-    inst.a should be(None)
-    inst.b should be(Some(3))
+    assertEquals(inst.a, None)
+    assertEquals(inst.b, Some(3))
   }
 
   test("Must ignore unneeded type members") {
-    val inst = new UnneededType[String]()
-    inst.a = 9
-    sj.render(inst) should be("""{"a":9}""")
+    val inst = new UnneededType[String](9)
+    assertEquals(sj.render(inst), """{"a":9}""".asInstanceOf[JSON])
   }
 
   test("Must require Java classes to have an empty constructor") {
     val inst = new Unsupported("Foo")
-    the[IllegalStateException] thrownBy sj.render(inst) should have message """ScalaJack does not support Java classes with a non-empty constructor."""
+    interceptMessage[co.blocke.dottyjack.ScalaJackError]("""ScalaJack does not support Java classes with a non-empty constructor."""){
+      sj.render(inst)
+    }
   }
 
-  test("Must handle MapName on Java setter") {
-    val js = """{"dos":9}"""
+  test("Must handle Change on Java setter") {
+    val js = """{"dos":9}""".asInstanceOf[JSON]
     val inst = sj.read[OnSetter](js)
-    inst.getTwo should be(9)
+    assertEquals(inst.getTwo, 9)
+    assertEquals(sj.render(inst), js)
   }
-*/

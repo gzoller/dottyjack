@@ -6,6 +6,7 @@ import model._
 import scala.collection.mutable
 import co.blocke.dotty_reflection._
 import co.blocke.dotty_reflection.info._
+import scala.util.Try
 
 object JavaClassTypeAdapterFactory extends TypeAdapterFactory:
   def matches(concrete: RType): Boolean = 
@@ -18,6 +19,10 @@ object JavaClassTypeAdapterFactory extends TypeAdapterFactory:
     val bits = mutable.BitSet()
     val args = new Array[Object](classInfo.fields.size)
 
+    Try(classInfo.asInstanceOf[JavaClassInfo].infoClass.getConstructor()).toOption.orElse(
+      throw new ScalaJackError("ScalaJack does not support Java classes with a non-empty constructor.")
+    )
+
     classInfo.fields.map( f => bits += f.index )
     val fieldMembersByName = 
       concrete.asInstanceOf[JavaClassInfo].fields.map{ f => 
@@ -29,10 +34,10 @@ object JavaClassTypeAdapterFactory extends TypeAdapterFactory:
               taCache.typeAdapterOf(c),
               None,  // TODO
               None,  // TODO
-              None   // TODO
+              f.annotations.get("co.blocke.dottyjack.Change").map(_("name"))
             )
         }
-        f.name -> fieldMember}.toMap
+        fieldMember.fieldMapName.getOrElse(f.name) -> fieldMember}.toMap
     JavaClassTypeAdapter(concrete, args, bits, fieldMembersByName)
 
 
@@ -44,7 +49,7 @@ case class JavaClassTypeAdapter[J](
   )(implicit taCache: TypeAdapterCache) extends ClassTypeAdapterBase[J]:
 
   val javaClassInfo = info.asInstanceOf[JavaClassInfo]
-  private val orderedFieldNames = javaClassInfo.fields.map(_.name)
+  // private val orderedFieldNames = javaClassInfo.fields.map(_.name)
   val isSJCapture = javaClassInfo.hasMixin("co.blocke.dottyjack.SJCapture")
 
   def read(parser: Parser): J =

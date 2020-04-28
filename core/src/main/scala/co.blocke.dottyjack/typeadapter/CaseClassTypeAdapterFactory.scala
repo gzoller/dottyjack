@@ -40,7 +40,7 @@ object CaseClassTypeAdapterFactory extends TypeAdapterFactory:
             fieldTypeAdapter,
             None,  // TODO
             None,  // TODO
-            None   // TODO
+            f.annotations.get("co.blocke.dottyjack.Change").map(_("name"))
           )
         }
         f.name -> fieldMember}.toMap

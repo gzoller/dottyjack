@@ -80,11 +80,8 @@ class OptConst(val a: Option[Int]) {
   var b: Option[Int] = Some(3)
 }
 
-class UnneededType[T]() {
+class UnneededType[T](val a: Int) {
   type item = T
-
-  val m: T = null.asInstanceOf[item]
-  var a: Int = 5
 }
 
 //------------------------------------------------------

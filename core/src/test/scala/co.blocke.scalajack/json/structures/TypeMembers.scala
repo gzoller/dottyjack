@@ -42,7 +42,7 @@ class TypeMembers extends FunSuite:
   test("Write -- Trait T value") {
     val value: Envelope[Body] = Envelope("DEF", FancyBody("BOO"))
     val expected =
-      """{"Giraffe":"co.blocke.scalajack.json.structures.Body","id":"DEF","body":{"_hint":"co.blocke.scalajack.json.structures.FancyBody","message":"BOO"}}""".asInstanceOf[JSON]
+      """{"Giraffe":"co.blocke.scalajack.json.structures.FancyBody","id":"DEF","body":{"message":"BOO"}}""".asInstanceOf[JSON]
     assertEquals(expected, sj.render[Envelope[Body]](value))
   }
 
@@ -64,7 +64,7 @@ class TypeMembers extends FunSuite:
     val value: Envelope[Body] = Envelope("DEF", FancyBody("BOO"))
     val js = sjm.render[Envelope[Body]](value)
     assertEquals(
-      """{"Giraffe":"Body","id":"DEF","body":{"_hint":"co.blocke.scalajack.json.structures.FancyBody","message":"BOO"}}""".asInstanceOf[JSON], js)
+      """{"Giraffe":"FancyBody","id":"DEF","body":{"message":"BOO"}}""".asInstanceOf[JSON], js)
     assertEquals(value, sjm.read[Envelope[Body]](js))
   }
 
@@ -79,7 +79,7 @@ class TypeMembers extends FunSuite:
       BigEnvelope("DEF", FancyBody("BOO"), InsideHobby("stamps"))
     val js = sjm.render[BigEnvelope[Body, Hobby, Int]](value)
     assertEquals(
-      """{"Giraffe":"Body","Hippo":"Hobby","id":"DEF","body":{"_hint":"co.blocke.scalajack.json.structures.FancyBody","message":"BOO"},"hobby":{"_hint":"co.blocke.scalajack.json.structures.InsideHobby","desc":"stamps"}}""".asInstanceOf[JSON],
+      """{"Giraffe":"FancyBody","Hippo":"InsideHobby","id":"DEF","body":{"message":"BOO"},"hobby":{"desc":"stamps"}}""".asInstanceOf[JSON],
       js)
     assertEquals(value, sjm.read[BigEnvelope[Body, Hobby, Int]](js))
   }

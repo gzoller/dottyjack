@@ -177,7 +177,7 @@ class Arrays() extends FunSuite:
     val inst = JavaArray()
     inst.setBigDecs(Array(java.math.BigDecimal.valueOf(123.4),java.math.BigDecimal.valueOf(456.7)))
     inst.setBigInts(Array(java.math.BigInteger.valueOf(123),java.math.BigInteger.valueOf(456)))
-    inst.setBooleans(Array(java.lang.Boolean.valueOf(true),java.lang.Boolean.valueOf("false")))
+    inst.setBooleans(Array(java.lang.Boolean.valueOf(true),java.lang.Boolean.valueOf("false")).asInstanceOf[Array[java.lang.Boolean]])
     inst.setBytes(Array(java.lang.Byte.valueOf(24.toByte),java.lang.Byte.valueOf(12.toByte)))
     inst.setCharacters(Array(java.lang.Character.valueOf('a'),java.lang.Character.valueOf('z')))
     inst.setDoubles(Array(java.lang.Double.valueOf(12.34),java.lang.Double.valueOf(-56.78)))
