@@ -1,5 +1,6 @@
 package co.blocke.dottyjack
 package typeadapter
+package classes
 
 import model._
 
@@ -32,7 +33,7 @@ object JavaClassTypeAdapterFactory extends TypeAdapterFactory:
             ClassFieldMember(
               f,
               taCache.typeAdapterOf(c),
-              None,  // TODO
+              classInfo.infoClass,  // TODO
               None,  // TODO
               f.annotations.get("co.blocke.dottyjack.Change").map(_("name"))
             )

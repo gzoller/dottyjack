@@ -9,6 +9,10 @@ import munit.internal.console
 import co.blocke.dottyjack.json.JSON
 
 
+trait Distance extends Any
+case class Meter(val value: Double) extends AnyVal with Distance
+
+
 class Misc() extends FunSuite:
 
   val sj = co.blocke.dottyjack.DottyJack()
@@ -16,10 +20,29 @@ class Misc() extends FunSuite:
   test("Read/write null into object") {
     describe("------------------------\n:  Misc Tests (Plain)  :\n------------------------", Console.BLUE)
 
-    assert(null == sj.read[PlayerMix]("null".asInstanceOf[JSON]) )
-    assert("null".asInstanceOf[JSON] == sj.render[PlayerMix](null) )
+    // println(Reflector.reflectOn[PlayerMix])
+    // println(sj.read[PlayerMix]("null".asInstanceOf[JSON]))
+    // assert(null == sj.read[PlayerMix]("null".asInstanceOf[JSON]) )
+    // assert("null".asInstanceOf[JSON] == sj.render[PlayerMix](null) )
+
+    val z = """{"vc":[55.43]}""".asInstanceOf[JSON]
+    println(sj.read[One](z).vc(0))
+
+    /*
+    Notes:  When a ValueClass must be instantiated (e.g. when its an element type of an Array), the SJ code
+    works just fine--meaning the constructors expect the ValueClass.  When it doesn't need to be instantiated
+    everything expects the wrapped primitive type and the SJ code fails on construction.
+
+    So... the trick is this: How can we tell when we need VC or the wrapped type???  How would the TypeAdapter
+    handle this, since it is typed to one thing: VC?
+    */
+
+    // val js = sj.render(One(VCDouble(12.34)))
+    // println(js)
+    // println(sj.read[One](js))
   }
 
+  /*
   test("Handles type members with modifier") {
     val prependHintMod = ClassNameHintModifier(
       (hint: String) => "co.blocke.scalajack.json.plainclass." + hint,
@@ -57,7 +80,8 @@ class Misc() extends FunSuite:
   }
 
   test("Must ignore unneeded type members") {
-    val inst = new UnneededType[String](9)
+    val inst = new UnneededType[String]()
+    inst.a = 9
     assertEquals(sj.render(inst), """{"a":9}""".asInstanceOf[JSON])
   }
 
@@ -74,3 +98,4 @@ class Misc() extends FunSuite:
     assertEquals(inst.getTwo, 9)
     assertEquals(sj.render(inst), js)
   }
+*/

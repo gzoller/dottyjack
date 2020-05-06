@@ -1,7 +1,7 @@
 package co.blocke.dottyjack
 package model
 
-import typeadapter.ClassTypeAdapterBase
+import typeadapter.classes.ClassTypeAdapterBase
 import scala.collection.mutable
 import co.blocke.dotty_reflection.TypeMemberInfo
 

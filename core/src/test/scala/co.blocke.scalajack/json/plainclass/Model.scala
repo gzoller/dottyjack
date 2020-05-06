@@ -7,12 +7,13 @@ import co.blocke.dottyjack._
 
 import scala.util._
 
+
 class InheritSimpleBase(
     @DBKey(index = 50)@Change(name = "bogus") val one:String= "blather"
 ) {
   // Public data member
   @DBKey(index = 1) @Change(name = "foobar") var two: Int = 5
-  @Optional var three: Boolean = true
+  var three: Boolean = true
 
   // Private var or val
   val notOne: Int = 2
@@ -21,7 +22,7 @@ class InheritSimpleBase(
 
   // Scala-style getter/setter
   private var _four: Double = 0.1
-  @DBKey(index = 2) @Optional def four: Double = _four
+  @DBKey(index = 2) def four: Double = _four
   @Change(name = "quatro") def four_=(a: Double): Unit = _four = a
 
   private var _dontForget: Int = 9
@@ -66,8 +67,10 @@ trait TraitBase {
 
 class Flower(val thing: Int, val other: Int) extends TraitBase
 
-class WrapTrait[T <: TraitBase](val rose: T) {
+class WrapTrait[T <: TraitBase]() {
   type flower = T
+  var rose: T = null.asInstanceOf[T]
+  // IMPORTANT!  rose must be of type T, not "flower".  flower is the label for the external type in JSON
 }
 
 // ---
@@ -80,35 +83,48 @@ class OptConst(val a: Option[Int]) {
   var b: Option[Int] = Some(3)
 }
 
-class UnneededType[T](val a: Int) {
+class UnneededType[T]() {
   type item = T
+
+  val m: T = null.asInstanceOf[item]
+  var a: Int = 5
 }
 
 //------------------------------------------------------
 case class VCDouble(vc: Double) extends AnyVal
-class PlayerMix(val name: String, val maybe: Option[Int], val age: Option[VCDouble]) {
+class PlayerMix() {
   def someConfusingThing() = true
+  var name: String = "" // public var member
+  var maybe: Option[Int] = Some(1) // optional member
 
   @Ignore var bogus: String = ""
 
-  // private var _age: VCDouble = VCDouble(0.0)
-  // @Optional def age: VCDouble = _age // getter/setter member
-  // def age_=(a: VCDouble): Unit = _age = a
+  private var _age: VCDouble = VCDouble(0.0)
+  def age: VCDouble = _age // getter/setter member
+  def age_=(a: VCDouble): Unit = _age = a
 }
 
-class BigPlayer(
-    override val name: String, 
-    override val maybe: Option[Int], 
-    override val age: Option[VCDouble]) extends PlayerMix(name,maybe,age) 
-  {
+class BigPlayer() extends PlayerMix {
   var more: Int = 0
 }
 
 class NotAllVals(val a: Int, b: Int, val c: Int)
 
-class Embed(val stuff: List[String], val num: Int)
-class Boom(val name: String, val other: Try[Embed])
+class Embed() {
+  var stuff: List[String] = List.empty[String]
+  var num: Int = 0
+}
+class Boom() {
+  var name: String = ""
+  var other: Try[Embed] = Success(null)
+}
 
-class Cap(val name: String) extends SJCapture
+class Cap() extends SJCapture {
+  var name: String = ""
+}
 
 case class CaseCap(name: String) extends SJCapture
+
+
+case class One(vc: Array[VCDouble])
+class Two(val vc: VCDouble)

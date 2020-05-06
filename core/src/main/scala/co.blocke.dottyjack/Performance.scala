@@ -100,7 +100,7 @@ object Main {
 */
 
 // From reflection:
-// ScalaClassInfo(xxx.Thing,class xxx.Thing,List(),List(ScalaFieldInfo(0,t,ArrayInfo([[I,class [[I,ArrayInfo([I,class [I,Scala_Int)),Map(),public int[][] co.blocke.dotty_reflection.Thing.t(),None)),List(),Map(),false)
+// ScalaCaseClassInfo(xxx.Thing,class xxx.Thing,List(),List(ScalaFieldInfo(0,t,ArrayInfo([[I,class [[I,ArrayInfo([I,class [I,Scala_Int)),Map(),public int[][] co.blocke.dotty_reflection.Thing.t(),None)),List(),Map(),false)
 
 // From dottyjack:
-// ScalaClassInfo(xxx.Thing,class xxx.Thing,List(),List(ScalaFieldInfo(0,t,ArrayInfo([[I,class scala.Array,ArrayInfo([I,class scala.Array,Scala_Int)),Map(),public int[][] co.blocke.dottyjack.Thing.t(),None)),List(),Map(),false)
+// ScalaCaseClassInfo(xxx.Thing,class xxx.Thing,List(),List(ScalaFieldInfo(0,t,ArrayInfo([[I,class scala.Array,ArrayInfo([I,class scala.Array,Scala_Int)),Map(),public int[][] co.blocke.dottyjack.Thing.t(),None)),List(),Map(),false)

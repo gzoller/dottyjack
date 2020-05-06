@@ -2,6 +2,7 @@ package co.blocke.dottyjack
 package typeadapter
 
 import model._
+import classes._
 import co.blocke.dotty_reflection._
 import co.blocke.dotty_reflection.info.TraitInfo
 

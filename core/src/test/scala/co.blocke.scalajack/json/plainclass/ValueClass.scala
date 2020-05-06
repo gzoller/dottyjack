@@ -20,9 +20,9 @@ class ValueClass() extends FunSuite:
       "----------------------------------------------\n:  ValueClass DelimSpec Tests (Plain Class)  :\n----------------------------------------------", Console.BLUE
     )
 
-    val p1 = new PlayerMix("Mike", Some(1), Some(VCDouble(BigDecimal("1.23").toDouble)))
-    // p1.name = "Mike"
-    // p1.age = VCDouble(BigDecimal("1.23").toDouble)
+    val p1 = new PlayerMix()
+    p1.name = "Mike"
+    p1.age = VCDouble(BigDecimal("1.23").toDouble)
     val js = sj.render(p1)
     val r = sj.read[PlayerMix](js)
     assert(jsonMatches("""{"age":1.23,"maybe":1,"name":"Mike"}""".asInstanceOf[JSON], js ))

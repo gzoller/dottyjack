@@ -2,6 +2,7 @@ package co.blocke.dottyjack
 package typeadapter
 
 import model._
+import classes._
 import co.blocke.dotty_reflection._
 
 import scala.collection.mutable
@@ -72,6 +73,10 @@ case class AnyTypeAdapter(info: RType, taCache: TypeAdapterCache) extends TypeAd
       .typeAdapterOf(Reflector.reflectOnClass(value.getClass))
       .asInstanceOf[TypeAdapter[X]] match {
         case ta: CaseClassTypeAdapter[X] =>
+          val builder = jackFlavor.getBuilder.asInstanceOf[mutable.Builder[WIRE, WIRE]]
+          ta.writeWithHint[WIRE](jackFlavor.asInstanceOf[JackFlavor[WIRE]], value, writer, builder)
+          writer.writeRaw(builder.result(), out)
+        case ta: NonCaseClassTypeAdapter[X] =>
           val builder = jackFlavor.getBuilder.asInstanceOf[mutable.Builder[WIRE, WIRE]]
           ta.writeWithHint[WIRE](jackFlavor.asInstanceOf[JackFlavor[WIRE]], value, writer, builder)
           writer.writeRaw(builder.result(), out)

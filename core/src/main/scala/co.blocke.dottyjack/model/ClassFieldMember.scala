@@ -14,7 +14,7 @@ case class ClassFieldMember[T](
   // valueAccessorMethod:                Method,
   // derivedValueClassConstructorMirror: Option[MethodMirror],
   // defaultValueMethod:                 Option[Method], // <-- Need a Java Method here to work with Java classes too!
-  outerClass:                         Option[java.lang.Class[_]],
+  outerClass:                         java.lang.Class[_],  // class that "owns" this field
   dbKeyIndex:                         Option[Int],
   fieldMapName:                       Option[String]
   // ownerType:                          Type,

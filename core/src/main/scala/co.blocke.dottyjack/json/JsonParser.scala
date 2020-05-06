@@ -2,7 +2,7 @@ package co.blocke.dottyjack
 package json
 
 import model._
-import typeadapter.ClassTypeAdapterBase
+import typeadapter.classes.ClassTypeAdapterBase
 import co.blocke.dotty_reflection._
 
 import scala.collection.mutable

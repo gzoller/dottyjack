@@ -1,5 +1,6 @@
 package co.blocke.dottyjack
 package typeadapter
+package classes
 
 import model._
 import co.blocke.dotty_reflection.TypeMemberInfo
@@ -7,37 +8,18 @@ import co.blocke.dotty_reflection.info._
 import co.blocke.dotty_reflection._
 
 import scala.collection.mutable
-// import model.ClassHelper.ExtraFieldValue
-
-// For case classes and Java/Scala plain classes, but not traits
-trait ClassTypeAdapterBase[T] extends TypeAdapter[T] with Classish:
-  val info:               RType
-  val argsTemplate:       Array[Object]
-  val fieldBitsTemplate:  mutable.BitSet
-  val isSJCapture:        Boolean
-  val fieldMembersByName: Map[String, ClassFieldMember[_]]
-  val isCaseClass:        Boolean = false
-  val orderedFieldNames = info.asInstanceOf[ClassInfo].fields.map{ f => 
-    // Re-map field names if @Change annotation is present
-    f.annotations.get("co.blocke.dottyjack.Change").map(_("name")).getOrElse(f.name)
-    }
 
 
-case class CaseClassTypeAdapter[T](
-    info:               RType,
-    fieldMembersByName: Map[String, ClassFieldMember[_]],
-    argsTemplate:       Array[Object],
-    fieldBitsTemplate:  mutable.BitSet,
-    typeMembersByName:  Map[String, TypeMemberInfo]
+trait ScalaClassTypeAdapter[T](implicit taCache: TypeAdapterCache) extends ClassTypeAdapterBase[T]:
+  val typeMembersByName:  Map[String, TypeMemberInfo]
     // dbCollectionName:   Option[String]
-)(implicit taCache: TypeAdapterCache) extends ClassTypeAdapterBase[T]:
 
-  override val isCaseClass = true;
+  private val classInfo = info.asInstanceOf[ClassInfo]
 
-  private val classInfo = info.asInstanceOf[ScalaClassInfo]
-  // val orderedFieldNames = classInfo.fields.map(_.name)
+  val isSJCapture = classInfo.hasMixin(SJ_CAPTURE)
 
-  val isSJCapture = classInfo.hasMixin("co.blocke.dottyjack.SJCapture")
+  def _read_createInstance(args: List[Object], captured: java.util.HashMap[String, _]): T
+  def _read_updateFieldMembers( fmbn: Map[String, ClassFieldMember[_]]): ScalaClassTypeAdapter[T]
 
   def read(parser: Parser): T =
     if (parser.peekForNull) then
@@ -47,23 +29,14 @@ case class CaseClassTypeAdapter[T](
       val (foundBits, args, captured) = {
         if (classInfo.typeMembers.nonEmpty) then
           val fixedFields = findActualTypeMemberTypes(parser)  // Resolve actual type of type member (should be a class) and substitute any fields having that type with the actual
-          val substitutedClassInfo = this.copy(fieldMembersByName = fixedFields) //, info = info.asInstanceOf[ScalaClassInfo].setActualTypeParams( classInfo.typeMembers.map(m => parserFound(m.name))))
+          val substitutedClassInfo = _read_updateFieldMembers(fixedFields)
           parser.expectObject(substitutedClassInfo, taCache.jackFlavor.defaultHint)
         else
           parser.expectObject(this, taCache.jackFlavor.defaultHint)
       }
 
       if (foundBits.isEmpty) then
-        val asBuilt = 
-          val const = classInfo.infoClass.getConstructors.head // <-- NOTE: head here isn't bullet-proof, but a generally safe assumption for case classes.  (Req because of arg typing mess.)
-          if (classInfo.typeMembers.nonEmpty) then
-            val originalArgTypes = classInfo.fields.map(_.fieldType.infoClass)
-            const.newInstance(args:_*).asInstanceOf[T]
-          else
-            const.newInstance(args:_*).asInstanceOf[T]
-        if isSJCapture
-          asBuilt.asInstanceOf[SJCapture].captured = captured
-        asBuilt
+        _read_createInstance(args, captured)
       else
         parser.backspace()
         throw new ScalaJackError(
@@ -81,11 +54,14 @@ case class CaseClassTypeAdapter[T](
       out:    mutable.Builder[WIRE, WIRE]): Unit = 
 
     // Resolve actual types (in t) of any type members
-    val filteredTypeMembers = classInfo.filterTraitTypeParams.typeMembers
+    val (allFields, filteredTypeMembers) = classInfo match {
+      case c: ScalaCaseClassInfo => (classInfo.fields, c.filterTraitTypeParams.typeMembers)
+      case c: ScalaClassInfo => (classInfo.fields ++ c.nonConstructorFields, c.filterTraitTypeParams.typeMembers)
+    }
     val (extras, resolvedFieldMembersByName) =
       if filteredTypeMembers.nonEmpty then
         val xtras = filteredTypeMembers.map{ tm =>
-          val foundActualField = classInfo.fields.find( _.asInstanceOf[ScalaFieldInfo].originalSymbol == Some(tm.typeSymbol) )
+          val foundActualField = allFields.find( _.asInstanceOf[ScalaFieldInfo].originalSymbol == Some(tm.typeSymbol) )
           val resolvedTypeMember = foundActualField.map{ a => 
             val actualRtype = Reflector.reflectOnClass(a.valueAccessor.invoke(t).getClass)
             tm.copy(memberType = actualRtype)
@@ -139,7 +115,7 @@ case class CaseClassTypeAdapter[T](
     writer.writeObject(t, orderedFieldNames, fieldMembersByName, out, extra)
 
   // Use parser to scan JSON for type member name and materialize the TypeMemberInfo with RType of actual/found type.
-  // (The original TypeMember's RType is likely a trait.  The parser-found type should be a concrete class (ScalaClassInfo).)
+  // (The original TypeMember's RType is likely a trait.  The parser-found type should be a concrete class (ScalaCaseClassInfo).)
   private def findActualTypeMemberTypes(
       parser:  Parser
   ): Map[String, ClassFieldMember[_]] = 
@@ -149,7 +125,7 @@ case class CaseClassTypeAdapter[T](
     )
     // Filter any non-trait/class type members... we ignore these so they don't mess up type hint modifiers
     val filtered = typeMembersByName.collect {
-      case (k,tm) if tm.memberType.isInstanceOf[TraitInfo] || tm.memberType.isInstanceOf[ScalaClassInfo] => (k,tm)
+      case (k,tm) if tm.memberType.isInstanceOf[TraitInfo] || tm.memberType.isInstanceOf[ScalaCaseClassInfo] => (k,tm)
     }
     if (filtered.size != foundByParser.size)
       throw new ScalaJackError(
