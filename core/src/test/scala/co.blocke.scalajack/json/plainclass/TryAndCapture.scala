@@ -54,7 +54,7 @@ class TryAndCapture() extends FunSuite:
   test("Plain-class capture can write semantically equivalent JSON") {
     describe("Capture:")
     val js =
-      """{"name":"Greg", "foo":[1,2,"t"  ], "zing" :  {"dot":{"age":25,"food":"Pizza"}}, "blather":"wow", "boo": -29384.34, "maybe": false }""".asInstanceOf[JSON]
+      """{"name":"Greg", "foo":[1,2,"t"  ], "zing":  {"dot":{"age":25,"food":"Pizza"}}, "blather":"wow", "boo": -29384.34, "maybe": false }""".asInstanceOf[JSON]
     val h = sj.read[Cap](js)
     assertEquals(h.name,"Greg")
     val js2 = sj.render(h)

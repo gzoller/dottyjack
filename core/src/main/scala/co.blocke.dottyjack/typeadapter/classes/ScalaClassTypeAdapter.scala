@@ -18,8 +18,8 @@ trait ScalaClassTypeAdapter[T](implicit taCache: TypeAdapterCache) extends Class
 
   val isSJCapture = classInfo.hasMixin(SJ_CAPTURE)
 
-  def _read_createInstance(args: List[Object], captured: java.util.HashMap[String, _]): T
-  def _read_updateFieldMembers( fmbn: Map[String, ClassFieldMember[_]]): ScalaClassTypeAdapter[T]
+  def _read_createInstance(args: List[Object], captured: java.util.HashMap[String, String]): T
+  def _read_updateFieldMembers( fmbn: Map[String, ClassFieldMember[_,_]]): ScalaClassTypeAdapter[T]
 
   def read(parser: Parser): T =
     if (parser.peekForNull) then
@@ -118,7 +118,7 @@ trait ScalaClassTypeAdapter[T](implicit taCache: TypeAdapterCache) extends Class
   // (The original TypeMember's RType is likely a trait.  The parser-found type should be a concrete class (ScalaCaseClassInfo).)
   private def findActualTypeMemberTypes(
       parser:  Parser
-  ): Map[String, ClassFieldMember[_]] = 
+  ): Map[String, ClassFieldMember[_,_]] = 
     val foundByParser: Map[String, TypeMemberInfo] = parser.resolveTypeMembers(
       typeMembersByName,
       taCache.jackFlavor.typeValueModifier

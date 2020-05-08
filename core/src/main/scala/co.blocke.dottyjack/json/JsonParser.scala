@@ -217,13 +217,15 @@ case class JsonParser(jsRaw: JSON, jackFlavor: JackFlavor[JSON]) extends Parser 
   def expectObject(
       classBase: ClassTypeAdapterBase[_],
       hintLabel: String
-  ): (mutable.BitSet, List[Object], java.util.HashMap[String, _]) = {
+  ): (mutable.BitSet, List[Object], java.util.HashMap[String, String]) = {
     whitespace()
     val args      = classBase.argsTemplate.clone()
     val fieldBits = classBase.fieldBitsTemplate.clone()
     val captured =
-      if (classBase.isSJCapture) new java.util.HashMap[String, String]()
-      else null
+      if (classBase.isSJCapture) 
+        new java.util.HashMap[String, String]()
+      else 
+        null
     if (i == max || jsChars(i) != '{')
       throw new ScalaJackError(showError("Expected start of object here"))
     i += 1

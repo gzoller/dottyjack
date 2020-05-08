@@ -20,7 +20,7 @@ trait Writer[WIRE] {
   def writeObject[T](
       t: T,
       orderedFieldNames: List[String],
-      fieldMembersByName: Map[String, ClassFieldMember[_]],
+      fieldMembersByName: Map[String, ClassFieldMember[_,_]],
       out: mutable.Builder[WIRE, WIRE],
       extras: List[(String, ExtraFieldValue[_])] = List.empty[(String, ExtraFieldValue[_])]
   ): Unit

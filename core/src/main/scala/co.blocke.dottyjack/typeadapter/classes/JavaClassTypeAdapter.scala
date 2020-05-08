@@ -27,7 +27,7 @@ object JavaClassTypeAdapterFactory extends TypeAdapterFactory:
     classInfo.fields.map( f => bits += f.index )
     val fieldMembersByName = 
       concrete.asInstanceOf[JavaClassInfo].fields.map{ f => 
-        val fieldMember: ClassFieldMember[_] = f.fieldType match {
+        val fieldMember: ClassFieldMember[_,_] = f.fieldType match {
           case c: TypeSymbolInfo => throw new ScalaJackError(s"Concrete type expected for class ${concrete.name} field ${f.name}.  ${c.getClass.getName} was found.")
           case c =>
             ClassFieldMember(
@@ -46,7 +46,7 @@ case class JavaClassTypeAdapter[J](
     info:               RType,
     argsTemplate:       Array[Object],
     fieldBitsTemplate:  mutable.BitSet,
-    fieldMembersByName: Map[String, ClassFieldMember[_]]
+    fieldMembersByName: Map[String, ClassFieldMember[_,_]]
   )(implicit taCache: TypeAdapterCache) extends ClassTypeAdapterBase[J]:
 
   val javaClassInfo = info.asInstanceOf[JavaClassInfo]

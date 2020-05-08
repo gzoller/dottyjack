@@ -126,5 +126,7 @@ class Cap() extends SJCapture {
 case class CaseCap(name: String) extends SJCapture
 
 
-case class One(vc: Array[VCDouble])
-class Two(val vc: VCDouble)
+case class One(vc: List[VCDouble])
+class Two(val vc: VCDouble) {
+  var vcx: VCDouble = VCDouble(54.32)
+}

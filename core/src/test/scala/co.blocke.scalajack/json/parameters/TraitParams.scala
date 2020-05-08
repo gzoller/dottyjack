@@ -38,12 +38,11 @@ class TraitParams() extends FunSuite:
       """{"_hint":"co.blocke.scalajack.json.parameters.TFoo1","x":{"thing":true},"b":19}""".asInstanceOf[JSON],js)
     assert(inst == sj.read[T1[TBar2]](js))
   }
-
+  
   test("Value class as parameter - Foo[A](x:A) where A -> value class") {
     val inst: T1[VC1] = TFoo1(VC1("Wow"), 19)
     val js = sj.render(inst)
-    assertEquals(
-      """{"_hint":"co.blocke.scalajack.json.parameters.TFoo1","x":"Wow","b":19}""".asInstanceOf[JSON],js)
+    assertEquals("""{"_hint":"co.blocke.scalajack.json.parameters.TFoo1","x":"Wow","b":19}""".asInstanceOf[JSON],js)
     assert(inst == sj.read[T1[VC1]](js))
   }
 
@@ -99,6 +98,16 @@ class TraitParams() extends FunSuite:
     assert(inst == sj.read[T8[Char, String, Int, Double]](js))
   }
 
+  test("Nested multiple parameters, out of order - Foo[A,B,C,D](x:Bar[C,Blah[D,A]], y:B)") {
+    val rt = Reflector.reflectOn[T10[T11[Int, T5[Double, Char]], String]]
+    val inst: T10[T11[Int, T5[Double, Char]], String] = TFoo6(TBlah1(5, TBar7(1.2, 'Z')), "wow")
+    val js = sj.render(inst)
+    assertEquals(
+      """{"_hint":"co.blocke.scalajack.json.parameters.TFoo6","x":{"_hint":"co.blocke.scalajack.json.parameters.TBlah1","w":5,"z":{"_hint":"co.blocke.scalajack.json.parameters.TBar7","thing1":1.2,"thing2":"Z"}},"y":"wow"}""".asInstanceOf[JSON],js)
+    val z = sj.read[T10[T11[Int, T5[Double, Char]], String]](js)
+    assertEquals(inst, sj.read[T10[T11[Int, T5[Double, Char]], String]](js))
+  }
+
   /* Performance tests
   var rtx: RType = null
   var jsx: JSON = null.asInstanceOf[JSON]
@@ -129,13 +138,4 @@ class TraitParams() extends FunSuite:
     sj.read[Pet[Boolean]](js)
   }
   */
-  test("Nested multiple parameters, out of order - Foo[A,B,C,D](x:Bar[C,Blah[D,A]], y:B)") {
-    val rt = Reflector.reflectOn[T10[T11[Int, T5[Double, Char]], String]]
-    val inst: T10[T11[Int, T5[Double, Char]], String] = TFoo6(TBlah1(5, TBar7(1.2, 'Z')), "wow")
-    val js = sj.render(inst)
-    assertEquals(
-      """{"_hint":"co.blocke.scalajack.json.parameters.TFoo6","x":{"_hint":"co.blocke.scalajack.json.parameters.TBlah1","w":5,"z":{"_hint":"co.blocke.scalajack.json.parameters.TBar7","thing1":1.2,"thing2":"Z"}},"y":"wow"}""".asInstanceOf[JSON],js)
-    val z = sj.read[T10[T11[Int, T5[Double, Char]], String]](js)
-    assertEquals(inst, sj.read[T10[T11[Int, T5[Double, Char]], String]](js))
-  }
 

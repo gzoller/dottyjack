@@ -14,6 +14,8 @@ object ScalaClassTypeAdapterFactory extends TypeAdapterFactory:
     case c: ScalaClassInfo => true
     case _ => false
   }
+
+  final val CLASSCLASS = Class.forName("java.lang.Class")
   
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
     // TODO: Handle ScalaClassInfo vs ScalaCaseClassInfo separately...
@@ -26,11 +28,22 @@ object ScalaClassTypeAdapterFactory extends TypeAdapterFactory:
         classInfo.fields.map( f => bits += f.index )
         val fieldMembersByName = 
           classInfo.fields.map{ f => 
-            val fieldMember: ClassFieldMember[_] = {
+            val fieldMember: ClassFieldMember[_,_] = {
               val fieldTypeAdapter = f.fieldType match {
                 case t: TypeSymbolInfo => taCache.typeAdapterOf(PrimitiveType.Scala_Any) // Any unresolved type symbols must be considered Any
-                case t => taCache.typeAdapterOf(t)
+                case t => 
+                  taCache.typeAdapterOf(t) match {
+                    // In certain situations, value classes need to be unwrapped, i.e. use the type adapter of their member.
+                    case vta: ValueClassTypeAdapter[_,_] => 
+                      val constructorParamClass = classInfo.constructor.getParameterTypes()(f.index).getClass
+                      if constructorParamClass == vta.info.infoClass || constructorParamClass == Class.forName("java.lang.Class") then
+                        vta
+                      else
+                        vta.elementTypeAdapter
+                    case other => other
+                  }
               }
+
     
               // See if there's a default value set and blip bits/args accordingly to "pre-set" these values
               if f.defaultValueAccessor.isDefined then
@@ -63,14 +76,35 @@ object ScalaClassTypeAdapterFactory extends TypeAdapterFactory:
         val bits = mutable.BitSet()
         val args = new Array[Object](classInfo.fields.size + classInfo.nonConstructorFields.size)
     
-        val allFields = classInfo.fields ++ classInfo.nonConstructorFields
+        val allFields = 
+          if classInfo.hasMixin(SJ_CAPTURE) then
+            classInfo.fields ++ (classInfo.nonConstructorFields.filterNot(_.name == "captured"))
+          else
+            classInfo.fields ++ classInfo.nonConstructorFields
         allFields.map( f => bits += f.index )
         val fieldMembersByName = 
           allFields.map{ f => 
-            val fieldMember: ClassFieldMember[_] = {
+            val fieldMember: ClassFieldMember[_,_] = {
               val fieldTypeAdapter = f.fieldType match {
                 case t: TypeSymbolInfo => taCache.typeAdapterOf(PrimitiveType.Scala_Any) // Any unresolved type symbols must be considered Any
-                case t => taCache.typeAdapterOf(t)
+                //case t if classInfo.hasMixin(SJ_CAPTURE) && f.name == "captured" => taCache.typeAdapterOf[java.util.HashMap[String,Any]]
+                case t => 
+                  taCache.typeAdapterOf(t) match {
+                    // In certain situations, value classes need to be unwrapped, i.e. use the type adapter of their member.
+                  case vta: ValueClassTypeAdapter[_,_] if f.index < classInfo.constructor.getParameterTypes().size =>   // value class in constructor
+                    val constructorParamClass = classInfo.constructor.getParameterTypes()(f.index).getClass
+                    if constructorParamClass == vta.info.infoClass || constructorParamClass == CLASSCLASS then
+                      vta
+                    else
+                      vta.elementTypeAdapter
+                  case vta: ValueClassTypeAdapter[_,_] =>   // value class as body member
+                    val returnTypeClass = classInfo.infoClass.getMethod(f.name).getReturnType
+                    if returnTypeClass == vta.info.infoClass || returnTypeClass == CLASSCLASS then
+                      vta
+                    else
+                      vta.elementTypeAdapter
+                  case other => other
+                }
               }
     
               // See if there's a default value set and blip bits/args accordingly to "pre-set" these values

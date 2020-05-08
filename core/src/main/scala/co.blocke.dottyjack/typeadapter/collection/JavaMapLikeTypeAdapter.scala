@@ -55,8 +55,8 @@ case class JavaMapLikeTypeAdapter[KEY, VALUE, TO <: java.util.Map[KEY, VALUE]](
             tScala
 
         val filterValue = 
-          if (valueIsOptionalOrAny && tScala != null)
-            filterKey.asInstanceOf[Map[KEY, VALUE]].filterNot { case (k, v) => v match {
+          if valueIsOptionalOrAny && tScala != null then
+            filterKey.filterNot { case (k, v) => v match {
               case None => true
               case k: java.util.Optional[_] if !k.isPresent => true
               case _ => false

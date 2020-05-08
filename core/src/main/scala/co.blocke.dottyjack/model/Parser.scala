@@ -24,7 +24,7 @@ trait Parser {
   def expectObject(
       classBase: ClassTypeAdapterBase[_],
       hintLabel: String
-  ): (mutable.BitSet, List[Object], java.util.HashMap[String, _])
+  ): (mutable.BitSet, List[Object], java.util.HashMap[String, String])
   def expectBoolean(): Boolean
   def expectNumber(nullOK: Boolean = false): String
   def peekForNull: Boolean // peek-ahead to find null

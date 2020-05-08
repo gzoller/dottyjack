@@ -124,7 +124,7 @@ case class JsonWriter() extends Writer[JSON] {
   def writeObject[T](
       t: T,
       orderedFieldNames: List[String],
-      fieldMembersByName: Map[String, ClassFieldMember[_]],
+      fieldMembersByName: Map[String, ClassFieldMember[_,_]],
       out: mutable.Builder[JSON, JSON],
       extras: List[(String, ExtraFieldValue[_])]
   ): Unit = {
