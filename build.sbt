@@ -1,4 +1,4 @@
-val dottyVersion = "0.24.0-bin-20200320-30f8c6f-NIGHTLY"
+val dottyVersion = "0.24.0-RC1" //"0.24.0-bin-20200320-30f8c6f-NIGHTLY"
 
 lazy val basicSettings = Seq(
   organization := "co.blocke",
@@ -49,10 +49,10 @@ lazy val scalajack = project
     libraryDependencies ++= 
       Seq(
         "commons-codec" % "commons-codec" % "1.12",
-        "co.blocke" %% "dotty-reflection" % "tracing_691f46", //"44e613_SNAPSHOT",
-        "munit" %% "munit" % "0.6.z-3" % "test",   // special build of munit compatible with Dotty 0.24
-        "org.json4s" % "json4s-core_2.13" % "3.6.6" % "test",
-        "org.json4s" % "json4s-native_2.13" % "3.6.6" % "test"
+        "co.blocke" %% "dotty-reflection" % "0f0418_SNAPSHOT",
+        "org.scalameta" %% "munit" % "0.7.5" % Test,
+        "org.json4s" % "json4s-core_2.13" % "3.6.6" % Test,
+        "org.json4s" % "json4s-native_2.13" % "3.6.6" % Test
       )
   )
 
