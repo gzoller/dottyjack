@@ -61,7 +61,8 @@ object ScalaClassTypeAdapterFactory extends TypeAdapterFactory:
                 f.annotations.get(CHANGE_ANNO).map(_("name"))
               )
             }
-            f.name -> fieldMember}.toMap
+            fieldMember.fieldMapName.getOrElse(f.name) -> fieldMember
+          }.toMap
     
         CaseClassTypeAdapter(
           concrete,
@@ -87,7 +88,6 @@ object ScalaClassTypeAdapterFactory extends TypeAdapterFactory:
             val fieldMember: ClassFieldMember[_,_] = {
               val fieldTypeAdapter = f.fieldType match {
                 case t: TypeSymbolInfo => taCache.typeAdapterOf(PrimitiveType.Scala_Any) // Any unresolved type symbols must be considered Any
-                //case t if classInfo.hasMixin(SJ_CAPTURE) && f.name == "captured" => taCache.typeAdapterOf[java.util.HashMap[String,Any]]
                 case t => 
                   taCache.typeAdapterOf(t) match {
                     // In certain situations, value classes need to be unwrapped, i.e. use the type adapter of their member.
@@ -123,8 +123,9 @@ object ScalaClassTypeAdapterFactory extends TypeAdapterFactory:
                 f.annotations.get(CHANGE_ANNO).map(_("name"))
               )
             }
-            f.name -> fieldMember}.toMap
-    
+            fieldMember.fieldMapName.getOrElse(f.name) -> fieldMember
+          }.toMap
+
         NonCaseClassTypeAdapter(
           concrete,
           fieldMembersByName,

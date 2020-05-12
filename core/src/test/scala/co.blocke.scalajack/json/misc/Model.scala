@@ -17,3 +17,15 @@ case class HasDefaults(
     age:  Option[Int],
     pet:  Pet         = Dog("Fido", true))
 case class SimpleHasDefaults(name: String, age: Int = 5)
+
+
+// === Change field name
+case class MapFactor(
+  @Change(name = "foo_bar") fooBar:String,
+  @Change(name = "a_b") thingy:   Long,
+  count:                          Int)
+class MapFactorPlain(@Change(name = "pilot") val driver: String) {
+  @Change(name = "foo_bar") var fooBar: String = ""
+  @Change(name = "a_b") var thingy: Long = 0L
+  var count: Int = 0
+}

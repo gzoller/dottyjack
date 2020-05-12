@@ -35,10 +35,11 @@ object JavaClassTypeAdapterFactory extends TypeAdapterFactory:
               taCache.typeAdapterOf(c),
               classInfo.infoClass,  // TODO
               None,  // TODO
-              f.annotations.get("co.blocke.dottyjack.Change").map(_("name"))
+              f.annotations.get(CHANGE_ANNO).map(_("name"))
             )
         }
-        fieldMember.fieldMapName.getOrElse(f.name) -> fieldMember}.toMap
+        fieldMember.fieldMapName.getOrElse(f.name) -> fieldMember
+      }.toMap
     JavaClassTypeAdapter(concrete, args, bits, fieldMembersByName)
 
 
@@ -51,7 +52,7 @@ case class JavaClassTypeAdapter[J](
 
   val javaClassInfo = info.asInstanceOf[JavaClassInfo]
   // private val orderedFieldNames = javaClassInfo.fields.map(_.name)
-  val isSJCapture = javaClassInfo.hasMixin("co.blocke.dottyjack.SJCapture")
+  val isSJCapture = javaClassInfo.hasMixin(SJ_CAPTURE)
 
   def read(parser: Parser): J =
     if (parser.peekForNull) then

@@ -20,12 +20,13 @@ case class NonCaseClassTypeAdapter[T](
 
   private val classInfo = info.asInstanceOf[ScalaClassInfo]
 
-  // TODO: Account for @Change annotation on field names
+  inline def fieldName(f: FieldInfo): String = f.annotations.get(CHANGE_ANNO).map(_("name")).getOrElse(f.name)
+
   override val orderedFieldNames = 
-    if isSJCapture then
-      classInfo.fields.map(_.name) ::: classInfo.nonConstructorFields.map(_.name).filterNot(_ == "captured")
+    { if isSJCapture then
+      classInfo.fields ::: classInfo.nonConstructorFields.filterNot(_.name == "captured")
     else
-      classInfo.fields.map(_.name) ::: classInfo.nonConstructorFields.map(_.name)
+      (classInfo.fields ::: classInfo.nonConstructorFields)}.map( f => fieldName(f) )
 
   def _read_createInstance(args: List[Object], captured: java.util.HashMap[String, String]): T = 
     // Build base object
@@ -35,8 +36,8 @@ case class NonCaseClassTypeAdapter[T](
     // Now call all the non-constructor setters
     classInfo.nonConstructorFields.collect{ 
       // make sure f is known--in one special case it will not be: "captured" field for SJCapture should be ignored
-      case f if fieldMembersByName.contains(f.name) =>
-        val setter = classInfo.infoClass.getMethod(f.name+"_$eq", fieldMembersByName(f.name).valueTypeAdapter.info.infoClass )
+      case f if fieldMembersByName.contains( fieldName(f) ) =>
+        val setter = classInfo.infoClass.getMethod(f.name+"_$eq", fieldMembersByName(fieldName(f)).valueTypeAdapter.info.infoClass )
         args(f.index) match {
           case m: java.lang.reflect.Method => setter.invoke(asBuilt, m.invoke(asBuilt))
           case thing => setter.invoke(asBuilt, thing)
