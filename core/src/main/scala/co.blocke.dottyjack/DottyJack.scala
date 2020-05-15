@@ -13,4 +13,5 @@ class ScalaJackValueError(val value: Any, cause: Throwable) extends Exception(ca
 
 type HintBijective = util.BijectiveFunction[String, String]
 val CHANGE_ANNO = "co.blocke.dottyjack.Change"
+val IGNORE = "co.blocke.dottyjack.Ignore"
 val SJ_CAPTURE  = "co.blocke.dottyjack.SJCapture"

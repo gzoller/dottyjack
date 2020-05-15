@@ -1,7 +1,6 @@
 package co.blocke.scalajack;
 
 import co.blocke.dottyjack.*;
-import co.blocke.dotty_reflection.Ignore;
 
 public class JavaSimpleBase {
 

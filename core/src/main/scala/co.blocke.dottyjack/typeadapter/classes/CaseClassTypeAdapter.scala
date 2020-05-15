@@ -15,7 +15,8 @@ case class CaseClassTypeAdapter[T](
     fieldMembersByName: Map[String, ClassFieldMember[_,_]],
     argsTemplate:       Array[Object],
     fieldBitsTemplate:  mutable.BitSet,
-    typeMembersByName:  Map[String, TypeMemberInfo]
+    typeMembersByName:  Map[String, TypeMemberInfo],
+    orderedFieldNames:  List[String]
     // dbCollectionName:   Option[String]
 )(implicit taCache: TypeAdapterCache) extends ScalaClassTypeAdapter[T]:
 

@@ -17,37 +17,43 @@ object JavaClassTypeAdapterFactory extends TypeAdapterFactory:
     }
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
     val classInfo = concrete.asInstanceOf[ClassInfo]
+
+    // Filter out any ignored fields and re-index them all
+    val fieldsWeCareAbout = classInfo.fields.filterNot(_.annotations.contains(IGNORE)).zipWithIndex.map{ (f,idx) => f.reIndex(idx) }
+
     val bits = mutable.BitSet()
-    val args = new Array[Object](classInfo.fields.size)
+    val args = new Array[Object](fieldsWeCareAbout.size)
 
     Try(classInfo.asInstanceOf[JavaClassInfo].infoClass.getConstructor()).toOption.orElse(
       throw new ScalaJackError("ScalaJack does not support Java classes with a non-empty constructor.")
     )
 
-    classInfo.fields.map( f => bits += f.index )
     val fieldMembersByName = 
-      concrete.asInstanceOf[JavaClassInfo].fields.map{ f => 
-        val fieldMember: ClassFieldMember[_,_] = f.fieldType match {
+      fieldsWeCareAbout.map { f =>
+        f.fieldType match {
           case c: TypeSymbolInfo => throw new ScalaJackError(s"Concrete type expected for class ${concrete.name} field ${f.name}.  ${c.getClass.getName} was found.")
           case c =>
-            ClassFieldMember(
+            bits += f.index
+            val fieldMapName = f.annotations.get(CHANGE_ANNO).map(_("name"))             
+            fieldMapName.getOrElse(f.name) -> ClassFieldMember(
               f,
               taCache.typeAdapterOf(c),
               classInfo.infoClass,  // TODO
               None,  // TODO
-              f.annotations.get(CHANGE_ANNO).map(_("name"))
+              fieldMapName
             )
         }
-        fieldMember.fieldMapName.getOrElse(f.name) -> fieldMember
       }.toMap
-    JavaClassTypeAdapter(concrete, args, bits, fieldMembersByName)
+
+    JavaClassTypeAdapter(concrete, args, bits, fieldMembersByName, fieldsWeCareAbout.map( f => f.annotations.get(CHANGE_ANNO).map(_("name")).getOrElse(f.name)))
 
 
 case class JavaClassTypeAdapter[J](
     info:               RType,
     argsTemplate:       Array[Object],
     fieldBitsTemplate:  mutable.BitSet,
-    fieldMembersByName: Map[String, ClassFieldMember[_,_]]
+    fieldMembersByName: Map[String, ClassFieldMember[_,_]],
+    orderedFieldNames:  List[String]
   )(implicit taCache: TypeAdapterCache) extends ClassTypeAdapterBase[J]:
 
   val javaClassInfo = info.asInstanceOf[JavaClassInfo]

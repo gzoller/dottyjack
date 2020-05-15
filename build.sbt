@@ -49,7 +49,7 @@ lazy val scalajack = project
     libraryDependencies ++= 
       Seq(
         "commons-codec" % "commons-codec" % "1.12",
-        "co.blocke" %% "dotty-reflection" % "0.0.20", // "0f0418_SNAPSHOT",
+        "co.blocke" %% "dotty-reflection" % "0.0.22",
         "org.scalameta" %% "munit" % "0.7.5" % Test,
         "org.json4s" % "json4s-core_2.13" % "3.6.6" % Test,
         "org.json4s" % "json4s-native_2.13" % "3.6.6" % Test
