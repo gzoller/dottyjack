@@ -45,14 +45,14 @@ case class TraitTypeAdapter[T](
     hintLabel:       String
 )(implicit taCache: TypeAdapterCache) extends TypeAdapter[T] with Classish:
 
-  inline def calcTA(c: Class[_]): CaseClassTypeAdapter[T] =
+  inline def calcTA(c: Class[_]): ClassTypeAdapterBase[T] =
     info.isParameterized match {
       case true => 
-        taCache.typeAdapterOf(Reflector.reflectOnClassInTermsOf(c, info)).asInstanceOf[CaseClassTypeAdapter[T]]
+        taCache.typeAdapterOf(Reflector.reflectOnClassInTermsOf(c, info)).asInstanceOf[ClassTypeAdapterBase[T]]
       case false => 
-        taCache.typeAdapterOf(Reflector.reflectOnClass(c)).asInstanceOf[CaseClassTypeAdapter[T]]
+        taCache.typeAdapterOf(Reflector.reflectOnClass(c)).asInstanceOf[ClassTypeAdapterBase[T]]
     }
-
+  
   // The battle plan here is:  Scan the keys of the object looking for type typeHintField.  Perform any (optional)
   // re-working of the hint value via hintModFn.  Look up the correct concete TypeAdapter based on the now-known type
   // and re-read the object as a case class.

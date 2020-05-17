@@ -33,7 +33,13 @@ case class NonCaseClassTypeAdapter[T](
     nonConstructorFields.collect{ 
       // make sure f is known--in one special case it will not be: "captured" field for SJCapture should be ignored
       case f if fieldMembersByName.contains( fieldName(f.info) ) =>
-        val setter = classInfo.infoClass.getMethod(f.info.name+"_$eq", fieldMembersByName(fieldName(f.info)).valueTypeAdapter.info.infoClass )
+        // If field is a parameter 'T', the field type for the method is Object
+        val isTrait = fieldMembersByName(fieldName(f.info)).valueTypeAdapter.isInstanceOf[TraitTypeAdapter[_]]
+        val fieldMethodType = f.info.originalSymbol.match {
+          case Some(s) if !isTrait => classOf[Object]
+          case _ => fieldMembersByName(fieldName(f.info)).valueTypeAdapter.info.infoClass
+        }
+        val setter = classInfo.infoClass.getMethod(f.info.name+"_$eq", fieldMethodType )
         args(f.info.index) match {
           case m: java.lang.reflect.Method => setter.invoke(asBuilt, m.invoke(asBuilt))
           case thing => setter.invoke(asBuilt, thing)

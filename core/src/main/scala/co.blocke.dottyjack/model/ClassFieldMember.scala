@@ -10,4 +10,5 @@ case class ClassFieldMember[OWNER,T](
   outerClass:                         java.lang.Class[OWNER],  // class that "owns" this field
   dbKeyIndex:                         Option[Int],
   fieldMapName:                       Option[String]
-)
+):
+  def name: String = fieldMapName.getOrElse(info.name)

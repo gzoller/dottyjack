@@ -17,3 +17,8 @@ trait ClassTypeAdapterBase[T] extends TypeAdapter[T] with Classish:
   val fieldMembersByName: Map[String, ClassFieldMember[_,_]]
   val isCaseClass:        Boolean = false
   val orderedFieldNames:  List[String]
+
+  def dbKeys: List[ClassFieldMember[_,_]] =
+    fieldMembersByName.values.toList
+      .filter(_.dbKeyIndex.isDefined)
+      .sortBy(_.dbKeyIndex.get)

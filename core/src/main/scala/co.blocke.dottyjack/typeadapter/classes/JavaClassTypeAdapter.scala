@@ -38,8 +38,8 @@ object JavaClassTypeAdapterFactory extends TypeAdapterFactory:
             fieldMapName.getOrElse(f.name) -> ClassFieldMember(
               f,
               taCache.typeAdapterOf(c),
-              classInfo.infoClass,  // TODO
-              None,  // TODO
+              classInfo.infoClass, 
+              f.annotations.get(DB_KEY).map(_.getOrElse("index","0").toInt),
               fieldMapName
             )
         }
@@ -57,7 +57,6 @@ case class JavaClassTypeAdapter[J](
   )(implicit taCache: TypeAdapterCache) extends ClassTypeAdapterBase[J]:
 
   val javaClassInfo = info.asInstanceOf[JavaClassInfo]
-  // private val orderedFieldNames = javaClassInfo.fields.map(_.name)
   val isSJCapture = javaClassInfo.hasMixin(SJ_CAPTURE)
 
   def read(parser: Parser): J =
@@ -69,9 +68,11 @@ case class JavaClassTypeAdapter[J](
         taCache.jackFlavor.defaultHint
       )
       if (foundBits.isEmpty) then
-        val asBuilt = javaClassInfo.constructWith[J](args)
+        val const = javaClassInfo.infoClass.getConstructors.head
+        val asBuilt = const.newInstance().asInstanceOf[J]
         if isSJCapture
           asBuilt.asInstanceOf[SJCapture].captured = captured
+        fieldMembersByName.values.map( f => f.info.asInstanceOf[JavaFieldInfo].valueSetter.invoke(asBuilt, args(f.info.index)) )
         asBuilt
       else
         parser.backspace()

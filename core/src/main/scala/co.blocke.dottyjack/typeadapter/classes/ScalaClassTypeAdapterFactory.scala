@@ -65,7 +65,7 @@ object ScalaClassTypeAdapterFactory extends TypeAdapterFactory:
         f,
         fieldTypeAdapter,
         infoClass,
-        None,  // TODO
+        f.annotations.get(DB_KEY).map(_.getOrElse("index","0").toInt),
         fieldMapName
       )
     }.toMap
