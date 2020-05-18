@@ -5,7 +5,7 @@ import typeadapter._
 import scala.collection.mutable
 import co.blocke.dotty_reflection._
 
-trait JackFlavor[WIRE]: // extends Filterable[WIRE] with ViewSplice {
+trait JackFlavor[WIRE] extends ViewSplice: // extends Filterable[WIRE] with ViewSplice {
 
   type WIRE_TYPE = WIRE
 

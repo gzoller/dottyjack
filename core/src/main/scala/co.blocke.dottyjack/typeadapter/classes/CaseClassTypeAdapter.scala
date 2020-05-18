@@ -24,14 +24,16 @@ case class CaseClassTypeAdapter[T](
 
   private val classInfo = info.asInstanceOf[ScalaCaseClassInfo]
 
+  inline def constructWith(args: List[Object]): T =
+    val const = classInfo.infoClass.getConstructors.head // <-- NOTE: head here isn't bullet-proof, but a generally safe assumption for case classes.  (Req because of arg typing mess.)
+    if (classInfo.typeMembers.nonEmpty) then
+      val originalArgTypes = classInfo.fields.map(_.fieldType.infoClass)
+      const.newInstance(args:_*).asInstanceOf[T]
+    else
+      const.newInstance(args:_*).asInstanceOf[T]
+
   def _read_createInstance(args: List[Object], captured: java.util.HashMap[String, String]): T = 
-    val asBuilt = 
-      val const = classInfo.infoClass.getConstructors.head // <-- NOTE: head here isn't bullet-proof, but a generally safe assumption for case classes.  (Req because of arg typing mess.)
-      if (classInfo.typeMembers.nonEmpty) then
-        val originalArgTypes = classInfo.fields.map(_.fieldType.infoClass)
-        const.newInstance(args:_*).asInstanceOf[T]
-      else
-        const.newInstance(args:_*).asInstanceOf[T]
+    val asBuilt = constructWith(args)
     if isSJCapture
       asBuilt.asInstanceOf[SJCapture].captured = captured
     asBuilt
