@@ -10,7 +10,7 @@ opaque type JSON = String
 case class JsonFlavor(
   override val defaultHint:        String                       = "_hint",
   override val permissivesOk:      Boolean                      = false,
-//    override val customAdapters:     List[TypeAdapterFactory]     = List.empty[TypeAdapterFactory],
+  override val customAdapters:     List[TypeAdapterFactory]     = List.empty[TypeAdapterFactory],
 //    override val hintMap:            Map[Type, String]            = Map.empty[Type, String],
 //    override val hintValueModifiers: Map[Type, HintValueModifier] = Map.empty[Type, HintValueModifier],
   override val typeValueModifier:  HintValueModifier            = DefaultHintModifier,
@@ -39,8 +39,8 @@ case class JsonFlavor(
   def enumsAsInts(): JackFlavor[JSON] = this.copy(enumsAsInt = true)
   def parseOrElse(poe: (RType, RType)*): JackFlavor[JSON] =
     this.copy(parseOrElseMap = this.parseOrElseMap ++ poe)
-  // def withAdapters(ta: TypeAdapterFactory*): JackFlavor[JSON] =
-  //   this.copy(customAdapters = this.customAdapters ++ ta.toList)
+  def withAdapters(ta: TypeAdapterFactory*): JackFlavor[JSON] =
+    this.copy(customAdapters = this.customAdapters ++ ta.toList)
   // def withDefaultHint(hint: String): JackFlavor[JSON] =
   //   this.copy(defaultHint = hint)
   // def withHints(h: (Type, String)*): JackFlavor[JSON] =

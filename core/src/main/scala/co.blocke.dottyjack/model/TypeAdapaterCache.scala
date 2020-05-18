@@ -77,12 +77,15 @@ case class TypeAdapterCache(
   case object Initializing extends Phase
   case class Initialized(typeAdapterAttempt: Try[TypeAdapter[_]]) extends Phase
 
+  val selfCache = this
+  // var x = 0
 
   class TypeEntry(tpe: RType):
-    @volatile
-    private var phase: Phase = Uninitialized
+    // @volatile
+    // private var phase: Phase = Uninitialized
 
-    def typeAdapter: TypeAdapter[_] = 
+    def typeAdapter: TypeAdapter[_] = factories.find(_.matches(tpe)).get.makeTypeAdapter(tpe)(selfCache)
+      /* May not need all this drama!
       val attempt =
         phase match {
           case Initialized(a) => a
@@ -109,6 +112,7 @@ case class TypeAdapterCache(
             }
         }
       attempt.get
+      */
 
 
   private val typeEntries = new java.util.concurrent.ConcurrentHashMap[RType, TypeEntry]
