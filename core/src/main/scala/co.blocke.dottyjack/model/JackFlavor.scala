@@ -11,17 +11,15 @@ trait JackFlavor[WIRE] extends ViewSplice: // extends Filterable[WIRE] with View
 
   def parse(input: WIRE): Parser
 
-  val defaultHint: String        = "_hint"
-  val stringifyMapKeys: Boolean  = false
-  // TODO 
-  // val hintMap: Map[Type, String] = Map.empty[Type, String]
-  // val hintValueModifiers: Map[Type, HintValueModifier] =
-  //   Map.empty[Type, HintValueModifier]
-  val typeValueModifier: HintValueModifier     = DefaultHintModifier
-  val enumsAsInt: Boolean                      = false
-  val customAdapters: List[TypeAdapterFactory] = List.empty[TypeAdapterFactory]
-  val parseOrElseMap: Map[RType, RType]        = Map.empty[RType, RType]
-  val permissivesOk: Boolean                   = false
+  val defaultHint: String                               = "_hint"
+  val stringifyMapKeys: Boolean                         = false
+  val hintMap: Map[RType, String]                       = Map.empty[RType, String]
+  val hintValueModifiers: Map[RType, HintValueModifier] = Map.empty[RType, HintValueModifier]
+  val typeValueModifier: HintValueModifier              = DefaultHintModifier
+  val enumsAsInt: Boolean                               = false
+  val customAdapters: List[TypeAdapterFactory]          = List.empty[TypeAdapterFactory]
+  val parseOrElseMap: Map[RType, RType]                 = Map.empty[RType, RType]
+  val permissivesOk: Boolean                            = false
 
   lazy val taCache: TypeAdapterCache = bakeCache()
 
@@ -91,9 +89,8 @@ trait JackFlavor[WIRE] extends ViewSplice: // extends Filterable[WIRE] with View
   lazy val anyTypeAdapter: TypeAdapter[Any]       = taCache.typeAdapterOf[Any]
   lazy val anyMapKeyTypeAdapter: TypeAdapter[Any] = taCache.typeAdapterOf[Any]
 
-  // TODO
   // Look up any custom hint label for given type, and if none then use default
-  // def getHintLabelFor(tpe: TypeStructure): String = hintMap.getOrElse(tpe, defaultHint)
+  def getHintLabelFor(tpe: RType): String = hintMap.getOrElse(tpe, defaultHint)
 
   def stringWrapTypeAdapterFactory[T](
       wrappedTypeAdapter: TypeAdapter[T],
@@ -104,9 +101,9 @@ trait JackFlavor[WIRE] extends ViewSplice: // extends Filterable[WIRE] with View
   def allowPermissivePrimitives(): JackFlavor[WIRE]
   def parseOrElse(poe: (RType, RType)*): JackFlavor[WIRE]
   def withAdapters(ta: TypeAdapterFactory*): JackFlavor[WIRE]
-  // def withDefaultHint(hint: String): JackFlavor[WIRE]
-  // def withHints(h: (Type, String)*): JackFlavor[WIRE]
-  // def withHintModifiers(hm: (Type, HintValueModifier)*): JackFlavor[WIRE]
+  def withDefaultHint(hint: String): JackFlavor[WIRE]
+  def withHints(h: (RType, String)*): JackFlavor[WIRE]
+  def withHintModifiers(hm: (RType, HintValueModifier)*): JackFlavor[WIRE]
   def withTypeValueModifier(tm: HintValueModifier): JackFlavor[WIRE]
 
   // Need WIRE-specific Builder instance.  By default this is StringBuilder.  Mongo will overwrite this.

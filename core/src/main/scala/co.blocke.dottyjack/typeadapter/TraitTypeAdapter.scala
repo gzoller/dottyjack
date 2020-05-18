@@ -20,24 +20,7 @@ object TraitTypeAdapterFactory extends TypeAdapterFactory:
     }
 
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
-    TraitTypeAdapter(concrete, taCache.jackFlavor.defaultHint)
-
-    /*  TODO -- Wire up all modifiers and clean up unneeded crud
-  override def typeAdapterOf[T](
-      classSymbol: ClassSymbol,
-      next:        TypeAdapterFactory
-  )(implicit taCache: TypeAdapterCache, tt: TypeTag[T]): TypeAdapter[T] =
-    if (classSymbol.isTrait) {
-      TraitTypeAdapter(
-        classSymbol.fullName,
-        taCache.jackFlavor.getHintLabelFor(tt.tpe),
-        tt.tpe,
-        ActiveTypeParamWeaver(tt.tpe)
-      //        if (tt.tpe.typeArgs.nonEmpty) ActiveTypeParamWeaver(tt.tpe) else NoOpTypeParamWeaver()
-      )
-    } else
-      next.typeAdapterOf[T]
-}*/
+    TraitTypeAdapter(concrete, taCache.jackFlavor.getHintLabelFor(concrete)) //taCache.jackFlavor.defaultHint)
 
 
 case class TraitTypeAdapter[T](
@@ -62,12 +45,9 @@ case class TraitTypeAdapter[T](
     else {
       val concreteClass = parser.scanForHint(
         hintLabel,
-        DefaultHintModifier).asInstanceOf[Class[T]]
-        /* TODO
-        taCache.jackFlavor.hintValueModifiers
-          .getOrElse(polymorphicType, DefaultHintModifier)
-      )
-      */
+        // DefaultHintModifier).asInstanceOf[Class[T]]
+        taCache.jackFlavor.hintValueModifiers.getOrElse(info, DefaultHintModifier)
+      ).asInstanceOf[Class[T]]
       val ccta = calcTA(concreteClass)
       ccta.read(parser).asInstanceOf[T]
     }
@@ -80,7 +60,10 @@ case class TraitTypeAdapter[T](
       writer.writeNull(out)
     else {
       val ccta = calcTA(t.getClass)
-      val hintValue = DefaultHintModifier.unapply(t.getClass.getName) // TODO: Wire up hint value modifiers
+      val hintValue = taCache.jackFlavor.hintValueModifiers
+        .getOrElse(info, DefaultHintModifier)
+        .unapply(t.getClass.getName)
+      //DefaultHintModifier.unapply(t.getClass.getName) // TODO: Wire up hint value modifiers
       writer.writeObject(
         t, 
         ccta.orderedFieldNames, 

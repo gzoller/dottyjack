@@ -105,7 +105,7 @@ trait ScalaClassTypeAdapter[T](implicit taCache: TypeAdapterCache) extends Class
       writer:     Writer[WIRE],
       out:        mutable.Builder[WIRE, WIRE]): Unit = 
     val hintValue = t.getClass.getName
-    val hintLabel = jackFlavor.defaultHint   // TODO  --> .getHintLabelFor(info.name)
+    val hintLabel = jackFlavor.getHintLabelFor(info)
     val extra = List(
       (
         hintLabel,
