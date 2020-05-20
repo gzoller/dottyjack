@@ -86,10 +86,11 @@ object JavaByteTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[ja
     }
     
 
-object JavaCharacterTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[java.lang.Character] with ScalarTypeAdapter[java.lang.Character] with Stringish:
+object JavaCharacterTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[java.lang.Character] with ScalarTypeAdapter[java.lang.Character]:
   def matches(concrete: RType): Boolean = concrete == PrimitiveType.Java_Char
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[java.lang.Character] = this
 
+  override def isStringish: Boolean = true
   val info = Reflector.reflectOn[java.lang.Character]
   def read(parser: Parser): java.lang.Character =
     if (parser.peekForNull)

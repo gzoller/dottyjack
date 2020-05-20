@@ -87,14 +87,14 @@ trait JackFlavor[WIRE] extends ViewSplice: // extends Filterable[WIRE] with View
   // These is so pervasively handy, let's just pre-stage it for easy access
   lazy val stringTypeAdapter: TypeAdapter[String] = taCache.typeAdapterOf[String]
   lazy val anyTypeAdapter: TypeAdapter[Any]       = taCache.typeAdapterOf[Any]
-  lazy val anyMapKeyTypeAdapter: TypeAdapter[Any] = taCache.typeAdapterOf[Any]
 
   // Look up any custom hint label for given type, and if none then use default
   def getHintLabelFor(tpe: RType): String = hintMap.getOrElse(tpe, defaultHint)
 
   def stringWrapTypeAdapterFactory[T](
       wrappedTypeAdapter: TypeAdapter[T],
-      emptyStringOk: Boolean = true
+      emptyStringOk: Boolean = true,
+      maybe: Boolean = false
     ): TypeAdapter[T]
 
   def enumsAsInts(): JackFlavor[WIRE]

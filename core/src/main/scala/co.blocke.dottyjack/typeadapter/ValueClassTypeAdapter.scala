@@ -28,8 +28,12 @@ case class ValueClassTypeAdapter[VC, Value](
     elementTypeAdapter: TypeAdapter[Value]
 ) extends TypeAdapter[VC] {
 
+  // For wrapping map keys
+  override def isStringish: Boolean = elementTypeAdapter.isStringish
+  override def maybeStringish: Boolean = !elementTypeAdapter.isStringish
+
   def read(parser: Parser): VC = 
-    info.asInstanceOf[ClassInfo].constructWith(List(elementTypeAdapter.read(parser).asInstanceOf[Object])).asInstanceOf[VC]
+    info.asInstanceOf[ClassInfo].infoClass.getConstructors.head.newInstance(List(elementTypeAdapter.read(parser).asInstanceOf[Object]):_*).asInstanceOf[VC]
 
   def write[WIRE](
       t:      VC,

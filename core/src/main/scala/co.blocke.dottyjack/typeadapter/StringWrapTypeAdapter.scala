@@ -4,6 +4,7 @@ package typeadapter
 import model._
 import co.blocke.dotty_reflection._
 import co.blocke.dotty_reflection.info._
+import co.blocke.dotty_reflection.Clazzes._
 
 import scala.collection.mutable
 
@@ -11,11 +12,14 @@ import scala.collection.mutable
 // This is used for JSON Map keys, which must be strings.
 case class StringWrapTypeAdapter[T](
     wrappedTypeAdapter: TypeAdapter[T],
-    emptyStringOk:      Boolean        = true
-  ) extends TypeAdapter[T] with Stringish {
+    emptyStringOk:      Boolean        = true,
+    maybe:              Boolean        = false
+  ) extends TypeAdapter[T] {
 
+  override def isStringish: Boolean = true
   val info: RType = wrappedTypeAdapter.info
 
+  // TODO: maybe reads!
   def read(parser: Parser): T =
     parser.expectString() match {
       case null => null.asInstanceOf[T]
@@ -31,13 +35,15 @@ case class StringWrapTypeAdapter[T](
   def write[WIRE](
       t:      T,
       writer: Writer[WIRE],
-      out:    mutable.Builder[WIRE, WIRE]): Unit = {
-    val stringBuilder = co.blocke.dottyjack.model.StringBuilder()
-    wrappedTypeAdapter.write(
-      t,
-      writer,
-      stringBuilder.asInstanceOf[mutable.Builder[Any, WIRE]]
-    )
-    writer.writeString(stringBuilder.result(), out)
-  }
+      out:    mutable.Builder[WIRE, WIRE]): Unit = 
+    if maybe && t.getClass <:< classOf[String] then
+      writer.writeString(t.asInstanceOf[String], out)
+    else
+      val stringBuilder = co.blocke.dottyjack.model.StringBuilder()
+      wrappedTypeAdapter.write(
+        t,
+        writer,
+        stringBuilder.asInstanceOf[mutable.Builder[Any, WIRE]]
+      )
+      writer.writeString(stringBuilder.result(), out)
 }

@@ -9,7 +9,8 @@ import java.util.UUID
 import scala.collection.mutable
 import scala.util.{ Failure, Success, Try }
 
-object UUIDTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[UUID] with Stringish:
+object UUIDTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[UUID]: 
+  override def isStringish: Boolean = true
   val uuidClass = classOf[UUID]
   def matches(concrete: RType): Boolean = 
     concrete match {

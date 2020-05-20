@@ -35,20 +35,27 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
         val jackFlavor = taCache.jackFlavor
         val keyTypeAdapter = taCache.typeAdapterOf(c.elementType)
         // Wrap Map keys in a StringWrapTypeAdapter?
-        val finalKeyTypeAdapter =
+        val finalKeyTypeAdapter = keyTypeAdapter match {
+          // case k: AnyTypeAdapter => jackFlavor.anyMapKeyTypeAdapter // TODO: Do better!
+          case k if k.isStringish => k  // ready-to-eat
+          case k if k.maybeStringish => jackFlavor.stringWrapTypeAdapterFactory(k, false, true)
+          case k => jackFlavor.stringWrapTypeAdapterFactory(k) // wrap map keys in quotes
+        }
+        /*
           if (keyTypeAdapter.isInstanceOf[AnyTypeAdapter])
             jackFlavor.anyMapKeyTypeAdapter
           else if (!jackFlavor.stringifyMapKeys
             || keyTypeAdapter.isInstanceOf[Stringish]
             // TODO
             // || keyType <:< typeOf[Enumeration#Value] && !enumsAsInt
-            // || keyTypeAdapter.isInstanceOf[ValueClassTypeAdapter[_, _]] 
-            // && keyTypeAdapter.asInstanceOf[ValueClassTypeAdapter[_, _]].sourceTypeAdapter.isInstanceOf[Stringish]
+            || keyTypeAdapter.isInstanceOf[ValueClassTypeAdapter[_, _]] 
+            && keyTypeAdapter.asInstanceOf[ValueClassTypeAdapter[_, _]].isStringish
             || (keyTypeAdapter.isInstanceOf[OptionTypeAdapter[_]] && keyTypeAdapter.asInstanceOf[OptionTypeAdapter[_]].valueIsStringish())
             || (keyTypeAdapter.isInstanceOf[JavaOptionalTypeAdapter[_]] && keyTypeAdapter.asInstanceOf[JavaOptionalTypeAdapter[_]].valueIsStringish()))
             keyTypeAdapter
           else 
             jackFlavor.stringWrapTypeAdapterFactory(keyTypeAdapter)
+            */
         val valueTypeAdapter = taCache.typeAdapterOf(c.elementType2) match {
           case ta: OptionTypeAdapter[_] => ta.convertNullToNone()
           case ta: JavaOptionalTypeAdapter[_] => ta.convertNullToNone()
@@ -61,7 +68,8 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
             (keyTypeAdapter.isInstanceOf[StringWrapTypeAdapter[_]] && isOptionalTA(keyTypeAdapter
               .asInstanceOf[StringWrapTypeAdapter[_]]
               .wrappedTypeAdapter)) ||
-              keyTypeAdapter == taCache.jackFlavor.anyMapKeyTypeAdapter
+              keyTypeAdapter.isInstanceOf[AnyTypeAdapter]
+              // keyTypeAdapter == taCache.jackFlavor.anyMapKeyTypeAdapter
 
         val valueIsOptionalOrAny = isOptionalTA(valueTypeAdapter) || valueTypeAdapter.isInstanceOf[AnyTypeAdapter]
 
@@ -164,6 +172,14 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
         val jackFlavor = taCache.jackFlavor
         val keyTypeAdapter = taCache.typeAdapterOf(c.elementType)
         // Wrap Map keys in a StringWrapTypeAdapter?
+        val finalKeyTypeAdapter = keyTypeAdapter match {
+          // case k: AnyTypeAdapter => jackFlavor.anyMapKeyTypeAdapter // TODO: Do better!
+          case k if k.isStringish => k  // ready-to-eat
+          case k if k.maybeStringish => jackFlavor.stringWrapTypeAdapterFactory(k, false, true)
+          case k => jackFlavor.stringWrapTypeAdapterFactory(k) // wrap map keys in quotes
+        }
+        /*
+        // Wrap Map keys in a StringWrapTypeAdapter?
         val finalKeyTypeAdapter =
           if (keyTypeAdapter.isInstanceOf[AnyTypeAdapter])
             jackFlavor.anyMapKeyTypeAdapter
@@ -178,6 +194,7 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
             keyTypeAdapter
           else 
             jackFlavor.stringWrapTypeAdapterFactory(keyTypeAdapter)
+            */
         val valueTypeAdapter = taCache.typeAdapterOf(c.elementType2) match {
           case ta: OptionTypeAdapter[_] => ta.convertNullToNone()
           case ta: JavaOptionalTypeAdapter[_] => ta.convertNullToNone()
@@ -190,7 +207,8 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
             (keyTypeAdapter.isInstanceOf[StringWrapTypeAdapter[_]] && isOptionalTA(keyTypeAdapter
               .asInstanceOf[StringWrapTypeAdapter[_]]
               .wrappedTypeAdapter)) ||
-              keyTypeAdapter == taCache.jackFlavor.anyMapKeyTypeAdapter
+              keyTypeAdapter.isInstanceOf[AnyTypeAdapter]
+              // keyTypeAdapter == taCache.jackFlavor.anyMapKeyTypeAdapter
 
         val valueIsOptionalOrAny = isOptionalTA(valueTypeAdapter) || valueTypeAdapter.isInstanceOf[AnyTypeAdapter]
 

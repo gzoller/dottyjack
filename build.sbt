@@ -7,7 +7,7 @@ lazy val basicSettings = Seq(
   scalaVersion := dottyVersion,
   resolvers += Resolver.jcenterRepo,
   resolvers += "co.blocke provisional resolver" at "https://dl.bintray.com/blocke/provisional",
-  // coverageMinimum := 98, // really this should be 96% but mongo isn't quite up to that yet
+  // coverageMinimum := 98, 
   // coverageFailOnMinimum := true,
   Test / parallelExecution in ThisBuild := false,
   scalacOptions ++= Seq(
@@ -49,7 +49,7 @@ lazy val scalajack = project
     libraryDependencies ++= 
       Seq(
         "commons-codec" % "commons-codec" % "1.12",
-        "co.blocke" %% "dotty-reflection" % "0.0.23",
+        "co.blocke" %% "dotty-reflection" % "36d1fd_SNAPSHOT",//"0.0.23",
         "org.scalameta" %% "munit" % "0.7.5" % Test,
         "org.json4s" % "json4s-core_2.13" % "3.6.6" % Test,
         "org.json4s" % "json4s-native_2.13" % "3.6.6" % Test

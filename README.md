@@ -5,6 +5,11 @@ DottyJack is an experimental implementation of a JSON parser/serializer, derived
 ![](comingsoon.png)
 
 
+### Notes:
+
+* TBD
+
+
 ### A word about performance...
 There are deep structural changes in Dotty vs Scala 2.x, one of which was the choice to remove the Scala runtime reflection.  In its place is a tasty file, much like an extended class file, which has all the juicy bits one needs for reflection.  In Scala 2.x reflected information was encoded into case classes and was available at runtime.  In Dotty, the tasty file must be read.  There's a clear and significant performance difference between memory access and file IO.  So the bad news--DottyJack's performance for first-seen classes will be very poor vs old ScalaJack.  The good news--all of ScalaJack's deep reflective abilities are available in DottyJack plus support for Dotty's new features (e.g. union types).
 

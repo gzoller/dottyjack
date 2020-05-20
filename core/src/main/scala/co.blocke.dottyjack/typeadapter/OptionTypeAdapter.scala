@@ -52,7 +52,8 @@ case class OptionTypeAdapter[E](
 
   override def defaultValue: Option[Option[E]] = Some(None)
 
-  def valueIsStringish(): Boolean = valueTypeAdapter.isInstanceOf[Stringish]
+  override def isStringish: Boolean = valueTypeAdapter.isStringish
+  override def maybeStringish: Boolean = !valueTypeAdapter.isStringish
 
   def read(parser: Parser): Option[E] =
     // We have to do some voodoo here and peek ahead for Null.  Some types, e.g. Int, aren't nullable,
@@ -88,7 +89,8 @@ case class JavaOptionalTypeAdapter[E](
   val empty = Optional.empty[E]()
   override def defaultValue: Option[Optional[E]] = Some(empty)
 
-  def valueIsStringish(): Boolean = valueTypeAdapter.isInstanceOf[Stringish]
+  override def isStringish: Boolean = valueTypeAdapter.isStringish
+  override def maybeStringish: Boolean = !valueTypeAdapter.isStringish
 
   def read(parser: Parser): Optional[E] =
     // We have to do some voodoo here and peek ahead for Null.  Some types, e.g. Int, aren't nullable,

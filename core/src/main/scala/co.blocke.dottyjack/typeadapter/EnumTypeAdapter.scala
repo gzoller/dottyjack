@@ -46,6 +46,7 @@ case class ScalaEnumerationTypeAdapter[E <: Enumeration](
     info:        RType,
     enumsAsInt:  Boolean
   ) extends TypeAdapter[e.Value]:
+  override def isStringish: Boolean = !enumsAsInt
 
   def read(parser: Parser): e.Value = 
     if (parser.nextIsNumber) {
@@ -99,7 +100,8 @@ case class ScalaEnumTypeAdapter[E <: Enum](
   ) extends TypeAdapter[E]:
 
   val scalaEnum = info.asInstanceOf[ScalaEnumInfo]
-  
+  override def isStringish: Boolean = !enumsAsInt
+
   def read(parser: Parser): E = 
     if (parser.nextIsNumber) {
       val en = parser.expectNumber().toInt
@@ -152,6 +154,7 @@ case class JavaEnumTypeAdapter[E <: java.lang.Enum[_]](
   ) extends TypeAdapter[E]:
 
   val javaEnum = info.asInstanceOf[JavaEnumInfo]
+  override def isStringish: Boolean = !enumsAsInt
 
   def read(parser: Parser): E = 
     if (parser.peekForNull) then

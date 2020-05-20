@@ -8,54 +8,46 @@ import scala.collection.mutable
 import scala.jdk.CollectionConverters._
 
 
-/*
-trait Animal[T]{
-  val name: String
-  val numLegs: T
+object Food extends Enumeration {
+  val Seeds, Meat, Pellets, Veggies = Value
 }
-case class Dog(name: String, numLegs: Int, likesWalks: Boolean) extends Animal[Int]
 
-trait Thing[A, B] { val a: A; val b: B }
-case class AThing[Y, X](a: X, b: Y) extends Thing[X, Y]
-*/
+case class Foom( a: Month )
 
-case class Bar2[X](id: X)
-case class Foo2[A](x: Bar2[A], b: Int)
+case class Holder[T](a: Map[T,T])
 
-
+enum Month {
+  case Jan, Feb, Mar
+}
 
 object Main {
 
   def main(args: Array[String]): Unit = 
 
-    val sj = DottyJack()
+    val sj = DottyJack().enumsAsInts()
 
-    println(Reflector.reflectOn[Foo2[Long]])
-    // val inst = Foo2(Bar2(123L), 19)
-    // val js = sj.render(inst)
-    // println(js)
+    val m1 = Map(Food.Meat -> Food.Veggies)
+    val m2 = Map(Food.Seeds -> Food.Pellets)
+    val inst = Map(Map(m1 -> m2) -> Map(m2 -> m1))
+    val js = sj.render(inst)
+    println(js)
+    println(sj.read[Map[Map[Map[Food.Value,Food.Value], Map[Food.Value,Food.Value]],Map[Map[Food.Value,Food.Value], Map[Food.Value,Food.Value]]]](js))
 
+    println("\n------\n")
 
-    /*
-    Note: In ScalaJack behavior like this:
-      trait Foom
-      trait Thing[A, B] { val a: A; val b: B }
-      case class AThing[Y, X](a: X, b: Y) extends Thing[X, Y] with Foom
-      object Size extends Enumeration {
-        val Small, Medium, Large = Value
-      }
-      import Size._
+    val h1 = Holder[Option[Food.Value]]( Map(Some(Food.Meat) -> Some(Food.Veggies)))
+    val j1 = sj.render(h1)
+    println(j1)
+    println(sj.read[Holder[Option[Food.Value]]](j1))
 
-      val f: Foom = AThing("Wow",Medium)
-      val js = sj.render(f)
-      println(js)
-      val i = sj.read[Foom](js)
-      println(i)
-      println(i.asInstanceOf[AThing[_,_]].b.getClass)
+    println("\n------\n")
 
-      The Size-type is converted to a String here.  Since Foom has no type params, AThing's X and Y params default to Any.
-    */
-
+    val h2 = Holder[Int|Boolean](Map(false->9))
+    val j2 = sj.render(h2)
+    println(j2)
+    val x = sj.read[Holder[Int|Boolean]](j2)
+    println(x)
+    println(x.a.head._1.getClass)
 
   def constructors(clazz: Class[_]): String = 
     s"=== Constructors: ${clazz.getName} ===\n   " + clazz.getConstructors.toList.mkString("\n   ")

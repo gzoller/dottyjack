@@ -26,6 +26,8 @@ case class AnyTypeAdapter(info: RType, taCache: TypeAdapterCache) extends TypeAd
   lazy val listAnyTypeAdapter: TypeAdapter[List[Any]]     = taCache.typeAdapterOf[List[Any]]
   lazy val optionAnyTypeAdapter: TypeAdapter[Option[Any]] = taCache.typeAdapterOf[Option[Any]]
 
+  override def maybeStringish: Boolean = true
+
   def read(parser: Parser): Any =
     parser match {
       case p if p.peekForNull   => null
@@ -100,68 +102,3 @@ case class AnyTypeAdapter(info: RType, taCache: TypeAdapterCache) extends TypeAd
       case v            => unpack[Any,WIRE](v, writer, out)
     }
 }
-
-
-// For stringified Map keys, i.e. JSON.  If value is a string, handle normally, else treat as a string wrapper
-case class AnyMapKeyTypeAdapter(
-    taCache: TypeAdapterCache
-  ) extends TypeAdapter[Any]:
-
-  val info: RType = Reflector.reflectOn[Any]
-  val jackFlavor = taCache.jackFlavor
-  val anyTA: TypeAdapter[Any] = taCache.typeAdapterOf[Any]
-
-  lazy val mapAnyTypeAdapter: TypeAdapter[Map[Any, Any]]  = taCache.typeAdapterOf[Map[Any, Any]]
-  lazy val listAnyTypeAdapter: TypeAdapter[List[Any]]     = taCache.typeAdapterOf[List[Any]]
-  lazy val optionAnyTypeAdapter: TypeAdapter[Option[Any]] = taCache.typeAdapterOf[Option[Any]]
-
-  def read(parser: Parser): Any =
-    parser.expectString() match {
-      case null => null
-      case s    => anyTA.read(parser.subParser(s.asInstanceOf[parser.WIRE]))
-    }
-  
-  private def unpack[X, WIRE](
-      value: X,
-      writer: Writer[WIRE],
-      out: mutable.Builder[WIRE, WIRE],
-      isMapKey: Boolean
-    ): Unit = 
-      taCache.typeAdapterOf(Reflector.reflectOnClass(value.getClass)) match {
-      case ta: Stringish => ta.asInstanceOf[TypeAdapter[X]].write(value, writer, out)
-      case ta: CaseClassTypeAdapter[_] =>
-        val builder = jackFlavor.getBuilder.asInstanceOf[mutable.Builder[Any, WIRE]]
-        ta.asInstanceOf[CaseClassTypeAdapter[X]].writeWithHint[WIRE](
-          jackFlavor.asInstanceOf[JackFlavor[WIRE]],
-          value,
-          writer,
-          builder
-        )
-        writer.writeString(builder.result().toString, out)
-      case ta =>
-        jackFlavor.stringWrapTypeAdapterFactory(ta.asInstanceOf[TypeAdapter[X]]).write(value, writer, out)
-    }
-
-  // WARNING: JSON output broken for Option[...] where value is None -- especially bad for Map keys!
-  def write[WIRE](t: Any, writer: Writer[WIRE], out: mutable.Builder[WIRE, WIRE]): Unit =
-    t match {
-      // Null not needed: null Map keys are inherently invalid in SJ
-      case e if e.getClass.getName =="scala.Enumeration$Val" => writer.writeString(t.toString, out)
-      case _: scala.Enum => writer.writeString(t.toString, out)
-      case _: Map[_, _] =>
-        jackFlavor
-          .stringWrapTypeAdapterFactory(mapAnyTypeAdapter)
-          .write(t.asInstanceOf[Map[Any, Any]], writer, out)
-      case _: Seq[_] =>
-        jackFlavor
-          .stringWrapTypeAdapterFactory(listAnyTypeAdapter)
-          .write(t.asInstanceOf[List[Any]], writer, out)
-      case opt: Option[_] if opt.isDefined =>
-        write(t.asInstanceOf[Option[_]].get, writer, out)
-      // $COVERAGE-OFF$Should be impossible (Nones filtered by CanBuildFromTypeAdapter).  Code left in as a safety
-      case opt: Option[_] if opt.isEmpty =>
-        optionAnyTypeAdapter.write(None, writer, out)
-      // $COVERAGE-ON$
-      case v =>
-        unpack(t, writer, out, isMapKey = true)
-    }

@@ -3,7 +3,8 @@ package json
 
 import model._
 import co.blocke.dotty_reflection.RType
-import typeadapter.{AnyMapKeyTypeAdapter, StringWrapTypeAdapter}
+import typeadapter.StringWrapTypeAdapter
+// import typeadapter.{AnyMapKeyTypeAdapter, StringWrapTypeAdapter}
 
 opaque type JSON = String
 
@@ -32,7 +33,6 @@ case class JsonFlavor(
   private val writer = JsonWriter() 
 
   override val stringifyMapKeys: Boolean = true
-  override lazy val anyMapKeyTypeAdapter: AnyMapKeyTypeAdapter = AnyMapKeyTypeAdapter(taCache)
 
   def allowPermissivePrimitives(): JackFlavor[JSON] =
     this.copy(permissivesOk = true)
@@ -52,7 +52,8 @@ case class JsonFlavor(
 
   def stringWrapTypeAdapterFactory[T](
       wrappedTypeAdapter: TypeAdapter[T],
-      emptyStringOk:      Boolean        = true
+      emptyStringOk:      Boolean        = true,
+      maybe:              Boolean        = false
   ): TypeAdapter[T] =
-    StringWrapTypeAdapter(wrappedTypeAdapter, emptyStringOk)
+    StringWrapTypeAdapter(wrappedTypeAdapter, emptyStringOk, maybe)
 }

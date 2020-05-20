@@ -11,7 +11,7 @@ opaque type Phone = String
 import scala.collection.mutable
 
 // Override just Phone
-object PhoneAdapter extends TypeAdapterFactory with TypeAdapter[Phone] with Stringish:
+object PhoneAdapter extends TypeAdapterFactory with TypeAdapter[Phone]:
   def matches(concrete: RType): Boolean = 
     concrete match {
       case a: AliasInfo if a.name == "Phone" => true
@@ -19,7 +19,8 @@ object PhoneAdapter extends TypeAdapterFactory with TypeAdapter[Phone] with Stri
     }
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Phone] = this
   val info = Reflector.reflectOn[Phone]
-
+  override def isStringish: Boolean = true
+  
   def read(parser: Parser): Phone =
     parser.expectString() match {
       case null      => null.asInstanceOf[Phone]

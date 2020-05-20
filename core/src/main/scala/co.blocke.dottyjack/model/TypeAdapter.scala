@@ -32,6 +32,10 @@ import co.blocke.dotty_reflection.Clazzes._
   def resolved: TypeAdapter[T] = this // Might be something else during Lazy construction
   
   def defaultValue: Option[T] = None
+
+  // Used to determine if we need to wrap Map keys in quotes (no, if isStringish == true -- the quotes are automatic in this case)
+  def isStringish: Boolean = false
+  def maybeStringish: Boolean = false // means we don't know for sure if something is Stringish until read/render time (not in Factory), e.g. Option or Union
   
   def read(parser: Parser): T
   def write[WIRE](
@@ -53,11 +57,6 @@ import co.blocke.dotty_reflection.Clazzes._
 }
 
 trait ScalarTypeAdapter[T] extends TypeAdapter[T] 
-
-// Marker trait for anything that boils down to String, e.g. Char, UUID, etc.
-trait Stringish /* TODO {
-  this: TypeAdapter[_] =>
-}*/
 
 // Marker trait for collections
 trait Collectionish

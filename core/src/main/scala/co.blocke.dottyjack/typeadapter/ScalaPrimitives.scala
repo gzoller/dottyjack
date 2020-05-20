@@ -100,10 +100,11 @@ object ByteTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Byte] 
     writer.writeInt(t, out)
 
 
-object CharTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Char] with ScalarTypeAdapter[Char] with Stringish:
+object CharTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Char] with ScalarTypeAdapter[Char]:
   def matches(concrete: RType): Boolean = concrete == PrimitiveType.Scala_Char
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Char] = this
 
+  override def isStringish: Boolean = true
   val info = Reflector.reflectOn[Char]
   def read(parser: Parser): Char =
     parser.expectString() match {
@@ -223,10 +224,11 @@ object ShortTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Short
     writer.writeInt(t, out)
 
 
-object StringTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[String] with ScalarTypeAdapter[String] with Stringish:
+object StringTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[String] with ScalarTypeAdapter[String]:
   def matches(concrete: RType): Boolean = concrete == PrimitiveType.Scala_String
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[String] = this
 
+  override def isStringish: Boolean = true
   val info = Reflector.reflectOn[String]
   def read(parser: Parser): String = parser.expectString()
   def write[WIRE](t: String, writer: Writer[WIRE], out: mutable.Builder[WIRE, WIRE]): Unit =
