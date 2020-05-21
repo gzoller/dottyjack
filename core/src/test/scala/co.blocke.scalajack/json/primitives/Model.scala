@@ -53,6 +53,19 @@ enum Color {
 }
 case class TVColors( color1: Color, color2: Color )
 
+sealed trait Flavor
+case object Vanilla extends Flavor
+case object Chocolate extends Flavor
+case object Bourbon extends Flavor
+
+sealed trait Vehicle
+case class Truck(numberOfWheels: Int) extends Vehicle
+case class Car(numberOfWheels: Int, color: String) extends Vehicle
+case class Plane(numberOfEngines: Int) extends Vehicle
+
+case class Ride( wheels: Vehicle )
+case class Favorite( flavor: Flavor )
+
 case class SampleFloat(f1: Float, f2: Float, f3: Float, f4: Float)
 case class SampleInt(i1: Int, i2: Int, i3: Int, i4: Int)
 case class SampleLong(l1: Long, l2: Long, l3: Long, l4: Long)

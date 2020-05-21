@@ -56,15 +56,21 @@ class Enums() extends FunSuite:
     assertEquals(
       """{"color1":null,"color2":1}""".asInstanceOf[JSON],
       js)
-    assertEquals(inst, sj.read[TVColors](js))
+    assertEquals(inst, sj2.read[TVColors](js))
   }
 
   test("""Sealed trait "enums" must work""") {
-    pending
+    val inst = Ride(Car(4,"Red"))
+    val js = sj.render(inst)
+    assertEquals("""{"wheels":{"numberOfWheels":4,"color":"Red"}}""".asInstanceOf[JSON],js)
+    assertEquals(inst, sj.read[Ride](js))
   }
 
   test("""Case object "enums" must work""") {
-    pending
+    val inst = Favorite(Chocolate)
+    val js = sj.render(inst)
+    assertEquals("""{"flavor":"Chocolate"}""".asInstanceOf[JSON],js)
+    assertEquals(inst, sj.read[Favorite](js))
   }
 
   test("Enumeration (Scala 2.x) must break") {

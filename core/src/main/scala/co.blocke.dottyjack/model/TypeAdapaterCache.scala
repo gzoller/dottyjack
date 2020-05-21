@@ -38,7 +38,7 @@ object TypeAdapterCache {
       // WARNING: These two must precede CaseClassTypeAdapter in this list or all
       //     ValueClasses will be interpreted as case classes, and case objects
       //     will likewise be hidden (interpreted as regular classes).
-      // SealedTraitTypeAdapterFactory,
+      SealedTraitTypeAdapterFactory,
       ValueClassTypeAdapterFactory,
       ScalaClassTypeAdapterFactory,
 
@@ -78,7 +78,6 @@ case class TypeAdapterCache(
   case class Initialized(typeAdapterAttempt: Try[TypeAdapter[_]]) extends Phase
 
   val selfCache = this
-  // var x = 0
 
   class TypeEntry(tpe: RType):
     // @volatile
