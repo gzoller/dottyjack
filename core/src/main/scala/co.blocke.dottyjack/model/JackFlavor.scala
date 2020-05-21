@@ -93,8 +93,11 @@ trait JackFlavor[WIRE] extends ViewSplice: // extends Filterable[WIRE] with View
 
   def stringWrapTypeAdapterFactory[T](
       wrappedTypeAdapter: TypeAdapter[T],
-      emptyStringOk: Boolean = true,
-      maybe: Boolean = false
+      emptyStringOk: Boolean = true
+    ): TypeAdapter[T]
+  def maybeStringWrapTypeAdapterFactory[T](
+      wrappedTypeAdapter: TypeAdapter[T],
+      emptyStringOk: Boolean = true
     ): TypeAdapter[T]
 
   def enumsAsInts(): JackFlavor[WIRE]

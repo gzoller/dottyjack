@@ -37,6 +37,9 @@ case class UnionTypeAdapter[L, R](
     rightTypeAdapter: TypeAdapter[R])(implicit taCache: TypeAdapterCache)
   extends TypeAdapter[L | R] {
 
+  override def isStringish: Boolean = leftTypeAdapter.isStringish && rightTypeAdapter.isStringish
+  override def maybeStringish: Boolean = !isStringish
+  
   def read(parser: Parser): L | R = {
     val savedReader = parser.mark()
     Try(leftTypeAdapter.read(parser)) match {

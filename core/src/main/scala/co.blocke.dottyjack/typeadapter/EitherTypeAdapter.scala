@@ -41,6 +41,9 @@ case class EitherTypeAdapter[L, R](
     rightTypeAdapter: TypeAdapter[R])
   extends TypeAdapter[Either[L, R]] {
 
+  override def isStringish: Boolean = leftTypeAdapter.isStringish && rightTypeAdapter.isStringish
+  override def maybeStringish: Boolean = !isStringish
+
   def read(parser: Parser): Either[L, R] = {
     val savedReader = parser.mark()
     if (parser.peekForNull)

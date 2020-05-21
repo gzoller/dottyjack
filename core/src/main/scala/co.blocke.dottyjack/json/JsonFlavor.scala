@@ -3,8 +3,7 @@ package json
 
 import model._
 import co.blocke.dotty_reflection.RType
-import typeadapter.StringWrapTypeAdapter
-// import typeadapter.{AnyMapKeyTypeAdapter, StringWrapTypeAdapter}
+import typeadapter.{MaybeStringWrapTypeAdapter, StringWrapTypeAdapter}
 
 opaque type JSON = String
 
@@ -52,8 +51,13 @@ case class JsonFlavor(
 
   def stringWrapTypeAdapterFactory[T](
       wrappedTypeAdapter: TypeAdapter[T],
-      emptyStringOk:      Boolean        = true,
-      maybe:              Boolean        = false
+      emptyStringOk:      Boolean        = true
   ): TypeAdapter[T] =
-    StringWrapTypeAdapter(wrappedTypeAdapter, emptyStringOk, maybe)
+    StringWrapTypeAdapter(wrappedTypeAdapter, emptyStringOk)
+
+  def maybeStringWrapTypeAdapterFactory[T](
+      wrappedTypeAdapter: TypeAdapter[T],
+      emptyStringOk: Boolean = true
+  ): TypeAdapter[T] =
+    MaybeStringWrapTypeAdapter(this, wrappedTypeAdapter, emptyStringOk)
 }

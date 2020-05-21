@@ -296,10 +296,6 @@ class ClassPrimKeys() extends FunSuite:
       .withHintModifiers(Reflector.reflectOn[Pet] -> petHintMod)
     val js =
       """{"m":{"{\"_hint\":\"co.blocke.scalajack.mapkeys.Bogus\",\"address\":\"123 Main\",\"pet\":{\"kind\":\"BreathsLava\",\"name\":\"Flipper\",\"food\":\"Veggies\",\"waterTemp\":74.33}}":{"_hint":"co.blocke.scalajack.json.mapkeys.ShinyPetHolder","address":"210 North","pet":{"kind":"BreathsAir","name":"Fido","food":"Meat","numLegs":3}}}}""".asInstanceOf[JSON]
-    // val msg =
-    //   """Couldn't marshal class for co.blocke.scalajack.mapkeys.Bogus
-    //           |{"_hint":"co.blocke.scalajack.mapkeys.Bogus","address":"123 Main","pet":{"kin...
-    //           |-------------------------------------------^""".stripMargin
     interceptMessage[java.lang.ClassNotFoundException]("co.blocke.scalajack.mapkeys.Bogus"){
       sj2.read[SampleShiny](js)
     }
@@ -320,5 +316,4 @@ class ClassPrimKeys() extends FunSuite:
     interceptMessage[co.blocke.dottyjack.ScalaJackError](msg){
       sj2.read[SampleShiny](js)
     }
-
   }

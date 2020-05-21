@@ -42,6 +42,8 @@ case class IntersectionTypeAdapter[L, R](
   extends TypeAdapter[L & R]:
 
   val syntheticTA = taCache.typeAdapterOf[L]
+  override def isStringish: Boolean = leftTypeAdapter.isStringish && rightTypeAdapter.isStringish
+  override def maybeStringish: Boolean = !isStringish
 
   def read(parser: Parser): L & R = 
     syntheticTA.read(parser).asInstanceOf[L & R]
