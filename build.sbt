@@ -1,12 +1,12 @@
-val dottyVersion = "0.24.0-RC1" //"0.24.0-bin-20200320-30f8c6f-NIGHTLY"
+val dottyVersion = "0.24.0-RC1"
 
 lazy val basicSettings = Seq(
   organization := "co.blocke",
   startYear := Some(2015),
   publishArtifact in (Compile, packageDoc) := false, // disable scaladoc due to bug handling annotations
   scalaVersion := dottyVersion,
-  resolvers += Resolver.jcenterRepo,
-  resolvers += "co.blocke releases resolver" at "https://dl.bintray.com/blocke/releases",
+  // resolvers += Resolver.jcenterRepo,
+  resolvers += "co.blocke releases buildResolver" at "https://dl.bintray.com/blocke/releases",
   // coverageMinimum := 98, 
   // coverageFailOnMinimum := true,
   Test / parallelExecution in ThisBuild := false,
