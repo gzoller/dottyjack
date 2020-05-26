@@ -1,3 +1,0 @@
-package co.blocke.dottyjack
-
-type HintBijective = BijectiveFunction[String, Type]

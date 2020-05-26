@@ -1,0 +1,107 @@
+ScalaJack 6.2.0:
+====================================
+Run 100000 iterations in 4882 ms
+Run 100000 iterations in 3895 ms
+Run 100000 iterations in 3807 ms
+Run 100000 iterations in 3798 ms
+Run 100000 iterations in 4363 ms
+Run 100000 iterations in 4413 ms
+Run 100000 iterations in 4607 ms
+Run 100000 iterations in 5617 ms
+Run 100000 iterations in 7161 ms
+Run 100000 iterations in 6011 ms
+Run 100000 iterations in 4206 ms
+Run 100000 iterations in 3934 ms
+Run 100000 iterations in 3901 ms
+Run 100000 iterations in 3786 ms
+Run 100000 iterations in 3836 ms
+Run 100000 iterations in 3870 ms
+Run 100000 iterations in 3815 ms
+Run 100000 iterations in 3827 ms
+Run 100000 iterations in 3897 ms
+Run 100000 iterations in 4597 ms
+Run 100000 iterations in 3855 ms
+Run 100000 iterations in 3841 ms
+Run 100000 iterations in 3937 ms
+Run 100000 iterations in 3852 ms
+Run 100000 iterations in 3919 ms
+Run 100000 iterations in 3920 ms
+Run 100000 iterations in 3865 ms
+Run 100000 iterations in 3851 ms
+Run 100000 iterations in 3822 ms
+Run 100000 iterations in 3959 ms
+Run 100000 iterations in 3908 ms
+
+
+ScalaJack 6.2.0 (forType):
+====================================
+(no real difference in this example...)
+
+DottyJack
+====================================
+Run 100000 iterations in 5182 ms
+Run 100000 iterations in 4166 ms
+Run 100000 iterations in 4199 ms
+Run 100000 iterations in 4221 ms
+Run 100000 iterations in 4274 ms
+Run 100000 iterations in 4364 ms
+Run 100000 iterations in 4753 ms
+Run 100000 iterations in 4829 ms
+Run 100000 iterations in 4757 ms
+Run 100000 iterations in 4466 ms
+Run 100000 iterations in 4579 ms
+Run 100000 iterations in 4613 ms
+Run 100000 iterations in 4588 ms
+Run 100000 iterations in 4516 ms
+Run 100000 iterations in 4580 ms
+Run 100000 iterations in 4817 ms
+Run 100000 iterations in 5035 ms
+Run 100000 iterations in 4539 ms
+Run 100000 iterations in 4410 ms
+Run 100000 iterations in 4485 ms
+Run 100000 iterations in 4601 ms
+Run 100000 iterations in 4928 ms
+Run 100000 iterations in 4955 ms
+Run 100000 iterations in 4707 ms
+Run 100000 iterations in 4442 ms
+Run 100000 iterations in 4493 ms
+Run 100000 iterations in 4530 ms
+Run 100000 iterations in 4529 ms
+Run 100000 iterations in 4530 ms
+Run 100000 iterations in 4499 ms
+Run 100000 iterations in 4571 ms
+
+
+DottyJack (forType)  <-- Slower!  forType is currently not advantageous, and will be removed for now
+====================================
+Run 100000 iterations in 5316 ms
+Run 100000 iterations in 4753 ms
+Run 100000 iterations in 4732 ms
+Run 100000 iterations in 5379 ms
+Run 100000 iterations in 5221 ms
+Run 100000 iterations in 5411 ms
+Run 100000 iterations in 4707 ms
+Run 100000 iterations in 4872 ms
+Run 100000 iterations in 5360 ms
+Run 100000 iterations in 5147 ms
+Run 100000 iterations in 5068 ms
+Run 100000 iterations in 5265 ms
+Run 100000 iterations in 5224 ms
+Run 100000 iterations in 5099 ms
+Run 100000 iterations in 4932 ms
+Run 100000 iterations in 4998 ms
+Run 100000 iterations in 4700 ms
+Run 100000 iterations in 4753 ms
+Run 100000 iterations in 4780 ms
+Run 100000 iterations in 5416 ms
+Run 100000 iterations in 5218 ms
+Run 100000 iterations in 5185 ms
+Run 100000 iterations in 5228 ms
+Run 100000 iterations in 4833 ms
+Run 100000 iterations in 4744 ms
+Run 100000 iterations in 4803 ms
+Run 100000 iterations in 4765 ms
+Run 100000 iterations in 5177 ms
+Run 100000 iterations in 4791 ms
+Run 100000 iterations in 4779 ms
+Run 100000 iterations in 4705 ms
