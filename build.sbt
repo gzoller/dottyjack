@@ -5,7 +5,7 @@ lazy val basicSettings = Seq(
   startYear := Some(2015),
   publishArtifact in (Compile, packageDoc) := false, // disable scaladoc due to bug handling annotations
   scalaVersion := dottyVersion,
-  // resolvers += Resolver.jcenterRepo,
+  // resolvers += Resolver.jcenterRepo,  <-- Use this one once we're GA and co-publishing to JCenter!
   resolvers += "co.blocke releases buildResolver" at "https://dl.bintray.com/blocke/releases",
   // coverageMinimum := 98, 
   // coverageFailOnMinimum := true,
@@ -38,9 +38,9 @@ lazy val root = (project in file("."))
   .settings(publishArtifact := false)
   .settings(publish := {})
   .settings(crossScalaVersions := Nil)
-  .aggregate(scalajack)  //, scalajack_benchmarks)
+  .aggregate(dottyjack)  //, scalajack_benchmarks)
 
-lazy val scalajack = project
+lazy val dottyjack = project
   .in(file("core"))
   // .enablePlugins(JmhPlugin)
   .settings(basicSettings)
