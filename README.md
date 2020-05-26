@@ -19,7 +19,7 @@ val inst = dj.render[Person](js) // re-constitutes original Person
 
 ### Notes:
 
-* TBD
+* 0.0.1 Initial feature release
 
 
 ### A word about performance...
