@@ -11,6 +11,7 @@ import scala.collection.immutable._
 import collection.JavaConverters._
 import scala.language.implicitConversions
 import java.util.Optional
+import json.JsonMatcher
 
 class Options() extends FunSuite:
 
@@ -242,6 +243,29 @@ class Options() extends FunSuite:
     val js = sj.render(inst)
     assertEquals("5".asInstanceOf[JSON],js)
     assertEquals(inst, sj.read[Optional[BigInt]](js))
+  }
+
+  test("Java class with Optional - empty JSON") {
+    val js = """{}""".asInstanceOf[JSON]
+    val inst = sj.read[Maybe](js)
+    assertEquals(inst.getOne, Optional.empty)
+    assertEquals(inst.getTwo, Optional.of("stuff"))
+    assertEquals( """{"two":"stuff"}""".asInstanceOf[JSON], sj.render(inst))
+
+    val msg = """Class co.blocke.scalajack.Maybe2 missing required fields: one
+      |{}
+      |-^""".stripMargin
+    interceptMessage[co.blocke.dottyjack.ScalaJackError](msg){
+      sj.read[Maybe2](js)
+    }
+  }
+
+  test("Java class with Optional - some args specified") {
+    val js = """{"one":"meh"}""".asInstanceOf[JSON]
+    val inst = sj.read[Maybe](js)
+    assertEquals(inst.getOne, Optional.of("meh"))
+    assertEquals(inst.getTwo, Optional.of("stuff"))
+    assert(JsonMatcher.jsonMatches("""{"one":"meh","two":"stuff"}""".asInstanceOf[JSON], sj.render(inst)))
   }
 
   test("Optional of primitive (in class)") {

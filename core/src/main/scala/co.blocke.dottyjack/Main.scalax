@@ -8,9 +8,11 @@ import scala.collection.mutable
 import scala.jdk.CollectionConverters._
 import co.blocke.dottyjack.json.JSON
 
-sealed trait ContactPoint
-case class EmailAddress(emailAddress: String) extends ContactPoint
-case class PhoneNumber(phoneNumber: String) extends ContactPoint
+class Foom() {
+  var a: Int = 5
+  @Optional var b: String = "wow"
+  var c: Boolean = true
+}
 
 
 object Main {
@@ -19,8 +21,16 @@ object Main {
 
     val sj = DottyJack().enumsAsInts()
 
-    val js = """{"emailAddress":"foom!"}""".asInstanceOf[JSON]
-    println( sj.read[ContactPoint](js) )
+    val f = Foom()
+    f.a = 19
+    f.c = false
+    val js = sj.render(f)
+    println(js)
+    val j2 = """{"a":1,"c":false}""".asInstanceOf[JSON]
+    val inst = sj.read[Foom](j2)
+    println(inst.a)
+    println(inst.b)
+    println(inst.c)
 
   def constructors(clazz: Class[_]): String = 
     s"=== Constructors: ${clazz.getName} ===\n   " + clazz.getConstructors.toList.mkString("\n   ")

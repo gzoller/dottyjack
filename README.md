@@ -2,7 +2,17 @@
 
 DottyJack is an experimental implementation of a JSON parser/serializer, derived from ScalaJack, for the Dotty language.  Its purpose is to see how closely the functionality of ScalaJack can be carried over onto the Dotty language platform.  Unlike ScalaJack, only JSON wire format will be supported at this time.  Once Dotty becomes Scala 3, DottyJack will migrate to ScalaJack 7, and remaining features and wire formats will be supported.
 
-![](comingsoon.png)
+Usage is virtually identical to ScalaJack, so please refer to those docs.
+
+```scala
+import co.blocke.dottyjack._
+
+case class Person(name: String, age: Int)
+
+val dj = DottyJack()
+val js = dj.render(Person("Mike",34))  // js == """{"name":"Mike","age":34}"""
+val inst = dj.render[Person](js) // re-constitutes original Person
+```
 
 
 ### Notes:

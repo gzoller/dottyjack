@@ -10,7 +10,7 @@ public class JavaSimpleBase {
     public void setTwo(int v) { two = v; }
 
     private int three = -10;
-    @DBKey(index = 99) 
+    @DBKey(index = 99) @Optional
     public int getThree(){ return three; }
     public void setThree(int v) { three = v; }
 

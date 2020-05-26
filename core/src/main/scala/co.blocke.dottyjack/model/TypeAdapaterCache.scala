@@ -80,11 +80,10 @@ case class TypeAdapterCache(
   val selfCache = this
 
   class TypeEntry(tpe: RType):
-    // @volatile
-    // private var phase: Phase = Uninitialized
+    @volatile
+    private var phase: Phase = Uninitialized
 
-    def typeAdapter: TypeAdapter[_] = factories.find(_.matches(tpe)).get.makeTypeAdapter(tpe)(selfCache)
-      /* May not need all this drama!
+    def typeAdapter: TypeAdapter[_] = 
       val attempt =
         phase match {
           case Initialized(a) => a
@@ -111,7 +110,6 @@ case class TypeAdapterCache(
             }
         }
       attempt.get
-      */
 
 
   private val typeEntries = new java.util.concurrent.ConcurrentHashMap[RType, TypeEntry]
@@ -132,4 +130,7 @@ case class TypeAdapterCache(
 
   object ConcreteTypeEntryFactory extends java.util.function.Function[RType, TypeEntry]:
     override def apply(concrete: RType): TypeEntry = 
-      new TypeEntry(concrete)
+      concrete match {
+        case s: SelfRefRType => new TypeEntry(Reflector.reflectOnClass(s.infoClass))
+        case s => new TypeEntry(s)
+      }

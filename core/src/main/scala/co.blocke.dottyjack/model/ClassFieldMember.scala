@@ -2,7 +2,7 @@ package co.blocke.dottyjack
 package model
 
 import co.blocke.dotty_reflection.info._
-import typeadapter.OptionTypeAdapter
+import typeadapter._
 
 case class ClassFieldMember[OWNER,T](
   info:                               FieldInfo,
@@ -12,4 +12,9 @@ case class ClassFieldMember[OWNER,T](
   fieldMapName:                       Option[String]
 ):
   def name: String = fieldMapName.getOrElse(info.name)
-  lazy val isOptional: Boolean = valueTypeAdapter.isInstanceOf[OptionTypeAdapter[_]] // || hasOptionalAnnotation
+  lazy val isOptional: Boolean = valueTypeAdapter match {
+    case _: OptionTypeAdapter[_] => true
+    case _: JavaOptionalTypeAdapter[_] => true
+    case _ if info.annotations.contains(OPTIONAL_ANNO) => true
+    case _ => false
+  }

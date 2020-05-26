@@ -73,21 +73,18 @@ class Inheritance() extends FunSuite:
     assert(inst2.rose.thing == flower.thing && inst2.rose.other == flower.other)
   }
 
-  /* DottyJack behavior change (is this good?):  All non-constructor fields are optional because they have default
-     values per compiler.  Do we need to re-institute @Optional so we can differentiate these and treat them as required?
   test("Must catch missing/required var") {
     describe("Scala Plain Negative") 
 
     val js =
       """{"extra":"bar","foo":25,"dontForget":12,"uno":"something","quatro":12.34}""".asInstanceOf[JSON]
-    val msg = """Class InheritSimpleChild missing required fields: foobar
+    val msg = """Class co.blocke.scalajack.json.plainclass.InheritSimpleChild missing required fields: foobar
               |...,"dontForget":12,"uno":"something","quatro":12.34}
               |----------------------------------------------------^""".stripMargin
     interceptMessage[co.blocke.dottyjack.ScalaJackError](msg){
       sj.read[InheritSimpleChild](js)
     }
   }
-  */
 
   test("Must catch missing/required constructor field (with newline)") {
     val js =
@@ -101,8 +98,6 @@ class Inheritance() extends FunSuite:
     }
   }
 
-  /* DottyJack behavior change (is this good?):  All non-constructor fields are optional because they have default
-     values per compiler.  Do we need to re-institute @Optional so we can differentiate these and treat them as required?
   test("Must catch missing/required getter/setter field") {
     val js =
       """{"extra":"bar","foo":25,"uno":"something","quatro":12.34,"foobar":99}""".asInstanceOf[JSON]
@@ -114,7 +109,6 @@ class Inheritance() extends FunSuite:
       sj.read[InheritSimpleChild](js)
     }
   }
-  */
 
   test("Must fail non-val constructor field") {
     val f = new Fail4(1, 2)
@@ -136,13 +130,10 @@ class Inheritance() extends FunSuite:
     assertEquals(sj.render(simple), js)
   }
 
-  /* DottyJack behavior change (is this good?):  All non-constructor fields are optional because they have default
-     values per compiler.  Do we need to re-institute @Optional so we can differentiate these and treat them as required?
   test("Optional annotation must be inherited properly") {
-    val js = """{"dos":1}"""
+    val js = """{"dos":1}""".asInstanceOf[JSON]
     val simple = sj.read[JavaSimpleChild](js)
-    simple.getTwo should be(1)
-    simple.getThree should be(-10)
-    sj.render(simple) should be("""{"three":-10,"dos":1}""")
+    assertEquals(simple.getTwo, 1)
+    assertEquals(simple.getThree, -10)
+    assertEquals(sj.render(simple), """{"three":-10,"dos":1}""".asInstanceOf[JSON])
   }
-*/

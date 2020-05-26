@@ -15,6 +15,7 @@ object JavaClassTypeAdapterFactory extends TypeAdapterFactory:
       case _: JavaClassInfo => true
       case _ => false
     }
+
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
     val classInfo = concrete.asInstanceOf[ClassInfo]
 
@@ -28,20 +29,27 @@ object JavaClassTypeAdapterFactory extends TypeAdapterFactory:
       throw new ScalaJackError("ScalaJack does not support Java classes with a non-empty constructor.")
     )
 
+    val const = classInfo.asInstanceOf[JavaClassInfo].infoClass.getConstructors.head
+    val phantomInstance = const.newInstance()  // used to get default/initially-set values 
+
     val fieldMembersByName = 
       fieldsWeCareAbout.map { f =>
         f.fieldType match {
           case c: TypeSymbolInfo => throw new ScalaJackError(s"Concrete type expected for class ${concrete.name} field ${f.name}.  ${c.getClass.getName} was found.")
           case c =>
             bits += f.index
-            val fieldMapName = f.annotations.get(CHANGE_ANNO).map(_("name"))             
-            fieldMapName.getOrElse(f.name) -> ClassFieldMember(
+            val fieldMapName = f.annotations.get(CHANGE_ANNO).map(_("name")) 
+            val classFieldMember = ClassFieldMember(
               f,
               taCache.typeAdapterOf(c),
               classInfo.infoClass, 
               f.annotations.get(DB_KEY).map(_.getOrElse("index","0").toInt),
               fieldMapName
             )
+            if classFieldMember.isOptional then // filter out @Optional annotated fields
+              bits -= f.index
+              args(f.index) = f.asInstanceOf[JavaFieldInfo].valueAccessor.invoke(phantomInstance)
+            fieldMapName.getOrElse(f.name) -> classFieldMember
         }
       }.toMap
 
@@ -60,29 +68,26 @@ case class JavaClassTypeAdapter[J](
   val isSJCapture = javaClassInfo.hasMixin(SJ_CAPTURE)
 
   def read(parser: Parser): J =
-    if (parser.peekForNull) then
-      null.asInstanceOf[J]
-    else 
-      val (foundBits, args, captured) = parser.expectObject(
-        this,
-        taCache.jackFlavor.defaultHint
-      )
-      if (foundBits.isEmpty) then
-        val const = javaClassInfo.infoClass.getConstructors.head
-        val asBuilt = const.newInstance().asInstanceOf[J]
-        if isSJCapture
-          asBuilt.asInstanceOf[SJCapture].captured = captured
-        fieldMembersByName.values.map( f => f.info.asInstanceOf[JavaFieldInfo].valueSetter.invoke(asBuilt, args(f.info.index)) )
-        asBuilt
-      else
-        parser.backspace()
-        throw new ScalaJackError(
-          parser.showError(
-            s"Class ${info.name} missing required fields: " + foundBits
-              .map(b => orderedFieldNames(b))
-              .mkString(", ")
-          )
+    val (foundBits, args, captured) = parser.expectObject(
+      this,
+      taCache.jackFlavor.defaultHint
+    )
+    if (foundBits.isEmpty) then
+      val const = javaClassInfo.infoClass.getConstructors.head
+      val asBuilt = const.newInstance().asInstanceOf[J]
+      if isSJCapture
+        asBuilt.asInstanceOf[SJCapture].captured = captured
+      fieldMembersByName.values.map( f => f.info.asInstanceOf[JavaFieldInfo].valueSetter.invoke(asBuilt, args(f.info.index)) )
+      asBuilt
+    else
+      parser.backspace()
+      throw new ScalaJackError(
+        parser.showError(
+          s"Class ${info.name} missing required fields: " + foundBits
+            .map(b => orderedFieldNames(b))
+            .mkString(", ")
         )
+      )
         
   def write[WIRE](
       t:      J,

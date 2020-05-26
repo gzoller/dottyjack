@@ -85,13 +85,16 @@ object ScalaClassTypeAdapterFactory extends TypeAdapterFactory:
         )
 
       case classInfo: ScalaClassInfo =>
-        val allFields = {
-          if classInfo.hasMixin(SJ_CAPTURE) then
-            (classInfo.fields ++ (classInfo.nonConstructorFields.filterNot(_.name == "captured")))
-          else
-            classInfo.fields ++ classInfo.nonConstructorFields
+        // Nullify the defaultValue getter for non-constructor fields if there's no @Optional annotation
+        val nonConstructorFields = classInfo.nonConstructorFields.filterNot(_.name == "captured").map{ _ match {
+            case f if f.annotations.contains(OPTIONAL_ANNO) => f
+            case f: ScalaFieldInfo if f.fieldType.isInstanceOf[OptionInfo] => f
+            case f: ScalaFieldInfo => f.copy(defaultValueAccessor = None)
+          }
         }
-        val (fieldMembersByName, bits, args, orderedFieldNames) = bakeFieldMembersByName(allFields, classInfo.constructor, classInfo.infoClass)
+
+        val (fieldMembersByName, bits, args, orderedFieldNames) = 
+          bakeFieldMembersByName(classInfo.fields ++ nonConstructorFields, classInfo.constructor, classInfo.infoClass)
         val paramSize = classInfo.constructor.getParameterTypes().size
         NonCaseClassTypeAdapter(
           concrete,

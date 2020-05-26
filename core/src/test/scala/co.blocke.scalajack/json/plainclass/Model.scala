@@ -13,7 +13,7 @@ class InheritSimpleBase(
 ) {
   // Public data member
   @DBKey(index = 1) @Change(name = "foobar") var two: Int = 5
-  var three: Boolean = true
+  @Optional var three: Boolean = true
 
   // Private var or val
   val notOne: Int = 2
