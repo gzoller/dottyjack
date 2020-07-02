@@ -54,7 +54,7 @@ object PermissiveJavaBigIntegerTypeAdapterFactory extends TypeAdapterFactory wit
 
 
 object PermissiveJavaBooleanTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[java.lang.Boolean] with ScalarTypeAdapter[java.lang.Boolean]:
-  def matches(concrete: RType): Boolean = concrete == PrimitiveType.Java_Boolean
+  def matches(concrete: RType): Boolean = concrete.infoClass == PrimitiveType.Java_Boolean.infoClass
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[java.lang.Boolean] = this
 
   val info = Reflector.reflectOn[java.lang.Boolean]
@@ -71,7 +71,7 @@ object PermissiveJavaBooleanTypeAdapterFactory extends TypeAdapterFactory with T
 
   
 object PermissiveJavaByteTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[java.lang.Byte] with ScalarTypeAdapter[java.lang.Byte]:
-  def matches(concrete: RType): Boolean = concrete == PrimitiveType.Java_Byte
+  def matches(concrete: RType): Boolean = concrete.infoClass == PrimitiveType.Java_Byte.infoClass
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[java.lang.Byte] = this
 
   val info = Reflector.reflectOn[java.lang.Byte]
@@ -88,7 +88,7 @@ object PermissiveJavaByteTypeAdapterFactory extends TypeAdapterFactory with Type
 
 
 object PermissiveJavaDoubleTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[java.lang.Double] with ScalarTypeAdapter[java.lang.Double]:
-  def matches(concrete: RType): Boolean = concrete == PrimitiveType.Java_Double
+  def matches(concrete: RType): Boolean = concrete.infoClass == PrimitiveType.Java_Double.infoClass
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[java.lang.Double] = this
 
   val info = Reflector.reflectOn[java.lang.Double]
@@ -105,7 +105,7 @@ object PermissiveJavaDoubleTypeAdapterFactory extends TypeAdapterFactory with Ty
 
    
 object PermissiveJavaFloatTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[java.lang.Float] with ScalarTypeAdapter[java.lang.Float]:
-  def matches(concrete: RType): Boolean = concrete == PrimitiveType.Java_Float
+  def matches(concrete: RType): Boolean = concrete.infoClass == PrimitiveType.Java_Float.infoClass
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[java.lang.Float] = this
 
   val info = Reflector.reflectOn[java.lang.Float]
@@ -122,7 +122,7 @@ object PermissiveJavaFloatTypeAdapterFactory extends TypeAdapterFactory with Typ
 
 
 object PermissiveJavaIntTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[java.lang.Integer] with ScalarTypeAdapter[java.lang.Integer]:
-  def matches(concrete: RType): Boolean = concrete == PrimitiveType.Java_Int
+  def matches(concrete: RType): Boolean = concrete.infoClass == PrimitiveType.Java_Int.infoClass
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[java.lang.Integer] = this
 
   val info = Reflector.reflectOn[java.lang.Integer]
@@ -139,7 +139,7 @@ object PermissiveJavaIntTypeAdapterFactory extends TypeAdapterFactory with TypeA
 
 
 object PermissiveJavaLongTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[java.lang.Long] with ScalarTypeAdapter[java.lang.Long]:
-  def matches(concrete: RType): Boolean = concrete == PrimitiveType.Java_Long
+  def matches(concrete: RType): Boolean = concrete.infoClass == PrimitiveType.Java_Long.infoClass
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[java.lang.Long] = this
 
   val info = Reflector.reflectOn[java.lang.Long]
@@ -156,7 +156,7 @@ object PermissiveJavaLongTypeAdapterFactory extends TypeAdapterFactory with Type
 
  
 object PermissiveJavaNumberTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[java.lang.Number] with ScalarTypeAdapter[java.lang.Number]:
-  def matches(concrete: RType): Boolean = concrete == PrimitiveType.Java_Number
+  def matches(concrete: RType): Boolean = concrete.infoClass == PrimitiveType.Java_Number.infoClass
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[java.lang.Number] = this
 
   val info = Reflector.reflectOn[java.lang.Number]
@@ -173,7 +173,7 @@ object PermissiveJavaNumberTypeAdapterFactory extends TypeAdapterFactory with Ty
 
 
 object PermissiveJavaShortTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[java.lang.Short] with ScalarTypeAdapter[java.lang.Short]:
-  def matches(concrete: RType): Boolean = concrete == PrimitiveType.Java_Short
+  def matches(concrete: RType): Boolean = concrete.infoClass == PrimitiveType.Java_Short.infoClass
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[java.lang.Short] = this
 
   val info = Reflector.reflectOn[java.lang.Short]

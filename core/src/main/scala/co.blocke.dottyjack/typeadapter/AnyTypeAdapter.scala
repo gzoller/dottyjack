@@ -10,12 +10,7 @@ import scala.collection.mutable.ListBuffer
 import scala.util.{Success, Try}
 
 object AnyTypeAdapterFactory extends TypeAdapterFactory:
-  def matches(concrete: RType): Boolean = 
-    concrete match {
-      case PrimitiveType.Scala_Any => true
-      case _ => false
-    }
-
+  def matches(concrete: RType): Boolean = concrete.infoClass == PrimitiveType.Scala_Any.infoClass
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =  
     AnyTypeAdapter(concrete, taCache)
 

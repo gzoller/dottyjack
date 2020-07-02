@@ -1,4 +1,4 @@
-val dottyVersion = "0.24.0-RC1"
+val dottyVersion = "0.25.0-RC2"
 
 lazy val basicSettings = Seq(
   organization := "co.blocke",
@@ -9,6 +9,8 @@ lazy val basicSettings = Seq(
   resolvers += "co.blocke releases buildResolver" at "https://dl.bintray.com/blocke/releases",
   // coverageMinimum := 98, 
   // coverageFailOnMinimum := true,
+  doc := null,  // disable dottydoc for now
+  sources in (Compile, doc) := Seq(),
   Test / parallelExecution in ThisBuild := false,
   scalacOptions ++= Seq(
     "-feature",
@@ -17,6 +19,7 @@ lazy val basicSettings = Seq(
     "UTF8",
     "-unchecked"
   ),
+  javacOptions += "-g",
   scalacOptions in Test ++= Seq(
     "-language:implicitConversions"
   ),
@@ -49,8 +52,8 @@ lazy val dottyjack = project
     libraryDependencies ++= 
       Seq(
         "commons-codec" % "commons-codec" % "1.12",
-        "co.blocke" %% "dotty-reflection" % "0.0.24",
-        "org.scalameta" %% "munit" % "0.7.5" % Test,
+        "co.blocke" %% "dotty-reflection" % "macroize_97bf64",
+        "org.scalameta" %% "munit" % "0.7.9" % Test,
         "org.json4s" % "json4s-core_2.13" % "3.6.6" % Test,
         "org.json4s" % "json4s-native_2.13" % "3.6.6" % Test
       )

@@ -8,29 +8,27 @@ import scala.collection.mutable
 import scala.jdk.CollectionConverters._
 import co.blocke.dottyjack.json.JSON
 
-class Foom() {
-  var a: Int = 5
-  @Optional var b: String = "wow"
-  var c: Boolean = true
-}
 
+trait Thing[A, B] { val a: A; val b: B }
+case class AThing[Y, X](a: X, b: Y) extends Thing[X, Y]
 
 object Main {
 
   def main(args: Array[String]): Unit = 
 
-    val sj = DottyJack().enumsAsInts()
+    // val sj = DottyJack()
+    val sj = co.blocke.dottyjack.DottyJack()
 
-    val f = Foom()
-    f.a = 19
-    f.c = false
-    val js = sj.render(f)
+    // println(RType.of[Map[Map[Map[Thing[String, Int], Thing[String, Int]], Map[Thing[String, Int], Thing[String, Int]]], Map[Map[Thing[String, Int], Thing[String, Int]], Map[Thing[String, Int], Thing[String, Int]]]]])
+    val m1: Map[Thing[String, Int], Thing[String, Int]] =
+      Map(AThing("one", 1) -> AThing("two", 2))
+    val m2: Map[Thing[String, Int], Thing[String, Int]] =
+      Map(AThing("four", 4) -> AThing("three", 3))
+    val inst = Map(Map(m1 -> m2) -> Map(m2 -> m1))
+    val js = sj.render(inst)
     println(js)
-    val j2 = """{"a":1,"c":false}""".asInstanceOf[JSON]
-    val inst = sj.read[Foom](j2)
-    println(inst.a)
-    println(inst.b)
-    println(inst.c)
+    println(sj.read[Map[Map[Map[Thing[String, Int], Thing[String, Int]], Map[Thing[String, Int], Thing[String, Int]]], Map[Map[Thing[String, Int], Thing[String, Int]], Map[Thing[String, Int], Thing[String, Int]]]]](js))
+
 
   def constructors(clazz: Class[_]): String = 
     s"=== Constructors: ${clazz.getName} ===\n   " + clazz.getConstructors.toList.mkString("\n   ")

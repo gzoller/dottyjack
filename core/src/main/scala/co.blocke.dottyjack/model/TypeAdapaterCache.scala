@@ -117,14 +117,14 @@ case class TypeAdapterCache(
   def withFactory(factory: TypeAdapterFactory): TypeAdapterCache =
     copy(factories = factories :+ factory)
 
-  def typeAdapterOf(tpe: TypeStructure): TypeAdapter[_] = 
-    typeAdapterOf(Reflector.reflectOnType(tpe))
+  // def typeAdapterOf(tpe: TypeStructure): TypeAdapter[_] = 
+  //   typeAdapterOf(Reflector.reflectOnType(tpe))
 
   def typeAdapterOf(concreteType: RType): TypeAdapter[_] =
     typeEntries.computeIfAbsent(concreteType, ConcreteTypeEntryFactory).typeAdapter
 
   inline def typeAdapterOf[T]: TypeAdapter[T] =
-    typeAdapterOf(analyzeType[T]).asInstanceOf[TypeAdapter[T]]
+    typeAdapterOf(Reflector.reflectOn[T]).asInstanceOf[TypeAdapter[T]]
 
   val self = this 
 

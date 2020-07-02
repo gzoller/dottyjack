@@ -9,7 +9,7 @@ import munit._
 import munit.internal.console
 import co.blocke.dottyjack.json.JSON
 import scala.collection.immutable._
-import collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.language.implicitConversions
 
 class Maps() extends FunSuite:
@@ -127,7 +127,11 @@ class Maps() extends FunSuite:
       """{"a1":{"a":[1,2,3],"b":[4,5,6]},"a2":{"[1,2,3]":"a","[4,5,6]":"b"}}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[ArrayMap](js))
+    val i2 = sj.read[ArrayMap](js)
+    assert( inst.a1("a").sameElements(i2.a1("a")) )
+    assert( inst.a1("b").sameElements(i2.a1("b")) )
+    assert( inst.a2.keySet.toList(0).sameElements(i2.a2.keySet.toList(0)))
+    assert( inst.a2.keySet.toList(1).sameElements(i2.a2.keySet.toList(1)))
   }
 
   test("Maps must work") {
@@ -148,7 +152,15 @@ class Maps() extends FunSuite:
       """{"a1":{"a":{"a1":[1,2],"a2":null},"b":{"a1":[3,4],"a2":null}},"a2":{"{\"a1\":[1,2],\"a2\":null}":"a","{\"a1\":[3,4],\"a2\":null}":"b"}}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[ClassMap](js))
+    val i2 = sj.read[ClassMap](js)
+    assert( inst.a1("a").a1.sameElements(i2.a1("a").a1) )
+    assertEquals( i2.a1("a").a2, null )
+    assert( inst.a1("b").a1.sameElements(i2.a1("b").a1) )
+    assertEquals( i2.a1("b").a2, null )
+    assert( inst.a2.keySet.toList(0).a1.sameElements(i2.a2.keySet.toList(0).a1) )
+    assertEquals( i2.a2.keySet.toList(0).a2, null )
+    assert( inst.a2.keySet.toList(1).a1.sameElements(i2.a2.keySet.toList(1).a1) )
+    assertEquals( i2.a2.keySet.toList(1).a2, null )
   }
 
   test("Multidimensional arrays must work") {

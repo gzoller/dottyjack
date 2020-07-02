@@ -32,7 +32,7 @@ object TupleTypeAdapterFactory extends TypeAdapterFactory:
         }
         TupleField(idx+1, javaClassField, typeAdapter)
       }}
-    TupleTypeAdapter(concrete, fields, ti.infoClass.getConstructors.head)
+    TupleTypeAdapter(concrete, fields.toList, ti.infoClass.getConstructors.head)
 
 
 case class TupleTypeAdapter[T](

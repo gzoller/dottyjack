@@ -47,14 +47,15 @@ class Enums() extends FunSuite:
     assertEquals(
       """{"color1":null,"color2":"Red"}""".asInstanceOf[JSON],
       js)
-    assertEquals(inst, sj.read[TVColors](js))
+    val inst2 = sj.read[TVColors](js)
+    assertEquals(inst, inst2)
   }
 
   test("Ordinal Enum (Scala 3.x) must work (not nullable)") {
     val inst = TVColors(null, Color.Red)
     val js = sj2.render(inst)
     assertEquals(
-      """{"color1":null,"color2":1}""".asInstanceOf[JSON],
+      """{"color1":null,"color2":0}""".asInstanceOf[JSON],
       js)
     assertEquals(inst, sj2.read[TVColors](js))
   }

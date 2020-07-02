@@ -220,7 +220,7 @@ case class JsonParser(jsRaw: JSON, jackFlavor: JackFlavor[JSON]) extends Parser 
   ): (mutable.BitSet, List[Object], java.util.HashMap[String, String]) = {
     whitespace()
     val args      = classBase.argsTemplate.clone()
-    val fieldBits = classBase.fieldBitsTemplate.clone()
+    val fieldBits = mutable.BitSet() // classBase.fieldBitsTemplate.clone()
     val captured =
       if (classBase.isSJCapture) 
         new java.util.HashMap[String, String]()
@@ -248,7 +248,7 @@ case class JsonParser(jsRaw: JSON, jackFlavor: JackFlavor[JSON]) extends Parser 
       classBase.fieldMembersByName.get(key) match {
         case Some(field) =>
           whitespace()
-          fieldBits -= field.info.index
+          fieldBits += field.info.index
           args(field.info.index) = field.valueTypeAdapter.read(this).asInstanceOf[Object]
         case None => // found some input field not present in class
           val mark = i

@@ -24,15 +24,15 @@ case class NonCaseClassTypeAdapter[T](
 
   inline def fieldName(f: FieldInfo): String = f.annotations.get(CHANGE_ANNO).map(_("name")).getOrElse(f.name)
 
-  def _read_createInstance(args: List[Object], captured: java.util.HashMap[String, String]): T = 
+  def _read_createInstance(args: List[Object], foundBits: mutable.BitSet, captured: java.util.HashMap[String, String]): T = 
     // Build base object
     val asBuilt = 
       val const = classInfo.infoClass.getConstructors.head
       const.newInstance(args.take(classInfo.fields.size):_*).asInstanceOf[T]
-    // Now call all the non-constructor setters
+    // Now call all the non-constructor setters for fields we populate
     nonConstructorFields.collect{ 
       // make sure f is known--in one special case it will not be: "captured" field for SJCapture should be ignored
-      case f if fieldMembersByName.contains( fieldName(f.info) ) =>
+      case f if fieldMembersByName.contains( fieldName(f.info) ) && foundBits.contains(f.info.index) =>
         // If field is a parameter 'T', the field type for the method is Object
         val isTrait = fieldMembersByName(fieldName(f.info)).valueTypeAdapter.isInstanceOf[TraitTypeAdapter[_]]
         val fieldMethodType = f.info.originalSymbol.match {
