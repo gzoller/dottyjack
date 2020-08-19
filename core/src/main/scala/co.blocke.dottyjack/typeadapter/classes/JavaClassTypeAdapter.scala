@@ -53,7 +53,7 @@ object JavaClassTypeAdapterFactory extends TypeAdapterFactory:
         }
       }.toMap
 
-    JavaClassTypeAdapter(concrete, args, bits, fieldMembersByName, fieldsWeCareAbout.map( f => f.annotations.get(CHANGE_ANNO).map(_("name")).getOrElse(f.name)))
+    JavaClassTypeAdapter(concrete, args, bits, fieldMembersByName, fieldsWeCareAbout.map( f => f.annotations.get(CHANGE_ANNO).map(_("name")).getOrElse(f.name)).toList)
 
 
 case class JavaClassTypeAdapter[J](
@@ -72,7 +72,10 @@ case class JavaClassTypeAdapter[J](
       this,
       taCache.jackFlavor.defaultHint
     )
-    if (foundBits.isEmpty) then
+    val testBits = fieldBitsTemplate.collect{
+      case b if !foundBits.contains(b) => b
+    }
+    if (testBits.isEmpty) then
       val const = javaClassInfo.infoClass.getConstructors.head
       val asBuilt = const.newInstance().asInstanceOf[J]
       if isSJCapture
@@ -83,7 +86,7 @@ case class JavaClassTypeAdapter[J](
       parser.backspace()
       throw new ScalaJackError(
         parser.showError(
-          s"Class ${info.name} missing required fields: " + foundBits
+          s"Class ${info.name} missing required fields: " + testBits
             .map(b => orderedFieldNames(b))
             .mkString(", ")
         )

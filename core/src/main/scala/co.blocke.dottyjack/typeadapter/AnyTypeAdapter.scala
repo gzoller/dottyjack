@@ -10,12 +10,7 @@ import scala.collection.mutable.ListBuffer
 import scala.util.{Success, Try}
 
 object AnyTypeAdapterFactory extends TypeAdapterFactory:
-  def matches(concrete: RType): Boolean = 
-    concrete match {
-      case PrimitiveType.Scala_Any => true
-      case _ => false
-    }
-
+  def matches(concrete: RType): Boolean = concrete.infoClass == impl.PrimitiveType.Scala_Any.infoClass
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =  
     AnyTypeAdapter(concrete, taCache)
 
@@ -61,7 +56,7 @@ case class AnyTypeAdapter(info: RType, taCache: TypeAdapterCache) extends TypeAd
           Try(
             Class.forName(foundMap(jackFlavor.defaultHint).toString)
           ) match {
-            case Success(concreteTypeClass) => taCache.typeAdapterOf(Reflector.reflectOnClass(concreteTypeClass)).read(p)
+            case Success(concreteTypeClass) => taCache.typeAdapterOf(RType.of(concreteTypeClass)).read(p)
             case _ => foundMap
           }
         } else
@@ -72,7 +67,7 @@ case class AnyTypeAdapter(info: RType, taCache: TypeAdapterCache) extends TypeAd
   // Need this little bit of gymnastics here to unpack the X type parameter so we can use it to case the TypeAdapter
   private def unpack[X, WIRE](value: X, writer: Writer[WIRE], out: mutable.Builder[WIRE, WIRE]): Unit =
     taCache
-      .typeAdapterOf(Reflector.reflectOnClass(value.getClass))
+      .typeAdapterOf(RType.of(value.getClass))
       .asInstanceOf[TypeAdapter[X]] match {
         case ta: CaseClassTypeAdapter[X] =>
           val builder = jackFlavor.getBuilder.asInstanceOf[mutable.Builder[WIRE, WIRE]]

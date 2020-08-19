@@ -11,15 +11,15 @@ trait JackFlavor[WIRE] extends ViewSplice: // extends Filterable[WIRE] with View
 
   def parse(input: WIRE): Parser
 
-  val defaultHint: String                               = "_hint"
-  val stringifyMapKeys: Boolean                         = false
-  val hintMap: Map[RType, String]                       = Map.empty[RType, String]
-  val hintValueModifiers: Map[RType, HintValueModifier] = Map.empty[RType, HintValueModifier]
-  val typeValueModifier: HintValueModifier              = DefaultHintModifier
-  val enumsAsInt: Boolean                               = false
-  val customAdapters: List[TypeAdapterFactory]          = List.empty[TypeAdapterFactory]
-  val parseOrElseMap: Map[RType, RType]                 = Map.empty[RType, RType]
-  val permissivesOk: Boolean                            = false
+  val defaultHint: String                                = "_hint"
+  val stringifyMapKeys: Boolean                          = false
+  val hintMap: Map[String, String]                       = Map.empty[String, String]
+  val hintValueModifiers: Map[String, HintValueModifier] = Map.empty[String, HintValueModifier]
+  val typeValueModifier: HintValueModifier               = DefaultHintModifier
+  val enumsAsInt: Boolean                                = false
+  val customAdapters: List[TypeAdapterFactory]           = List.empty[TypeAdapterFactory]
+  val parseOrElseMap: Map[Class[_], RType]               = Map.empty[Class[_], RType]
+  val permissivesOk: Boolean                             = false
 
   lazy val taCache: TypeAdapterCache = bakeCache()
 
@@ -58,9 +58,9 @@ trait JackFlavor[WIRE] extends ViewSplice: // extends Filterable[WIRE] with View
     
     // ParseOrElse functionality
     val parseOrElseFactories: List[TypeAdapterFactory] = parseOrElseMap.map {
-      case (attemptedType, fallbackType) => 
+      case (attemptedTypeClass, fallbackType) => 
         new TypeAdapterFactory {
-          def matches(concrete: RType): Boolean = concrete == attemptedType
+          def matches(concrete: RType): Boolean = concrete.infoClass == attemptedTypeClass
         
           def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] = 
             FallbackTypeAdapter( stage1TC.typeAdapterOf(concrete), stage1TC.typeAdapterOf(fallbackType) )
@@ -89,7 +89,7 @@ trait JackFlavor[WIRE] extends ViewSplice: // extends Filterable[WIRE] with View
   lazy val anyTypeAdapter: TypeAdapter[Any]       = taCache.typeAdapterOf[Any]
 
   // Look up any custom hint label for given type, and if none then use default
-  def getHintLabelFor(tpe: RType): String = hintMap.getOrElse(tpe, defaultHint)
+  def getHintLabelFor(tpe: RType): String = hintMap.getOrElse(tpe.name, defaultHint)
 
   def stringWrapTypeAdapterFactory[T](
       wrappedTypeAdapter: TypeAdapter[T],

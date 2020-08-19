@@ -24,7 +24,7 @@ class CustomTypeHints() extends FunSuite:
   }
 
   test("Override type-specific trait/polymorphic type hint") {
-    val sj = co.blocke.dottyjack.DottyJack().withHints(Reflector.reflectOn[Address] -> "addr_kind")
+    val sj = co.blocke.dottyjack.DottyJack().withHints(RType.of[Address] -> "addr_kind")
     val inst: Demographic =
       USDemographic(50, USAddress("123 Main", "New York", "NY", "39822"))
     val js = sj.render(inst)
@@ -42,7 +42,7 @@ class CustomTypeHints() extends FunSuite:
       (cname: String) => cname.split('.').last
     )
     val sj =
-      co.blocke.dottyjack.DottyJack().withHintModifiers((Reflector.reflectOn[Address], prependHintMod))
+      co.blocke.dottyjack.DottyJack().withHintModifiers((RType.of[Address], prependHintMod))
     val inst: Demographic =
       USDemographic(50, USAddress("123 Main", "New York", "NY", "39822"))
     val js = sj.render(inst)
@@ -58,7 +58,7 @@ class CustomTypeHints() extends FunSuite:
     val strMatchHintMod =
       StringMatchHintModifier(Map("US" -> classOf[USAddress].getName))
     val sj =
-      co.blocke.dottyjack.DottyJack().withHintModifiers((Reflector.reflectOn[Address], strMatchHintMod))
+      co.blocke.dottyjack.DottyJack().withHintModifiers((RType.of[Address], strMatchHintMod))
     val inst: Demographic =
       USDemographic(50, USAddress("123 Main", "New York", "NY", "39822"))
     val js = sj.render(inst)
@@ -87,7 +87,7 @@ class CustomTypeHints() extends FunSuite:
       (cname: String) => cname.split('.').last
     )
     val sj =
-      co.blocke.dottyjack.DottyJack().withHintModifiers((Reflector.reflectOn[Address], prependHintMod))
+      co.blocke.dottyjack.DottyJack().withHintModifiers((RType.of[Address], prependHintMod))
     val js =
       """{"_hint":"co.blocke.scalajack.json.custom.USDemographic","age":50,"address":{"_hint":"USAddress","street":"123 Main","city":"New York","state":"NY","postalCode":"39822"}}""".asInstanceOf[JSON]
     val msg =
@@ -105,7 +105,7 @@ class CustomTypeHints() extends FunSuite:
       val strMatchHintMod =
         StringMatchHintModifier(Map("US" -> "co.blocke.scalajack.json.custom.USDemographic"))
       val sj =
-        co.blocke.dottyjack.DottyJack().withHintModifiers((Reflector.reflectOn[Address], strMatchHintMod))
+        co.blocke.dottyjack.DottyJack().withHintModifiers((RType.of[Address], strMatchHintMod))
       val js =
         """{"_hint":"co.blocke.scalajack.json.custom.USDemographic","age":50,"address":{"_hint":"Bogus","street":"123 Main","city":"New York","state":"NY","postalCode":"39822"}}""".asInstanceOf[JSON]
       val msg =
@@ -121,7 +121,7 @@ class CustomTypeHints() extends FunSuite:
     val strMatchHintMod =
       StringMatchHintModifier(Map("US" -> "co.blocke.scalajack.json.custom.USDemographic"))
     val sj =
-      co.blocke.dottyjack.DottyJack().withHintModifiers((Reflector.reflectOn[Address], strMatchHintMod))
+      co.blocke.dottyjack.DottyJack().withHintModifiers((RType.of[Address], strMatchHintMod))
     val inst: Demographic = USDemographic(
       50,
       CanadaAddress("123 Main", "New York", "NY", "39822")

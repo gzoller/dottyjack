@@ -110,12 +110,14 @@ class Inheritance() extends FunSuite:
     }
   }
 
-  test("Must fail non-val constructor field") {
-    val f = new Fail4(1, 2)
-    interceptMessage[co.blocke.dotty_reflection.ReflectException]("""Class [co.blocke.scalajack.json.plainclass.Fail4]: Non-case class constructor arguments must all be 'val'"""){
-      sj.render(f)
-    }
-  }
+  // NOTE: We can't test this because the exception is tossed at compile-time.  (It will indeed throw this exception, however.)
+  //----------
+  // test("Must fail non-val constructor field") {
+  //   val f = new Fail4(1, 2)
+  //   interceptMessage[co.blocke.dotty_reflection.ReflectException]("""Class [co.blocke.scalajack.json.plainclass.Fail4]: Non-case class constructor arguments must all be 'val'"""){
+  //     sj.render(f)
+  //   }
+  // }
 
   test(
     "Simple class inheritance must work (all fields present) including MapName and Ignore"

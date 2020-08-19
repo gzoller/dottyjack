@@ -8,7 +8,7 @@ import munit._
 import munit.internal.console
 import co.blocke.dottyjack.json.JSON
 import scala.collection.immutable._
-import collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.language.implicitConversions
 import java.util.Optional
 import json.JsonMatcher

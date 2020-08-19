@@ -10,11 +10,12 @@ import java.lang.reflect.Constructor
 
 object ScalaClassTypeAdapterFactory extends TypeAdapterFactory:
   
-  def matches(concrete: RType): Boolean = concrete match {
-    case c: ScalaCaseClassInfo if !c.isValueClass => true
-    case c: ScalaClassInfo => true
-    case _ => false
-  }
+  def matches(concrete: RType): Boolean = 
+    concrete match {
+      case c: ScalaCaseClassInfo if !c.isValueClass => true
+      case c: ScalaClassInfo => true
+      case _ => false
+    }
 
   final val CLASSCLASS = Class.forName("java.lang.Class")
 
@@ -32,7 +33,7 @@ object ScalaClassTypeAdapterFactory extends TypeAdapterFactory:
 
     val fieldsByName = fieldsWeCareAbout.map { f =>
       val fieldTypeAdapter = f.fieldType match {
-        case _: TypeSymbolInfo => taCache.typeAdapterOf(PrimitiveType.Scala_Any) // Any unresolved type symbols must be considered Any
+        case _: TypeSymbolInfo => taCache.typeAdapterOf(impl.PrimitiveType.Scala_Any) // Any unresolved type symbols must be considered Any
         case t =>
           taCache.typeAdapterOf(t) match {
             // In certain situations, value classes need to be unwrapped, i.e. use the type adapter of their member.
@@ -48,33 +49,38 @@ object ScalaClassTypeAdapterFactory extends TypeAdapterFactory:
                 vta
               else
                 vta.elementTypeAdapter
-            case other => other
+            case other => 
+              other
           }
       }
 
       // See if there's a default value set and blip bits/args accordingly to "pre-set" these values
-      if f.defaultValueAccessor.isDefined then
-        args(f.index) = f.defaultValueAccessor.get()
+      if f.defaultValue.isDefined then
+        args(f.index) = f.defaultValue.get
       else if fieldTypeAdapter.defaultValue.isDefined then
         args(f.index) = fieldTypeAdapter.defaultValue.get.asInstanceOf[Object]
       else
         bits += f.index 
 
       val fieldMapName = f.annotations.get(CHANGE_ANNO).map(_("name"))
-      fieldMapName.getOrElse(f.name) -> ClassFieldMember(
+      val typeAdapter = fieldMapName.getOrElse(f.name) -> ClassFieldMember(
         f,
         fieldTypeAdapter,
         infoClass,
         f.annotations.get(DB_KEY).map(_.getOrElse("index","0").toInt),
         fieldMapName
       )
+      // If this field is optional, we need to set the bits accordingly
+      if typeAdapter._2.isOptional then
+        bits -= f.index
+      typeAdapter
     }.toMap
     (fieldsByName, bits, args, fieldsWeCareAbout.map( f => f.annotations.get(CHANGE_ANNO).map(_("name")).getOrElse(f.name) ))
   
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
     concrete match {
       case classInfo: ScalaCaseClassInfo =>
-        val (fieldMembersByName, bits, args, orderedFieldNames) = bakeFieldMembersByName(classInfo.fields, classInfo.constructor, classInfo.infoClass)
+        val (fieldMembersByName, bits, args, orderedFieldNames) = bakeFieldMembersByName(classInfo.fields.toList, classInfo.constructor, classInfo.infoClass)
         CaseClassTypeAdapter(
           concrete,
           fieldMembersByName,
@@ -89,12 +95,12 @@ object ScalaClassTypeAdapterFactory extends TypeAdapterFactory:
         val nonConstructorFields = classInfo.nonConstructorFields.filterNot(_.name == "captured").map{ _ match {
             case f if f.annotations.contains(OPTIONAL_ANNO) => f
             case f: ScalaFieldInfo if f.fieldType.isInstanceOf[OptionInfo] => f
-            case f: ScalaFieldInfo => f.copy(defaultValueAccessor = None)
+            case f: ScalaFieldInfo => f.copy(defaultValueAccessorName = None)
           }
         }
 
         val (fieldMembersByName, bits, args, orderedFieldNames) = 
-          bakeFieldMembersByName(classInfo.fields ++ nonConstructorFields, classInfo.constructor, classInfo.infoClass)
+          bakeFieldMembersByName(classInfo.fields.toList ++ nonConstructorFields, classInfo.constructor, classInfo.infoClass)
         val paramSize = classInfo.constructor.getParameterTypes().size
         NonCaseClassTypeAdapter(
           concrete,
@@ -103,6 +109,6 @@ object ScalaClassTypeAdapterFactory extends TypeAdapterFactory:
           bits,
           classInfo.typeMembers.map( tmem => (tmem.name, tmem.asInstanceOf[TypeMemberInfo]) ).toMap,
           orderedFieldNames,
-          fieldMembersByName.values.filter(_.info.index >= paramSize).toList
+          fieldMembersByName.values.filter(_.info.asInstanceOf[ScalaFieldInfo].isNonConstructorField).toList
         )
     }

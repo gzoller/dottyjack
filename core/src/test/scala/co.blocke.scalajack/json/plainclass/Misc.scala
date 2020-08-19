@@ -54,7 +54,7 @@ class Misc() extends FunSuite:
   }
 
   test("Must accept missing optional constructor values") {
-    val js = """{}""".asInstanceOf[JSON]
+    val js = """{"b":3}""".asInstanceOf[JSON]
     val inst = sj.read[OptConst](js)
     assertEquals(inst.a, None)
     assertEquals(inst.b, Some(3))

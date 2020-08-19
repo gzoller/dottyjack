@@ -13,18 +13,24 @@ case class Person(name: String, age: Int)
 
 val dj = DottyJack()
 val js = dj.render(Person("Mike",34))  // js == """{"name":"Mike","age":34}"""
-val inst = dj.render[Person](js) // re-constitutes original Person
+val inst = dj.read[Person](js) // re-constitutes original Person
 ```
 
 
 ### Notes:
 
 * 0.0.1 Initial feature release
+* 0.0.2 Full JSON feature support + consume macro-based reflection (dotty-reflection)
 
 
 ### A word about performance...
-There are deep structural changes in Dotty vs Scala 2.x, one of which was the choice to remove the Scala runtime reflection.  In its place is a tasty file, much like an extended class file, which has all the juicy bits one needs for reflection.  In Scala 2.x reflected information was encoded into case classes and was available at runtime.  In Dotty, the tasty file must be read.  There's a clear and significant performance difference between memory access and file IO.  So the bad news--DottyJack's performance for first-seen classes will be very poor vs old ScalaJack.  The good news--all of ScalaJack's deep reflective abilities are available in DottyJack plus support for Dotty's new features (e.g. union types).
+Compared to pre-Dotty ScalaJack, which used Scala 2.x runtime reflection, DottyJack is both much faster, and much slower than before.  For classes
+that can be reflected on at compile-time (anytime you use RType.of[...]) there's a significant performance boost.  For any time the 
+library must fall back to runtime reflection (inspection in Dotty-speak), RType.of(...) or RType.inTermsOf[](), performance becomes alarmingly poor.  The 
+reason is that unlike Scala 2.x, which held a lot of reflection information ready-to-go in the compiled class file, Dotty must parse the .tasty file by 
+first reading it (file IO!).  For a comparison: a macro-readable class (reflection) might process in 2 or 3 milliseconds.  A class that needs Dotty 
+inspection (runtime) might be more than 1 or 2 full seconds to process.  YIKES!  For now, there's not much we can do about that.  
 
-While initially this sounds like disappointing news, for many use cases it may not be that impactful.  Like ScalaJack, DottyJack caches classes it has seen, so once cached it runs super-fast like ScalaJack does.  So once "primed", DottyJack is very performant.  Many use cases require serialization of the same set of classes over and over again, so a one-time hit of reading the tasty file will be quickly amortized over the rest of your serializations.
-
-There is also a possibility of incorporating compile-time macros into DottyJack, which would move 80% of the tasty file overhead into the compilation process (except for runtime dynamic trait resolution, i.e. traits with a type hint).  This will have a very positive performance benefit.  The priniciple limitation on this approach is my own learning curve!  Stay tuned...
+While initially this sounds like disappointing news, for many use cases it may not be that impactful.  Like ScalaJack, DottyJack caches classes it has seen, 
+so once cached it runs super-fast like ScalaJack does.  So once "primed", DottyJack is very performant.  Many use cases require serialization of the same 
+set of classes over and over again, so a one-time hit of reading the tasty file will be quickly amortized over the rest of your serializations.

@@ -99,7 +99,7 @@ class TraitParams() extends FunSuite:
   }
 
   test("Nested multiple parameters, out of order - Foo[A,B,C,D](x:Bar[C,Blah[D,A]], y:B)") {
-    val rt = Reflector.reflectOn[T10[T11[Int, T5[Double, Char]], String]]
+    val rt = RType.of[T10[T11[Int, T5[Double, Char]], String]]
     val inst: T10[T11[Int, T5[Double, Char]], String] = TFoo6(TBlah1(5, TBar7(1.2, 'Z')), "wow")
     val js = sj.render(inst)
     assertEquals(
