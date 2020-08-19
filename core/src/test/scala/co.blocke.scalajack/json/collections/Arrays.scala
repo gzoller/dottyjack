@@ -23,7 +23,9 @@ class Arrays() extends FunSuite:
       """{"a1":null,"a2":[123.456,78.91]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[BigDecimalArr](js))
+    val i2 = sj.read[BigDecimalArr](js)
+    assertEquals(i2.a1, null)
+    assert(inst.a2.sameElements(i2.a2))
   }
 
   test("BigInt must work") {
@@ -33,7 +35,9 @@ class Arrays() extends FunSuite:
       """{"a1":null,"a2":[123,78]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[BigIntArr](js))
+    val i2 = sj.read[BigIntArr](js)
+    assertEquals(i2.a1, null)
+    assert(inst.a2.sameElements(i2.a2))
   }
 
   test("Boolean must work") {
@@ -43,7 +47,9 @@ class Arrays() extends FunSuite:
       """{"a1":null,"a2":[true,false]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[BooleanArr](js))
+    val i2 = sj.read[BooleanArr](js)
+    assertEquals(i2.a1, null)
+    assert(inst.a2.sameElements(i2.a2))
   }
 
   // No Array[Byte] because that's seen as binary data and treated differently
@@ -54,7 +60,9 @@ class Arrays() extends FunSuite:
       """{"a1":null,"a2":["a","b","c"]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[CharArr](js))
+    val i2 = sj.read[CharArr](js)
+    assertEquals(i2.a1, null)
+    assert(inst.a2.sameElements(i2.a2))
   }
 
   test("Double must work") {
@@ -64,7 +72,9 @@ class Arrays() extends FunSuite:
       """{"a1":null,"a2":[12.34,56.78]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[DoubleArr](js))
+    val i2 = sj.read[DoubleArr](js)
+    assertEquals(i2.a1, null)
+    assert(inst.a2.sameElements(i2.a2))
   }
 
   test("Float must work") {
@@ -74,7 +84,9 @@ class Arrays() extends FunSuite:
       """{"a1":null,"a2":[12.34,56.78]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[FloatArr](js))
+    val i2 = sj.read[FloatArr](js)
+    assertEquals(i2.a1, null)
+    assert(inst.a2.sameElements(i2.a2))
   }
 
   test("Int must work") {
@@ -84,7 +96,9 @@ class Arrays() extends FunSuite:
       """{"a1":null,"a2":[1,2,3]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[IntArr](js))
+    val i2 = sj.read[IntArr](js)
+    assertEquals(i2.a1, null)
+    assert(inst.a2.sameElements(i2.a2))
   }
 
   test("Long must work") {
@@ -94,7 +108,9 @@ class Arrays() extends FunSuite:
       """{"a1":null,"a2":[1,2,3]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[LongArr](js))
+    val i2 = sj.read[LongArr](js)
+    assertEquals(i2.a1, null)
+    assert(inst.a2.sameElements(i2.a2))
   }
 
   test("Short must work") {
@@ -104,7 +120,9 @@ class Arrays() extends FunSuite:
       """{"a1":null,"a2":[1,2,3]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[ShortArr](js))
+    val i2 = sj.read[ShortArr](js)
+    assertEquals(i2.a1, null)
+    assert(inst.a2.sameElements(i2.a2))
   }
 
   test("String must work") {
@@ -114,7 +132,9 @@ class Arrays() extends FunSuite:
       """{"a1":null,"a2":["a","b","c"]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[StringArr](js))
+    val i2 = sj.read[StringArr](js)
+    assertEquals(i2.a1, null)
+    assert(inst.a2.sameElements(i2.a2))
   }
 
   test("Lists must work") {
@@ -125,7 +145,8 @@ class Arrays() extends FunSuite:
       """{"a1":[[1,2,3],[4,5,6]]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[ListArr](js))
+    val i2 = sj.read[ListArr](js)
+    assert(inst.a1.sameElements(i2.a1))
 
     // Try another Seq variant
     val inst2 = SetArr(Array( Set(1,2,3), Set(4,5,6) ))
@@ -134,7 +155,8 @@ class Arrays() extends FunSuite:
       """{"a1":[[1,2,3],[4,5,6]]}""".asInstanceOf[JSON],
       js2
     )
-    assertEquals(inst2, sj.read[SetArr](js2))
+    val i3: SetArr = sj.read[SetArr](js)
+    assert(inst2.a1.sameElements(i3.a1))
   }
 
   test("Maps must work") {
@@ -144,7 +166,8 @@ class Arrays() extends FunSuite:
       """{"a1":[{"a":1,"b":2},{"c":3,"d":4}]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[MapArr](js))
+    val i2 = sj.read[MapArr](js)
+    assert(inst.a1.sameElements(i2.a1))
   }
 
   test("Classes must work") {
@@ -155,7 +178,12 @@ class Arrays() extends FunSuite:
       """{"a1":[{"a1":null,"a2":[1,2]},{"a1":null,"a2":[1,2]}]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[ClassArr](js))
+    val i2 = sj.read[ClassArr](js)
+    assertEquals(inst.a1.size, i2.a1.size)
+    assertEquals(i2.a1(0).a1,null)
+    assert(inst.a1(0).a2.sameElements(i2.a1(0).a2))
+    assertEquals(i2.a1(1).a1,null)
+    assert(inst.a1(1).a2.sameElements(i2.a1(1).a2))
   }
 
   test("Multidimensional arrays must work") {
@@ -167,7 +195,16 @@ class Arrays() extends FunSuite:
       """{"a0":null,"a1":[[[1,2],[3,4]],[[5,6],[7,8]]],"a2":[[12,13],[14,15]]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[MultiArr](js))
+    val i2 = sj.read[MultiArr](js)
+    assertEquals(inst.a1.size, i2.a1.size)
+    assertEquals(inst.a2.size, i2.a2.size)
+    assertEquals(i2.a0,null)
+    assert(inst.a1(0)(0).sameElements(i2.a1(0)(0)))
+    assert(inst.a1(0)(1).sameElements(i2.a1(0)(1)))
+    assert(inst.a1(1)(0).sameElements(i2.a1(1)(0)))
+    assert(inst.a1(1)(1).sameElements(i2.a1(1)(1)))
+    assert(inst.a2(0).sameElements(i2.a2(0)))
+    assert(inst.a2(1).sameElements(i2.a2(1)))
   }
 
 
@@ -192,15 +229,16 @@ class Arrays() extends FunSuite:
       """{"bigDecs":[123.4,456.7],"bigInts":[123,456],"booleans":[true,false],"bytes":[24,12],"characters":["a","z"],"doubles":[12.34,-56.78],"floats":[12.34,-56.78],"integers":[1,2],"longs":[1,2],"multi":[[123,456],[543,222]],"shorts":[1,2]}""".asInstanceOf[JSON],
       js)
     val readIn = sj.read[JavaArray](js)
-    assertEquals(inst.getBigDecs, readIn.getBigDecs)
-    assertEquals(inst.getBigInts, readIn.getBigInts)
-    assertEquals(inst.getBooleans, readIn.getBooleans)
-    assertEquals(inst.getBytes, readIn.getBytes)
-    assertEquals(inst.getCharacters, readIn.getCharacters)
-    assertEquals(inst.getDoubles, readIn.getDoubles)
-    assertEquals(inst.getFloats, readIn.getFloats)
-    assertEquals(inst.getIntegers, readIn.getIntegers)
-    assertEquals(inst.getLongs, readIn.getLongs)
-    assertEquals(inst.getShorts, readIn.getShorts)
-    assertEquals(inst.getMulti, readIn.getMulti)
+    assert(inst.getBigDecs.sameElements(readIn.getBigDecs))
+    assert(inst.getBigInts.sameElements(readIn.getBigInts))
+    assert(inst.getBooleans.sameElements(readIn.getBooleans))
+    assert(inst.getBytes.sameElements(readIn.getBytes))
+    assert(inst.getCharacters.sameElements(readIn.getCharacters))
+    assert(inst.getDoubles.sameElements(readIn.getDoubles))
+    assert(inst.getFloats.sameElements(readIn.getFloats))
+    assert(inst.getIntegers.sameElements(readIn.getIntegers))
+    assert(inst.getLongs.sameElements(readIn.getLongs))
+    assert(inst.getShorts.sameElements(readIn.getShorts))
+    assert(inst.getMulti()(0).sameElements(readIn.getMulti()(0)))
+    assert(inst.getMulti()(1).sameElements(readIn.getMulti()(1)))
   }

@@ -82,6 +82,7 @@ case class TypeAdapterCache(
   class TypeEntry(tpe: RType):
     @volatile
     private var phase: Phase = Uninitialized
+    // println(s"--> TACache (${typeEntries.size}) add [${tpe.name}]")
 
     def typeAdapter: TypeAdapter[_] = 
       val attempt =
@@ -94,9 +95,8 @@ case class TypeAdapterCache(
                 case Uninitialized =>
                   phase = Initializing
                   val typeAdapterAttempt = Try {
-                    val taCache: TypeAdapterCache = TypeAdapterCache.this
                     val foundFactory = factories.find(_.matches(tpe)).get
-                    foundFactory.makeTypeAdapter(tpe)(taCache)
+                    foundFactory.makeTypeAdapter(tpe)(selfCache)
                   }
                   phase = Initialized(typeAdapterAttempt)
                   typeAdapterAttempt
@@ -117,20 +117,20 @@ case class TypeAdapterCache(
   def withFactory(factory: TypeAdapterFactory): TypeAdapterCache =
     copy(factories = factories :+ factory)
 
-  def typeAdapterOf(tpe: TypeStructure): TypeAdapter[_] = 
-    typeAdapterOf(Reflector.reflectOnType(tpe))
+  // def typeAdapterOf(tpe: TypeStructure): TypeAdapter[_] = 
+  //   typeAdapterOf(RType.ofType(tpe))
 
   def typeAdapterOf(concreteType: RType): TypeAdapter[_] =
     typeEntries.computeIfAbsent(concreteType, ConcreteTypeEntryFactory).typeAdapter
 
   inline def typeAdapterOf[T]: TypeAdapter[T] =
-    typeAdapterOf(analyzeType[T]).asInstanceOf[TypeAdapter[T]]
+    typeAdapterOf(RType.of[T]).asInstanceOf[TypeAdapter[T]]
 
   val self = this 
 
   object ConcreteTypeEntryFactory extends java.util.function.Function[RType, TypeEntry]:
     override def apply(concrete: RType): TypeEntry = 
       concrete match {
-        case s: SelfRefRType => new TypeEntry(Reflector.reflectOnClass(s.infoClass))
+        case s: SelfRefRType => new TypeEntry(RType.of(s.infoClass))
         case s => new TypeEntry(s)
       }

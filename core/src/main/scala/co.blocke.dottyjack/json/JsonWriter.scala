@@ -149,7 +149,7 @@ case class JsonWriter() extends Writer[JSON] {
         orderedFieldNames
           .map { fieldName => // Strictly-speaking JSON has no order, but it's clean to write out in constructor order.
             val oneField = fieldMembersByName(fieldName)
-            (fieldName, oneField.info.valueAccessor.invoke(t), oneField.valueTypeAdapter.asInstanceOf[TypeAdapter[Any]])
+            (fieldName, oneField.info.valueOf(t), oneField.valueTypeAdapter.asInstanceOf[TypeAdapter[Any]])
           },
         out
       )

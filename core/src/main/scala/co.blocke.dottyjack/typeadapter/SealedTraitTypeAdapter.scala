@@ -5,7 +5,7 @@ import model._
 
 import scala.collection.mutable
 import co.blocke.dotty_reflection._
-import co.blocke.dotty_reflection.Clazzes._
+import co.blocke.dotty_reflection.impl.Clazzes._
 import co.blocke.dotty_reflection.info._
 
 object SealedTraitTypeAdapterFactory extends TypeAdapterFactory:
@@ -18,7 +18,7 @@ object SealedTraitTypeAdapterFactory extends TypeAdapterFactory:
     if concrete.asInstanceOf[SealedTraitInfo].children.head.isInstanceOf[ObjectInfo] then
       CaseObjectTypeAdapter(
         concrete, 
-        concrete.asInstanceOf[SealedTraitInfo].children.map(_.asInstanceOf[ObjectInfo].infoClass.getSimpleName))
+        concrete.asInstanceOf[SealedTraitInfo].children.map(_.asInstanceOf[ObjectInfo].infoClass.getSimpleName).toList)
     else
       val typeAdapters = concrete.asInstanceOf[SealedTraitInfo].children.map(c => c -> taCache.typeAdapterOf(c)).toMap
       SealedTraitTypeAdapter(taCache.jackFlavor, concrete, typeAdapters)

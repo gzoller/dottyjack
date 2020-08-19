@@ -20,7 +20,7 @@ object TraitTypeAdapterFactory extends TypeAdapterFactory:
     }
 
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
-    TraitTypeAdapter(concrete, taCache.jackFlavor.getHintLabelFor(concrete)) //taCache.jackFlavor.defaultHint)
+    TraitTypeAdapter(concrete, taCache.jackFlavor.getHintLabelFor(concrete))
 
 
 case class TraitTypeAdapter[T](
@@ -29,12 +29,7 @@ case class TraitTypeAdapter[T](
 )(implicit taCache: TypeAdapterCache) extends TypeAdapter[T] with Classish:
 
   inline def calcTA(c: Class[_]): ClassTypeAdapterBase[T] =
-    info.isParameterized match {
-      case true => 
-        taCache.typeAdapterOf(Reflector.reflectOnClassInTermsOf(c, info)).asInstanceOf[ClassTypeAdapterBase[T]]
-      case false => 
-        taCache.typeAdapterOf(Reflector.reflectOnClass(c)).asInstanceOf[ClassTypeAdapterBase[T]]
-    }
+    taCache.typeAdapterOf(RType.inTermsOf(c, info.asInstanceOf[TraitInfo])).asInstanceOf[ClassTypeAdapterBase[T]]
   
   // The battle plan here is:  Scan the keys of the object looking for type typeHintField.  Perform any (optional)
   // re-working of the hint value via hintModFn.  Look up the correct concete TypeAdapter based on the now-known type
@@ -45,8 +40,7 @@ case class TraitTypeAdapter[T](
     else {
       val concreteClass = parser.scanForHint(
         hintLabel,
-        // DefaultHintModifier).asInstanceOf[Class[T]]
-        taCache.jackFlavor.hintValueModifiers.getOrElse(info, DefaultHintModifier)
+        taCache.jackFlavor.hintValueModifiers.getOrElse(info.name, DefaultHintModifier)
       ).asInstanceOf[Class[T]]
       val ccta = calcTA(concreteClass)
       ccta.read(parser).asInstanceOf[T]
@@ -61,9 +55,8 @@ case class TraitTypeAdapter[T](
     else {
       val ccta = calcTA(t.getClass)
       val hintValue = taCache.jackFlavor.hintValueModifiers
-        .getOrElse(info, DefaultHintModifier)
+        .getOrElse(info.name, DefaultHintModifier)
         .unapply(t.getClass.getName)
-      //DefaultHintModifier.unapply(t.getClass.getName) // TODO: Wire up hint value modifiers
       writer.writeObject(
         t, 
         ccta.orderedFieldNames, 

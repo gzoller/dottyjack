@@ -5,7 +5,7 @@ import scala.collection.mutable
 import scala.reflect.ClassTag
 import co.blocke.dotty_reflection._
 import co.blocke.dotty_reflection.info._
-import co.blocke.dotty_reflection.Clazzes._
+import co.blocke.dotty_reflection.impl.Clazzes._
 
 
 /**

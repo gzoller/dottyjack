@@ -9,7 +9,7 @@ import munit._
 import munit.internal.console
 import co.blocke.dottyjack.json.JSON
 import scala.collection.immutable._
-import collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.language.implicitConversions._
 
 class Seqs() extends FunSuite:
@@ -158,7 +158,11 @@ class Seqs() extends FunSuite:
       """{"a1":[{"a1":null,"a2":[1,2]},{"a1":null,"a2":[1,2]}]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst, sj.read[ClassSeq](js))
+    val i2 = sj.read[ClassSeq](js)
+    assertEquals(i2.a1.toList(0).a1,null)
+    assert(inst.a1.toList(0).a2.sameElements(i2.a1.toList(0).a2))
+    assertEquals(i2.a1.toList(1).a1,null)
+    assert(inst.a1.toList(1).a2.sameElements(i2.a1.toList(1).a2))
   }
 
   test("Multidimensional arrays must work") {
@@ -222,7 +226,7 @@ class Seqs() extends FunSuite:
     )
     val readIn = sj.read[JCharSeq](js)
     assertEquals(inst.a1, readIn.a1)
-    assertEquals(inst.a2, readIn.a2)
+    assertEquals(inst.a2.toString, readIn.a2.toString)
   }
   //case class JIntSeq( a1: java.util.Stack[Int], a2: java.util.Stack[Int] )
 
@@ -260,5 +264,9 @@ class Seqs() extends FunSuite:
       """{"a1":[{"a1":null,"a2":[1,2]},{"a1":null,"a2":[1,2]}]}""".asInstanceOf[JSON],
       js
     )
-    assertEquals(inst.a1.asScala, sj.read[JClassSeq](js).a1.asScala)
+    val i2 = sj.read[JClassSeq](js)
+    assertEquals(i2.a1.get(0).a1, null)
+    assert(inst.a1.get(0).a2.sameElements(i2.a1.get(0).a2))
+    assertEquals(i2.a1.get(1).a1, null)
+    assert(inst.a1.get(1).a2.sameElements(i2.a1.get(1).a2))
   }

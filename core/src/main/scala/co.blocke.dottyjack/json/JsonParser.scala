@@ -4,6 +4,7 @@ package json
 import model._
 import typeadapter.classes.ClassTypeAdapterBase
 import co.blocke.dotty_reflection._
+import co.blocke.dotty_reflection.info.TypeMemberInfo
 
 import scala.collection.mutable
 import scala.jdk.CollectionConverters._
@@ -220,7 +221,7 @@ case class JsonParser(jsRaw: JSON, jackFlavor: JackFlavor[JSON]) extends Parser 
   ): (mutable.BitSet, List[Object], java.util.HashMap[String, String]) = {
     whitespace()
     val args      = classBase.argsTemplate.clone()
-    val fieldBits = classBase.fieldBitsTemplate.clone()
+    val fieldBits = mutable.BitSet() // classBase.fieldBitsTemplate.clone()
     val captured =
       if (classBase.isSJCapture) 
         new java.util.HashMap[String, String]()
@@ -248,7 +249,7 @@ case class JsonParser(jsRaw: JSON, jackFlavor: JackFlavor[JSON]) extends Parser 
       classBase.fieldMembersByName.get(key) match {
         case Some(field) =>
           whitespace()
-          fieldBits -= field.info.index
+          fieldBits += field.info.index
           args(field.info.index) = field.valueTypeAdapter.read(this).asInstanceOf[Object]
         case None => // found some input field not present in class
           val mark = i
@@ -384,7 +385,7 @@ case class JsonParser(jsRaw: JSON, jackFlavor: JackFlavor[JSON]) extends Parser 
         whitespace()
         collected.put(
           key,
-          TypeMemberInfo(key, typeMembersByName(key).typeSymbol, Reflector.reflectOnClass(Class.forName(converterFn.apply(expectString()))))
+          TypeMemberInfo(key, typeMembersByName(key).typeSymbol, RType.of(Class.forName(converterFn.apply(expectString()))))
         )
       } else
         skipOverElement()

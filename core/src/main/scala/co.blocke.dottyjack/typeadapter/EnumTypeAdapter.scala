@@ -10,7 +10,7 @@ import co.blocke.dotty_reflection._
 import co.blocke.dotty_reflection.info._
 
 object EnumTypeAdapterFactory extends TypeAdapterFactory:
-  def matches(concrete: RType): Boolean = 
+  def matches(concrete: RType): Boolean =
     concrete match {
       case _: ScalaEnumInfo => true
       case _: ScalaEnumerationInfo => true
@@ -105,7 +105,7 @@ case class ScalaEnumTypeAdapter[E <: Enum](
   def read(parser: Parser): E = 
     if (parser.nextIsNumber) {
       val en = parser.expectNumber().toInt
-      Try(scalaEnum.values(en-1)) match {
+      Try(scalaEnum.valueOf(en)) match {
         case Success(u) => u.asInstanceOf[E]
         case Failure(u) =>
           parser.backspace()
@@ -143,7 +143,7 @@ case class ScalaEnumTypeAdapter[E <: Enum](
       out:    mutable.Builder[WIRE, WIRE]): Unit = 
     t match {
       case null            => writer.writeNull(out)
-      case _ if enumsAsInt => writer.writeInt(t.ordinal+1, out)
+      case _ if enumsAsInt => writer.writeInt(t.ordinal, out)
       case _               => writer.writeString(t.toString, out)
     }
   

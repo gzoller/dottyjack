@@ -4,7 +4,7 @@ package typeadapter
 import model._
 import co.blocke.dotty_reflection._
 import co.blocke.dotty_reflection.info.UnionInfo
-import co.blocke.dotty_reflection.Clazzes._
+import co.blocke.dotty_reflection.impl.Clazzes._
 
 import scala.collection.mutable.Builder
 import scala.util.{ Failure, Success, Try }

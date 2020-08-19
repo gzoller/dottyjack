@@ -1,7 +1,7 @@
 package co.blocke.scalajack
 package json.custom
 
-import co.blocke.dotty_reflection.Clazzes._
+import co.blocke.dotty_reflection.impl.Clazzes._
 import co.blocke.dotty_reflection.info.AliasInfo
 import co.blocke.dotty_reflection._
 import co.blocke.dottyjack.model._
@@ -18,7 +18,7 @@ object PhoneAdapter extends TypeAdapterFactory with TypeAdapter[Phone]:
       case _ => false
     }
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Phone] = this
-  val info = Reflector.reflectOn[Phone]
+  val info = RType.of[Phone]
   override def isStringish: Boolean = true
   
   def read(parser: Parser): Phone =

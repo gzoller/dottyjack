@@ -73,7 +73,7 @@ object Main {
 
   def main(args: Array[String]): Unit = {
 
-    println(Reflector.reflectOn[SampleJNumber])
+    println(RType.of[SampleJNumber])
 
   /*
 

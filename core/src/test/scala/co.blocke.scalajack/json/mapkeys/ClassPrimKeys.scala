@@ -107,8 +107,8 @@ class ClassPrimKeys() extends FunSuite:
       Map("BreathsWater" -> "co.blocke.scalajack.json.mapkeys.FishPet", "BreathsAir" -> "co.blocke.scalajack.json.mapkeys.DogPet")
     )
     val sj2 = co.blocke.dottyjack.DottyJack()
-      .withHints((Reflector.reflectOn[Pet] -> "kind"))
-      .withHintModifiers((Reflector.reflectOn[Pet] -> petHintMod))
+      .withHints((RType.of[Pet] -> "kind"))
+      .withHintModifiers((RType.of[Pet] -> petHintMod))
 
     val a: Pet = FishPet("Flipper", Food.Veggies, 74.33)
     val b: Pet = DogPet("Fido", Food.Meat, 3)
@@ -124,8 +124,8 @@ class ClassPrimKeys() extends FunSuite:
       Map("BreathsWater" -> "co.blocke.scalajack.json.mapkeys.FishPet", "BreathsAir" -> "co.blocke.scalajack.json.mapkeys.DogPet")
     )
     val sj2 = co.blocke.dottyjack.DottyJack()
-      .withHints((Reflector.reflectOn[Pet] -> "kind"))
-      .withHintModifiers((Reflector.reflectOn[Pet] -> petHintMod))
+      .withHints((RType.of[Pet] -> "kind"))
+      .withHintModifiers((RType.of[Pet] -> petHintMod))
 
     val a: PetHolder =
       ShinyPetHolder("123 Main", FishPet("Flipper", Food.Veggies, 74.33))
@@ -275,8 +275,8 @@ class ClassPrimKeys() extends FunSuite:
       Map("BreathsWater" -> "co.blocke.scalajack.json.mapkeys.FishPet", "BreathsAir" -> "co.blocke.scalajack.json.mapkeys.DogPet")
     )
     val sj2 = co.blocke.dottyjack.DottyJack()
-      .withHints(Reflector.reflectOn[Pet] -> "kind")
-      .withHintModifiers(Reflector.reflectOn[Pet] -> petHintMod)
+      .withHints(RType.of[Pet] -> "kind")
+      .withHintModifiers(RType.of[Pet] -> petHintMod)
     val js =
       """{"m":{"{\"_hint\":\"co.blocke.scalajack.json.mapkeys.ShinyPetHolder\",\"address\":\"123 Main\",\"pet\":{\"sort\":\"BreathsWater\",\"name\":\"Flipper\",\"food\":\"Veggies\",\"waterTemp\":74.33}}":{"_hint":"co.blocke.scalajack.json.mapkeys.ShinyPetHolder","address":"210 North","pet":{"kind":"BreathsAir","name":"Fido","food":"Meat","numLegs":3}}}}""".asInstanceOf[JSON]
     val msg = """Type hint 'kind' not found
@@ -292,8 +292,8 @@ class ClassPrimKeys() extends FunSuite:
       Map("BreathsWater" -> "co.blocke.scalajack.json.mapkeys.FishPet", "BreathsAir" -> "co.blocke.scalajack.json.mapkeys.DogPet")
     )
     val sj2 = co.blocke.dottyjack.DottyJack()
-      .withHints(Reflector.reflectOn[Pet] -> "kind")
-      .withHintModifiers(Reflector.reflectOn[Pet] -> petHintMod)
+      .withHints(RType.of[Pet] -> "kind")
+      .withHintModifiers(RType.of[Pet] -> petHintMod)
     val js =
       """{"m":{"{\"_hint\":\"co.blocke.scalajack.mapkeys.Bogus\",\"address\":\"123 Main\",\"pet\":{\"kind\":\"BreathsLava\",\"name\":\"Flipper\",\"food\":\"Veggies\",\"waterTemp\":74.33}}":{"_hint":"co.blocke.scalajack.json.mapkeys.ShinyPetHolder","address":"210 North","pet":{"kind":"BreathsAir","name":"Fido","food":"Meat","numLegs":3}}}}""".asInstanceOf[JSON]
     interceptMessage[java.lang.ClassNotFoundException]("co.blocke.scalajack.mapkeys.Bogus"){
@@ -306,8 +306,8 @@ class ClassPrimKeys() extends FunSuite:
       Map("BreathsWater" -> "co.blocke.scalajack.json.mapkeys.FishPet", "BreathsAir" -> "co.blocke.scalajack.json.mapkeys.DogPet")
     )
     val sj2 = co.blocke.dottyjack.DottyJack()
-      .withHints(Reflector.reflectOn[Pet] -> "kind")
-      .withHintModifiers((Reflector.reflectOn[Pet] -> petHintMod))
+      .withHints(RType.of[Pet] -> "kind")
+      .withHintModifiers((RType.of[Pet] -> petHintMod))
     val js =
       """{"m":{"{\"_hint\":\"co.blocke.scalajack.json.mapkeys.ShinyPetHolder\",\"address\":\"123 Main\",\"pet\":{\"kind\":\"BreathsLava\",\"name\":\"Flipper\",\"food\":\"Veggies\",\"waterTemp\":74.33}}":{"_hint":"co.blocke.scalajack.json.mapkeys.ShinyPetHolder","address":"210 North","pet":{"kind":"BreathsAir","name":"Fido","food":"Meat","numLegs":3}}}}""".asInstanceOf[JSON]
     val msg = """Couldn't marshal class for BreathsLava

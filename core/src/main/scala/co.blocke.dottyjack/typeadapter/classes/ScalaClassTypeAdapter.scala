@@ -3,7 +3,6 @@ package typeadapter
 package classes
 
 import model._
-import co.blocke.dotty_reflection.TypeMemberInfo
 import co.blocke.dotty_reflection.info._
 import co.blocke.dotty_reflection._
 
@@ -18,7 +17,7 @@ trait ScalaClassTypeAdapter[T](implicit taCache: TypeAdapterCache) extends Class
 
   val isSJCapture = classInfo.hasMixin(SJ_CAPTURE)
 
-  def _read_createInstance(args: List[Object], captured: java.util.HashMap[String, String]): T
+  def _read_createInstance(args: List[Object], foundBits: mutable.BitSet, captured: java.util.HashMap[String, String]): T
   def _read_updateFieldMembers( fmbn: Map[String, ClassFieldMember[_,_]]): ScalaClassTypeAdapter[T]
 
   def read(parser: Parser): T =
@@ -35,13 +34,16 @@ trait ScalaClassTypeAdapter[T](implicit taCache: TypeAdapterCache) extends Class
           parser.expectObject(this, taCache.jackFlavor.defaultHint)
       }
 
-      if (foundBits.isEmpty) then
-        _read_createInstance(args, captured)
+      val testBits = fieldBitsTemplate.collect{
+        case b if !foundBits.contains(b) => b
+      }
+      if (testBits.isEmpty) then
+        _read_createInstance(args, foundBits, captured)
       else
         parser.backspace()
         throw new ScalaJackError(
           parser.showError(
-            s"Class ${classInfo.name} missing required fields: " + foundBits
+            s"Class ${classInfo.name} missing required fields: " + testBits
               .map(b => orderedFieldNames(b))
               .mkString(", ")
           )
@@ -55,15 +57,15 @@ trait ScalaClassTypeAdapter[T](implicit taCache: TypeAdapterCache) extends Class
 
     // Resolve actual types (in t) of any type members
     val (allFields, filteredTypeMembers) = classInfo match {
-      case c: ScalaCaseClassInfo => (classInfo.fields, c.filterTraitTypeParams.typeMembers)
-      case c: ScalaClassInfo => (classInfo.fields ++ c.nonConstructorFields, c.filterTraitTypeParams.typeMembers)
+      case c: ScalaCaseClassInfo => (classInfo.fields.toList, c.filterTraitTypeParams.typeMembers.toList)
+      case c: ScalaClassInfo => (classInfo.fields.toList ++ c.nonConstructorFields.toList, c.filterTraitTypeParams.typeMembers.toList)
     }
     val (extras, resolvedFieldMembersByName) =
       if filteredTypeMembers.nonEmpty then
-        val xtras = filteredTypeMembers.map{ tm =>
+        val xtras: List[(String, ExtraFieldValue[_])] = filteredTypeMembers.map{ tm =>
           val foundActualField = allFields.find( _.asInstanceOf[ScalaFieldInfo].originalSymbol == Some(tm.typeSymbol) )
           val resolvedTypeMember = foundActualField.map{ a => 
-            val actualRtype = Reflector.reflectOnClass(a.valueAccessor.invoke(t).getClass)
+            val actualRtype = RType.of(a.valueOf(t).getClass)
             tm.copy(memberType = actualRtype)
           }.getOrElse(tm)
           (
@@ -79,7 +81,7 @@ trait ScalaClassTypeAdapter[T](implicit taCache: TypeAdapterCache) extends Class
         val resolvedFields = fieldMembersByName.map{ case (fname, aField) =>        
           val aScalaField = aField.info.asInstanceOf[ScalaFieldInfo]
           if aScalaField.originalSymbol.isDefined && filteredTypeMemberSymbols.contains(aScalaField.originalSymbol.get) then
-            val actualRtype = Reflector.reflectOnClass(aScalaField.valueAccessor.invoke(t).getClass)
+            val actualRtype = RType.of(aScalaField.valueOf(t).getClass)
             fname -> aField.copy( info = aScalaField.copy( fieldType = actualRtype ), valueTypeAdapter = taCache.typeAdapterOf(actualRtype) )
           else
             fname -> aField
@@ -94,7 +96,7 @@ trait ScalaClassTypeAdapter[T](implicit taCache: TypeAdapterCache) extends Class
       orderedFieldNames,
       resolvedFieldMembersByName,
       out,
-      extras.toList
+      extras
     )
 
   // Used by AnyTypeAdapter to insert type hint (not normally needed) into output so object

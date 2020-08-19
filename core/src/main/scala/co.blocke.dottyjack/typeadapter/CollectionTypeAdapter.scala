@@ -11,8 +11,7 @@ import co.blocke.dotty_reflection.info._
 object CollectionTypeAdapterFactory extends TypeAdapterFactory:
   def matches(concrete: RType): Boolean = 
     concrete match {
-      case _: CollectionType => 
-        true
+      case _: CollectionRType => true
       case _ => false
     }
 

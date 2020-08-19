@@ -27,7 +27,7 @@ trait ViewSplice:
       case (fieldName: String, f: ClassFieldMember[_, _]) =>
         val gotOne = masterData
           .find(
-            md => md.getName == f.name && md.getType == f.info.valueAccessor.getReturnType
+            md => md.getName == f.name && md.getType == f.outerClass.getMethod(f.name).getReturnType
           )
           .map(dataField => {
             dataField.setAccessible(true)
@@ -62,7 +62,7 @@ trait ViewSplice:
       val f = masterTarget.fieldMembersByName(fieldName)
       viewData
         .find(
-          vd => vd.getName == f.name && vd.getType == f.info.valueAccessor.getReturnType
+          vd => vd.getName == f.name && vd.getType == f.outerClass.getMethod(f.name).getReturnType
         )
         .map(dataField => {
           // Found matching master field in view object
