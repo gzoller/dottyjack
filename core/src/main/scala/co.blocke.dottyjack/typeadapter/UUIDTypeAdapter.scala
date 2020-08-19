@@ -3,7 +3,7 @@ package typeadapter
 
 import model._
 import co.blocke.dotty_reflection._
-import co.blocke.dotty_reflection.Clazzes._
+import co.blocke.dotty_reflection.impl.Clazzes._
 import co.blocke.dotty_reflection.info.JavaClassInfo
 import java.util.UUID
 import scala.collection.mutable
@@ -19,7 +19,7 @@ object UUIDTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[UUID]:
     }
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[UUID] = this
 
-  val info = Reflector.reflectOn[java.util.UUID]
+  val info = RType.of[java.util.UUID]
   def read(parser: Parser): UUID =
     val u = parser.expectString()
     if (u == null)

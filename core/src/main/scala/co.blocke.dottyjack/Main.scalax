@@ -8,9 +8,16 @@ import scala.collection.mutable
 import scala.jdk.CollectionConverters._
 import co.blocke.dottyjack.json.JSON
 
+case class Foom(a: Int)
+trait Basis[T] {
+  val a: Int
+  val b: String
+  val c: T
+}
 
-trait Thing[A, B] { val a: A; val b: B }
-case class AThing[Y, X](a: X, b: Y) extends Thing[X, Y]
+case class Thingy[T]( a: Int, b: String, c: T) extends Basis[T]
+
+
 
 object Main {
 
@@ -19,15 +26,32 @@ object Main {
     // val sj = DottyJack()
     val sj = co.blocke.dottyjack.DottyJack()
 
-    // println(RType.of[Map[Map[Map[Thing[String, Int], Thing[String, Int]], Map[Thing[String, Int], Thing[String, Int]]], Map[Map[Thing[String, Int], Thing[String, Int]], Map[Thing[String, Int], Thing[String, Int]]]]])
-    val m1: Map[Thing[String, Int], Thing[String, Int]] =
-      Map(AThing("one", 1) -> AThing("two", 2))
-    val m2: Map[Thing[String, Int], Thing[String, Int]] =
-      Map(AThing("four", 4) -> AThing("three", 3))
-    val inst = Map(Map(m1 -> m2) -> Map(m2 -> m1))
-    val js = sj.render(inst)
-    println(js)
-    println(sj.read[Map[Map[Map[Thing[String, Int], Thing[String, Int]], Map[Thing[String, Int], Thing[String, Int]]], Map[Map[Thing[String, Int], Thing[String, Int]], Map[Thing[String, Int], Thing[String, Int]]]]](js))
+    val js = """{"_hint":"co.blocke.dottyjack.Thingy","a":15,"b":"Wow","c":[true,false]}""".asInstanceOf[JSON]
+
+    println(sj.read[Basis[List[Boolean]]](js))
+
+    // val now = System.currentTimeMillis()
+    // sj.read[Basis[Boolean]](js)
+    // val later = System.currentTimeMillis()
+    // sj.read[Basis[Boolean]](js)
+    // val later2 = System.currentTimeMillis()
+    // println(later-now)
+    // println(later2-later)
+
+    // val typeEntries = new java.util.concurrent.ConcurrentHashMap[RType, String]
+
+    // val t1 = RType.of[Foom]
+    // val t2 = RType.of[Foom]
+
+    // typeEntries.put(t1, "zhere")
+    // println(typeEntries.get(t1))
+    // typeEntries.put(t2, "zthere")
+    // println(typeEntries.get(t1))
+    // println(typeEntries.get(t2))
+
+    // println(t1 == t2)
+    // println(t1.equals)
+
 
 
   def constructors(clazz: Class[_]): String = 

@@ -1,7 +1,7 @@
 package co.blocke.dottyjack
 package typeadapter
 
-import co.blocke.dotty_reflection.Clazzes._
+import co.blocke.dotty_reflection.impl.Clazzes._
 import co.blocke.dotty_reflection.info._
 import co.blocke.dotty_reflection._
 
@@ -19,7 +19,7 @@ import model._
       case _ => false
     }
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Duration] = this
-  val info = Reflector.reflectOn[Duration]
+  val info = RType.of[Duration]
   override def isStringish: Boolean = true
 
   def read(parser: Parser): Duration =
@@ -53,7 +53,7 @@ object InstantTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Ins
       case _ => false
     }
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Instant] = this
-  val info = Reflector.reflectOn[Instant]
+  val info = RType.of[Instant]
   override def isStringish: Boolean = true
 
   def read(parser: Parser): Instant =
@@ -87,7 +87,7 @@ object LocalDateTimeTypeAdapterFactory extends TypeAdapterFactory with TypeAdapt
       case _ => false
     }
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[LocalDateTime] = this
-  val info = Reflector.reflectOn[LocalDateTime]
+  val info = RType.of[LocalDateTime]
   override def isStringish: Boolean = true
 
   def read(parser: Parser): LocalDateTime =
@@ -122,7 +122,7 @@ object LocalDateTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[L
       case _ => false
     }
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[LocalDate] = this
-  val info = Reflector.reflectOn[LocalDate]
+  val info = RType.of[LocalDate]
   override def isStringish: Boolean = true
 
   def read(parser: Parser): LocalDate =
@@ -156,7 +156,7 @@ object LocalTimeTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[L
       case _ => false
     }
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[LocalTime] = this
-  val info = Reflector.reflectOn[LocalTime]
+  val info = RType.of[LocalTime]
   override def isStringish: Boolean = true
 
   def read(parser: Parser): LocalTime =
@@ -190,7 +190,7 @@ object OffsetDateTimeTypeAdapterFactory extends TypeAdapterFactory with TypeAdap
       case _ => false
     }
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[OffsetDateTime] = this
-  val info = Reflector.reflectOn[OffsetDateTime]
+  val info = RType.of[OffsetDateTime]
   override def isStringish: Boolean = true
 
   def read(parser: Parser): OffsetDateTime =
@@ -226,7 +226,7 @@ object OffsetTimeTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[
       case _ => false
     }
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[OffsetTime] = this
-  val info = Reflector.reflectOn[OffsetTime]
+  val info = RType.of[OffsetTime]
   override def isStringish: Boolean = true
 
   def read(parser: Parser): OffsetTime =
@@ -261,7 +261,7 @@ object PeriodTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Peri
       case _ => false
     }
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Period] = this
-  val info = Reflector.reflectOn[Period]
+  val info = RType.of[Period]
   override def isStringish: Boolean = true
 
   def read(parser: Parser): Period =
@@ -295,7 +295,7 @@ object ZonedDateTimeTypeAdapterFactory extends TypeAdapterFactory with TypeAdapt
       case _ => false
     }
   def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[ZonedDateTime] = this
-  val info = Reflector.reflectOn[ZonedDateTime]
+  val info = RType.of[ZonedDateTime]
   override def isStringish: Boolean = true
 
   def read(parser: Parser): ZonedDateTime =

@@ -1,4 +1,4 @@
-val dottyVersion = "0.25.0-RC2"
+val dottyVersion = "0.26.0-RC1"
 
 lazy val basicSettings = Seq(
   organization := "co.blocke",
@@ -52,8 +52,8 @@ lazy val dottyjack = project
     libraryDependencies ++= 
       Seq(
         "commons-codec" % "commons-codec" % "1.12",
-        "co.blocke" %% "dotty-reflection" % "macroize_97bf64",
-        "org.scalameta" %% "munit" % "0.7.9" % Test,
+        "co.blocke" %% "dotty-reflection" % "0.1.0",
+        "org.scalameta" %% "munit" % "0.7.11" % Test,
         "org.json4s" % "json4s-core_2.13" % "3.6.6" % Test,
         "org.json4s" % "json4s-native_2.13" % "3.6.6" % Test
       )

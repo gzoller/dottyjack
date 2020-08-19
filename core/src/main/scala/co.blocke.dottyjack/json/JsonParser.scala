@@ -4,6 +4,7 @@ package json
 import model._
 import typeadapter.classes.ClassTypeAdapterBase
 import co.blocke.dotty_reflection._
+import co.blocke.dotty_reflection.info.TypeMemberInfo
 
 import scala.collection.mutable
 import scala.jdk.CollectionConverters._
@@ -384,7 +385,7 @@ case class JsonParser(jsRaw: JSON, jackFlavor: JackFlavor[JSON]) extends Parser 
         whitespace()
         collected.put(
           key,
-          TypeMemberInfo(key, typeMembersByName(key).typeSymbol, Reflector.reflectOnClass(Class.forName(converterFn.apply(expectString()))))
+          TypeMemberInfo(key, typeMembersByName(key).typeSymbol, RType.of(Class.forName(converterFn.apply(expectString()))))
         )
       } else
         skipOverElement()

@@ -29,7 +29,7 @@ case class TraitTypeAdapter[T](
 )(implicit taCache: TypeAdapterCache) extends TypeAdapter[T] with Classish:
 
   inline def calcTA(c: Class[_]): ClassTypeAdapterBase[T] =
-    taCache.typeAdapterOf(Reflector.reflectOnClass(c, Some(info.asInstanceOf[TraitInfo]))).asInstanceOf[ClassTypeAdapterBase[T]]
+    taCache.typeAdapterOf(RType.inTermsOf(c, info.asInstanceOf[TraitInfo])).asInstanceOf[ClassTypeAdapterBase[T]]
   
   // The battle plan here is:  Scan the keys of the object looking for type typeHintField.  Perform any (optional)
   // re-working of the hint value via hintModFn.  Look up the correct concete TypeAdapter based on the now-known type

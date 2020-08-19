@@ -3,7 +3,6 @@ package typeadapter
 package classes
 
 import model._
-import co.blocke.dotty_reflection.TypeMemberInfo
 import co.blocke.dotty_reflection.info._
 import co.blocke.dotty_reflection._
 
@@ -66,7 +65,7 @@ trait ScalaClassTypeAdapter[T](implicit taCache: TypeAdapterCache) extends Class
         val xtras: List[(String, ExtraFieldValue[_])] = filteredTypeMembers.map{ tm =>
           val foundActualField = allFields.find( _.asInstanceOf[ScalaFieldInfo].originalSymbol == Some(tm.typeSymbol) )
           val resolvedTypeMember = foundActualField.map{ a => 
-            val actualRtype = Reflector.reflectOnClass(a.valueOf(t).getClass)
+            val actualRtype = RType.of(a.valueOf(t).getClass)
             tm.copy(memberType = actualRtype)
           }.getOrElse(tm)
           (
@@ -82,7 +81,7 @@ trait ScalaClassTypeAdapter[T](implicit taCache: TypeAdapterCache) extends Class
         val resolvedFields = fieldMembersByName.map{ case (fname, aField) =>        
           val aScalaField = aField.info.asInstanceOf[ScalaFieldInfo]
           if aScalaField.originalSymbol.isDefined && filteredTypeMemberSymbols.contains(aScalaField.originalSymbol.get) then
-            val actualRtype = Reflector.reflectOnClass(aScalaField.valueOf(t).getClass)
+            val actualRtype = RType.of(aScalaField.valueOf(t).getClass)
             fname -> aField.copy( info = aScalaField.copy( fieldType = actualRtype ), valueTypeAdapter = taCache.typeAdapterOf(actualRtype) )
           else
             fname -> aField

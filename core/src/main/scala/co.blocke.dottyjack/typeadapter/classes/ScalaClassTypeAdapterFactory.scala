@@ -33,7 +33,7 @@ object ScalaClassTypeAdapterFactory extends TypeAdapterFactory:
 
     val fieldsByName = fieldsWeCareAbout.map { f =>
       val fieldTypeAdapter = f.fieldType match {
-        case _: TypeSymbolInfo => taCache.typeAdapterOf(PrimitiveType.Scala_Any) // Any unresolved type symbols must be considered Any
+        case _: TypeSymbolInfo => taCache.typeAdapterOf(impl.PrimitiveType.Scala_Any) // Any unresolved type symbols must be considered Any
         case t =>
           taCache.typeAdapterOf(t) match {
             // In certain situations, value classes need to be unwrapped, i.e. use the type adapter of their member.

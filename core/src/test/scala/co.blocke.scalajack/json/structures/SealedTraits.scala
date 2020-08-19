@@ -70,7 +70,7 @@ class SealedTraits() extends FunSuite:
 
   // No more hints on sealed traits!!
   // test("Type hints with modification") {
-  //   val sj2 = co.blocke.dottyjack.DottyJack().withHints((Reflector.reflectOn[Stay] -> "stay_kind"))
+  //   val sj2 = co.blocke.dottyjack.DottyJack().withHints((RType.of[Stay] -> "stay_kind"))
   //   val s: Stay = VillaStay("Hacienda")
   //   val js = sj2.render(s)
   //   assertEquals(

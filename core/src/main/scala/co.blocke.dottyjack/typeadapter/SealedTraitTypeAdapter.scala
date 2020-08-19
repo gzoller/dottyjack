@@ -5,7 +5,7 @@ import model._
 
 import scala.collection.mutable
 import co.blocke.dotty_reflection._
-import co.blocke.dotty_reflection.Clazzes._
+import co.blocke.dotty_reflection.impl.Clazzes._
 import co.blocke.dotty_reflection.info._
 
 object SealedTraitTypeAdapterFactory extends TypeAdapterFactory:
