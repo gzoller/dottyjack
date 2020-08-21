@@ -10,7 +10,7 @@ import java.lang.reflect.Method
 
 
 case class MapLikeTypeAdapter[KEY, VALUE, TO <: Map[KEY, VALUE]](
-    info:                 RType,
+    info:                 Transporter.RType,
     keyIsOptionalOrAny:   Boolean,
     valueIsOptionalOrAny: Boolean,
     keyTypeAdapter:       TypeAdapter[KEY],

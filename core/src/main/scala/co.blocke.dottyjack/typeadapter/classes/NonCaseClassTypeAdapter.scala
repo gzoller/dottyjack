@@ -9,7 +9,7 @@ import scala.collection.mutable
 
 
 case class NonCaseClassTypeAdapter[T](
-    info:                 RType,
+    info:                 Transporter.RType,
     fieldMembersByName:   Map[String, ClassFieldMember[_,_]],
     argsTemplate:         Array[Object],
     fieldBitsTemplate:    mutable.BitSet,

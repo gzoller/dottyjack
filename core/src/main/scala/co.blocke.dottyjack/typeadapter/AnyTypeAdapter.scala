@@ -10,12 +10,12 @@ import scala.collection.mutable.ListBuffer
 import scala.util.{Success, Try}
 
 object AnyTypeAdapterFactory extends TypeAdapterFactory:
-  def matches(concrete: RType): Boolean = concrete.infoClass == impl.PrimitiveType.Scala_Any.infoClass
-  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =  
+  def matches(concrete: Transporter.RType): Boolean = concrete.infoClass == impl.PrimitiveType.Scala_Any.infoClass
+  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =  
     AnyTypeAdapter(concrete, taCache)
 
 
-case class AnyTypeAdapter(info: RType, taCache: TypeAdapterCache) extends TypeAdapter[Any] {
+case class AnyTypeAdapter(info: Transporter.RType, taCache: TypeAdapterCache) extends TypeAdapter[Any] {
   val jackFlavor = taCache.jackFlavor
   lazy val mapAnyTypeAdapter: TypeAdapter[Map[Any, Any]]  = taCache.typeAdapterOf[Map[Any, Any]]
   lazy val listAnyTypeAdapter: TypeAdapter[List[Any]]     = taCache.typeAdapterOf[List[Any]]

@@ -9,12 +9,12 @@ import co.blocke.dotty_reflection.impl.Clazzes._
 import co.blocke.dotty_reflection.info._
 
 object SealedTraitTypeAdapterFactory extends TypeAdapterFactory:
-  def matches(concrete: RType): Boolean = 
+  def matches(concrete: Transporter.RType): Boolean = 
     concrete match {
       case _: SealedTraitInfo => true
       case _ => false
     }
-  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] = 
+  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] = 
     if concrete.asInstanceOf[SealedTraitInfo].children.head.isInstanceOf[ObjectInfo] then
       CaseObjectTypeAdapter(
         concrete, 
@@ -26,8 +26,8 @@ object SealedTraitTypeAdapterFactory extends TypeAdapterFactory:
 
 case class SealedTraitTypeAdapter[T](
     jackFlavor:       JackFlavor[_],
-    info:             RType,
-    typeAdapters:     Map[RType, TypeAdapter[_]]
+    info:             Transporter.RType,
+    typeAdapters:     Map[Transporter.RType, TypeAdapter[_]]
   ) extends TypeAdapter[T]:
 
   val sealedInfo = info.asInstanceOf[SealedTraitInfo]
@@ -88,7 +88,7 @@ case class SealedTraitTypeAdapter[T](
     }
 
 case class CaseObjectTypeAdapter[T](
-      info:             RType,
+      info:             Transporter.RType,
       values:           List[String]
     ) extends TypeAdapter[T]:
   

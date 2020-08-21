@@ -13,12 +13,12 @@ import java.time.format.DateTimeFormatter._
 import model._
 
  object DurationTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Duration]:
-  def matches(concrete: RType): Boolean = 
+  def matches(concrete: Transporter.RType): Boolean = 
     concrete match {
       case u: JavaClassInfo if u.infoClass.getName == "java.time.Duration" => true
       case _ => false
     }
-  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Duration] = this
+  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Duration] = this
   val info = RType.of[Duration]
   override def isStringish: Boolean = true
 
@@ -47,12 +47,12 @@ import model._
 
 
 object InstantTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Instant]:
-  def matches(concrete: RType): Boolean = 
+  def matches(concrete: Transporter.RType): Boolean = 
     concrete match {
       case u: JavaClassInfo if u.infoClass.getName == "java.time.Instant" => true
       case _ => false
     }
-  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Instant] = this
+  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Instant] = this
   val info = RType.of[Instant]
   override def isStringish: Boolean = true
 
@@ -81,12 +81,12 @@ object InstantTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Ins
 
 
 object LocalDateTimeTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[LocalDateTime]:
-  def matches(concrete: RType): Boolean = 
+  def matches(concrete: Transporter.RType): Boolean = 
     concrete match {
       case u: JavaClassInfo if u.infoClass.getName == "java.time.LocalDateTime" => true
       case _ => false
     }
-  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[LocalDateTime] = this
+  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[LocalDateTime] = this
   val info = RType.of[LocalDateTime]
   override def isStringish: Boolean = true
 
@@ -116,12 +116,12 @@ object LocalDateTimeTypeAdapterFactory extends TypeAdapterFactory with TypeAdapt
 
 
 object LocalDateTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[LocalDate]:
-  def matches(concrete: RType): Boolean = 
+  def matches(concrete: Transporter.RType): Boolean = 
     concrete match {
       case u: JavaClassInfo if u.infoClass.getName == "java.time.LocalDate" => true
       case _ => false
     }
-  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[LocalDate] = this
+  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[LocalDate] = this
   val info = RType.of[LocalDate]
   override def isStringish: Boolean = true
 
@@ -150,12 +150,12 @@ object LocalDateTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[L
 
 
 object LocalTimeTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[LocalTime]:
-  def matches(concrete: RType): Boolean = 
+  def matches(concrete: Transporter.RType): Boolean = 
     concrete match {
       case u: JavaClassInfo if u.infoClass.getName == "java.time.LocalTime" => true
       case _ => false
     }
-  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[LocalTime] = this
+  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[LocalTime] = this
   val info = RType.of[LocalTime]
   override def isStringish: Boolean = true
 
@@ -184,12 +184,12 @@ object LocalTimeTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[L
 
 
 object OffsetDateTimeTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[OffsetDateTime]:
-  def matches(concrete: RType): Boolean = 
+  def matches(concrete: Transporter.RType): Boolean = 
     concrete match {
       case u: JavaClassInfo if u.infoClass.getName == "java.time.OffsetDateTime" => true
       case _ => false
     }
-  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[OffsetDateTime] = this
+  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[OffsetDateTime] = this
   val info = RType.of[OffsetDateTime]
   override def isStringish: Boolean = true
 
@@ -220,12 +220,12 @@ object OffsetDateTimeTypeAdapterFactory extends TypeAdapterFactory with TypeAdap
 
 
 object OffsetTimeTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[OffsetTime]:
-  def matches(concrete: RType): Boolean = 
+  def matches(concrete: Transporter.RType): Boolean = 
     concrete match {
       case u: JavaClassInfo if u.infoClass.getName == "java.time.OffsetTime" => true
       case _ => false
     }
-  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[OffsetTime] = this
+  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[OffsetTime] = this
   val info = RType.of[OffsetTime]
   override def isStringish: Boolean = true
 
@@ -255,12 +255,12 @@ object OffsetTimeTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[
 
 
 object PeriodTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Period]:
-  def matches(concrete: RType): Boolean = 
+  def matches(concrete: Transporter.RType): Boolean = 
     concrete match {
       case u: JavaClassInfo if u.infoClass.getName == "java.time.Period" => true
       case _ => false
     }
-  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Period] = this
+  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Period] = this
   val info = RType.of[Period]
   override def isStringish: Boolean = true
 
@@ -289,12 +289,12 @@ object PeriodTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Peri
 
 
 object ZonedDateTimeTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[ZonedDateTime]:
-  def matches(concrete: RType): Boolean = 
+  def matches(concrete: Transporter.RType): Boolean = 
     concrete match {
       case u: JavaClassInfo if u.infoClass.getName == "java.time.ZonedDateTime" => true
       case _ => false
     }
-  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[ZonedDateTime] = this
+  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[ZonedDateTime] = this
   val info = RType.of[ZonedDateTime]
   override def isStringish: Boolean = true
 

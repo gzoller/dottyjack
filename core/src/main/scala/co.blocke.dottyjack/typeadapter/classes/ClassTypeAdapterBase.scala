@@ -10,7 +10,7 @@ import scala.collection.mutable
 
 // For case classes and Java/Scala plain classes, but not traits
 trait ClassTypeAdapterBase[T] extends TypeAdapter[T] with Classish:
-  val info:               RType
+  val info:               Transporter.RType
   val argsTemplate:       Array[Object]
   val fieldBitsTemplate:  mutable.BitSet
   val isSJCapture:        Boolean

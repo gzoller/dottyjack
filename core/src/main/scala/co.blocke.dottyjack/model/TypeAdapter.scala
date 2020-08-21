@@ -28,7 +28,7 @@ import co.blocke.dotty_reflection.impl.Clazzes._
  trait TypeAdapter[T] {
   self =>
 
-  val info: RType
+  val info: Transporter.RType
   def resolved: TypeAdapter[T] = this // Might be something else during Lazy construction
   
   def defaultValue: Option[T] = None

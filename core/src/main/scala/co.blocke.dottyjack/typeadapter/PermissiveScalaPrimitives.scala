@@ -9,12 +9,12 @@ import co.blocke.dotty_reflection._
 import scala.collection.mutable
 
 object PermissiveBigDecimalTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[BigDecimal] with ScalarTypeAdapter[BigDecimal]:
-  def matches(concrete: RType): Boolean = 
+  def matches(concrete: Transporter.RType): Boolean = 
     concrete match {
       case u: Scala2Info if u.infoClass.getName == "scala.math.BigDecimal" => true
       case _ => false
     }
-  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[BigDecimal] = this
+  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[BigDecimal] = this
 
   val info = RType.of[scala.math.BigDecimal]
   def read(parser: Parser): BigDecimal = 
@@ -30,12 +30,12 @@ object PermissiveBigDecimalTypeAdapterFactory extends TypeAdapterFactory with Ty
 
 
 object PermissiveBigIntTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[BigInt] with ScalarTypeAdapter[BigInt]:
-  def matches(concrete: RType): Boolean = 
+  def matches(concrete: Transporter.RType): Boolean = 
     concrete match {
       case u: Scala2Info if u.infoClass.getName == "scala.math.BigInt" => true
       case _ => false
     }
-  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[BigInt] = this
+  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[BigInt] = this
 
   val info = RType.of[scala.math.BigInt]
   def read(parser: Parser): BigInt = 
@@ -51,8 +51,8 @@ object PermissiveBigIntTypeAdapterFactory extends TypeAdapterFactory with TypeAd
 
 
 object PermissiveBooleanTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Boolean] with ScalarTypeAdapter[Boolean]:
-  def matches(concrete: RType): Boolean = concrete.infoClass == PrimitiveType.Scala_Boolean.infoClass
-  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Boolean] = this
+  def matches(concrete: Transporter.RType): Boolean = concrete.infoClass == PrimitiveType.Scala_Boolean.infoClass
+  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Boolean] = this
 
   val info = RType.of[Boolean]
   def read(parser: Parser): Boolean = 
@@ -68,8 +68,8 @@ object PermissiveBooleanTypeAdapterFactory extends TypeAdapterFactory with TypeA
 
 
 object PermissiveByteTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Byte] with ScalarTypeAdapter[Byte]:
-  def matches(concrete: RType): Boolean = concrete.infoClass == PrimitiveType.Scala_Byte.infoClass
-  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Byte] = this
+  def matches(concrete: Transporter.RType): Boolean = concrete.infoClass == PrimitiveType.Scala_Byte.infoClass
+  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Byte] = this
 
   val info = RType.of[Byte]
   def read(parser: Parser): Byte = 
@@ -85,8 +85,8 @@ object PermissiveByteTypeAdapterFactory extends TypeAdapterFactory with TypeAdap
   
 
 object PermissiveDoubleTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Double] with ScalarTypeAdapter[Double]:
-  def matches(concrete: RType): Boolean = concrete.infoClass == PrimitiveType.Scala_Double.infoClass
-  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Double] = this
+  def matches(concrete: Transporter.RType): Boolean = concrete.infoClass == PrimitiveType.Scala_Double.infoClass
+  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Double] = this
 
   val info = RType.of[Double]
   def read(parser: Parser): Double = 
@@ -102,8 +102,8 @@ object PermissiveDoubleTypeAdapterFactory extends TypeAdapterFactory with TypeAd
 
     
 object PermissiveFloatTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Float] with ScalarTypeAdapter[Float]:
-  def matches(concrete: RType): Boolean = concrete.infoClass == PrimitiveType.Scala_Float.infoClass
-  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Float] = this
+  def matches(concrete: Transporter.RType): Boolean = concrete.infoClass == PrimitiveType.Scala_Float.infoClass
+  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Float] = this
 
   val info = RType.of[Float]
   def read(parser: Parser): Float = 
@@ -119,8 +119,8 @@ object PermissiveFloatTypeAdapterFactory extends TypeAdapterFactory with TypeAda
   
 
 object PermissiveIntTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Int] with ScalarTypeAdapter[Int]:
-  def matches(concrete: RType): Boolean = concrete.infoClass == PrimitiveType.Scala_Int.infoClass
-  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Int] = this
+  def matches(concrete: Transporter.RType): Boolean = concrete.infoClass == PrimitiveType.Scala_Int.infoClass
+  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Int] = this
 
   val info = RType.of[Int]
   def read(parser: Parser): Int = 
@@ -136,8 +136,8 @@ object PermissiveIntTypeAdapterFactory extends TypeAdapterFactory with TypeAdapt
   
 
 object PermissiveLongTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Long] with ScalarTypeAdapter[Long]:
-  def matches(concrete: RType): Boolean = concrete.infoClass == PrimitiveType.Scala_Long.infoClass
-  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Long] = this
+  def matches(concrete: Transporter.RType): Boolean = concrete.infoClass == PrimitiveType.Scala_Long.infoClass
+  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Long] = this
 
   val info = RType.of[Long]
   def read(parser: Parser): Long = 
@@ -153,8 +153,8 @@ object PermissiveLongTypeAdapterFactory extends TypeAdapterFactory with TypeAdap
 
 
 object PermissiveShortTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[Short] with ScalarTypeAdapter[Short]:
-  def matches(concrete: RType): Boolean = concrete.infoClass == PrimitiveType.Scala_Short.infoClass
-  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Short] = this
+  def matches(concrete: Transporter.RType): Boolean = concrete.infoClass == PrimitiveType.Scala_Short.infoClass
+  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[Short] = this
 
   val info = RType.of[Short]
   def read(parser: Parser): Short = 

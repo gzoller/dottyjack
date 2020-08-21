@@ -27,12 +27,12 @@ import java.util.Optional
  */
 
 object OptionTypeAdapterFactory extends TypeAdapterFactory:
-  def matches(concrete: RType): Boolean = 
+  def matches(concrete: Transporter.RType): Boolean = 
     concrete match {
       case _: OptionInfo => true
       case _ => false
     }
-  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
+  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
     val optiBase = concrete.asInstanceOf[OptionInfo]
     val wrapped = optiBase.optionParamType match {
       case c: TypeSymbolInfo => throw new ScalaJackError(s"Unexpected non-concrete type in option: ${c.name}")
@@ -45,7 +45,7 @@ object OptionTypeAdapterFactory extends TypeAdapterFactory:
 
 
 case class OptionTypeAdapter[E](
-    info:             RType,
+    info:             Transporter.RType,
     valueTypeAdapter: TypeAdapter[E],
     nullIsNone:       Boolean        = false
   ) extends TypeAdapter[Option[E]]:
@@ -81,7 +81,7 @@ case class OptionTypeAdapter[E](
 
 
 case class JavaOptionalTypeAdapter[E](
-    info:             RType,
+    info:             Transporter.RType,
     valueTypeAdapter: TypeAdapter[E],
     nullIsNone:       Boolean        = false
   ) extends TypeAdapter[Optional[E]]:

@@ -11,13 +11,13 @@ import scala.util.{ Failure, Success, Try }
 
 object IntersectionTypeAdapterFactory extends TypeAdapterFactory:
 
-  def matches(concrete: RType): Boolean = 
+  def matches(concrete: Transporter.RType): Boolean = 
     concrete match {
       case _: IntersectionInfo => true
       case _ => false
     }
 
-  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
+  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
     val intersectionInfo = concrete.asInstanceOf[IntersectionInfo]
     val leftInfo = intersectionInfo.leftType
     val rightInfo = intersectionInfo.rightType
@@ -36,7 +36,7 @@ object IntersectionTypeAdapterFactory extends TypeAdapterFactory:
  *  serialization perspective) how you would combine "fields" from, say, a primitive type.
  */
 case class IntersectionTypeAdapter[L, R](
-    info: RType,
+    info: Transporter.RType,
     leftTypeAdapter:  TypeAdapter[L],
     rightTypeAdapter: TypeAdapter[R])(implicit taCache: TypeAdapterCache)
   extends TypeAdapter[L & R]:

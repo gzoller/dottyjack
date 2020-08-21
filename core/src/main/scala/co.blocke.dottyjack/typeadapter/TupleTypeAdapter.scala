@@ -12,13 +12,13 @@ object TupleTypeAdapterFactory extends TypeAdapterFactory:
 
   private val tupleFullName: Regex = """scala.Tuple(\d+)""".r
 
-  def matches(concrete: RType): Boolean = 
+  def matches(concrete: Transporter.RType): Boolean = 
     concrete match {
       case ti: TupleInfo => true
       case _ => false
     }
 
-  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
+  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
     val ti = concrete.asInstanceOf[TupleInfo]
     val fields = ti.tupleTypes.zipWithIndex.map{ (f,idx) => f match {
       case _: info.TypeSymbolInfo => throw new ScalaJackError(s"Unexpected non-Concrete tuple type ${f.getClass.getName}")
@@ -36,7 +36,7 @@ object TupleTypeAdapterFactory extends TypeAdapterFactory:
 
 
 case class TupleTypeAdapter[T](
-  info:        RType,
+  info:        Transporter.RType,
   fields:      List[TupleField[_]],
   constructor: java.lang.reflect.Constructor[T]
   ) extends TypeAdapter[T] with Collectionish {

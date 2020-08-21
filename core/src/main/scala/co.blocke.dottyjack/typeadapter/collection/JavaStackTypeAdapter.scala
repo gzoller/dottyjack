@@ -11,7 +11,7 @@ import scala.jdk.CollectionConverters._
 
 
 case class JavaStackTypeAdapter[ELEM, TO](
-    info:                RType,
+    info:                Transporter.RType,
     elemIsOptional:      Boolean,
     elementTypeAdapter:  TypeAdapter[ELEM],
     companionInstance:   Object,
