@@ -8,14 +8,10 @@ import scala.collection.mutable
 import scala.jdk.CollectionConverters._
 import co.blocke.dottyjack.json.JSON
 
-case class Foom(a: Int)
-trait Basis[T] {
-  val a: Int
-  val b: String
-  val c: T
-}
-
-case class Thingy[T]( a: Int, b: String, c: T) extends Basis[T]
+// trait Thing[A, B] { val a: A; val b: B }
+// case class AThing[Y, X](a: X, b: Y) extends Thing[X, Y]
+// trait Part[A] { val p: A }
+// case class APart[A](p: A) extends Part[A]
 
 
 
@@ -26,32 +22,17 @@ object Main {
     // val sj = DottyJack()
     val sj = co.blocke.dottyjack.DottyJack()
 
-    val js = """{"_hint":"co.blocke.dottyjack.Thingy","a":15,"b":"Wow","c":[true,false]}""".asInstanceOf[JSON]
+    // println(RType.of[(Thing[String, Int], Thing[String, Int])])
+    // println(RType.of[(Thing[String, Part[Double]], Thing[String, Part[Double]])])
+    // println("---------------------")
+    // println(RType.of(Class.forName("co.blocke.dottyjack.AThing")))
 
-    println(sj.read[Basis[List[Boolean]]](js))
+    // println(RType.inTermsOf[(Thing[String, Int], Thing[String, Int])](Class.forName("co.blocke.dottyjack.AThing")))
 
-    // val now = System.currentTimeMillis()
-    // sj.read[Basis[Boolean]](js)
-    // val later = System.currentTimeMillis()
-    // sj.read[Basis[Boolean]](js)
-    // val later2 = System.currentTimeMillis()
-    // println(later-now)
-    // println(later2-later)
-
-    // val typeEntries = new java.util.concurrent.ConcurrentHashMap[RType, String]
-
-    // val t1 = RType.of[Foom]
-    // val t2 = RType.of[Foom]
-
-    // typeEntries.put(t1, "zhere")
-    // println(typeEntries.get(t1))
-    // typeEntries.put(t2, "zthere")
-    // println(typeEntries.get(t1))
-    // println(typeEntries.get(t2))
-
-    // println(t1 == t2)
-    // println(t1.equals)
-
+    // val t1 = (AThing("wow", 4), AThing("boom", 1))
+    // val t2 = (AThing("yep", 3), AThing("yikes", 11))
+    // val inst = Map(t1 -> t2)
+    // println(sj.render(inst))
 
 
   def constructors(clazz: Class[_]): String = 
