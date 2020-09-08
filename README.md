@@ -24,6 +24,7 @@ val inst = dj.read[Person](js) // re-constitutes original Person
 
 * 0.0.1 Initial feature release
 * 0.0.2 Full JSON feature support + consume macro-based reflection (dotty-reflection)
+* 0.1.0 Build against Dotty 0.27.0-RC1 and JDK13.  Support compiler plugin performance boost
 
 
 ### A word about performance...
