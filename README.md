@@ -4,7 +4,10 @@ DottyJack is an experimental implementation of a JSON parser/serializer, derived
 
 Usage is virtually identical to ScalaJack, so please refer to those docs.
 
-In your sbt file in settings you'll need to include:  ```  resolvers += "co.blocke releases resolver" at "https://dl.bintray.com/blocke/releases"```
+In your sbt file in settings you'll need to include:  
+```
+   resolvers += "co.blocke releases resolver" at "https://dl.bintray.com/blocke/releases"
+```
 
 ```scala
 import co.blocke.dottyjack._
