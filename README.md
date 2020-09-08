@@ -4,7 +4,10 @@ DottyJack is an experimental implementation of a JSON parser/serializer, derived
 
 Usage is virtually identical to ScalaJack, so please refer to those docs.
 
-In your sbt file in settings you'll need to include:  ```  resolvers += "co.blocke releases resolver" at "https://dl.bintray.com/blocke/releases"```
+In your sbt file in settings you'll need to include:  
+```
+   resolvers += "co.blocke releases resolver" at "https://dl.bintray.com/blocke/releases"
+```
 
 ```scala
 import co.blocke.dottyjack._
@@ -21,6 +24,7 @@ val inst = dj.read[Person](js) // re-constitutes original Person
 
 * 0.0.1 Initial feature release
 * 0.0.2 Full JSON feature support + consume macro-based reflection (dotty-reflection)
+* 0.1.1 Build against Dotty 0.27.0-RC1 and JDK13.  Support compiler plugin performance boost
 
 
 ### A word about performance...
