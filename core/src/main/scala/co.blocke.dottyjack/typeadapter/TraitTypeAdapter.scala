@@ -13,22 +13,23 @@ import scala.collection.mutable
 //
 object TraitTypeAdapterFactory extends TypeAdapterFactory:
 
-  def matches(concrete: RType): Boolean = 
+  def matches(concrete: Transporter.RType): Boolean = 
     concrete match {
       case _: TraitInfo => true
       case _ => false
     }
 
-  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
+  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
     TraitTypeAdapter(concrete, taCache.jackFlavor.getHintLabelFor(concrete))
 
 
 case class TraitTypeAdapter[T](
-    info:            RType,
+    info:            Transporter.RType,
     hintLabel:       String
 )(implicit taCache: TypeAdapterCache) extends TypeAdapter[T] with Classish:
 
   inline def calcTA(c: Class[_]): ClassTypeAdapterBase[T] =
+    val s3r = c.getAnnotations.toList.head.asInstanceOf[S3Reflection]
     taCache.typeAdapterOf(RType.inTermsOf(c, info.asInstanceOf[TraitInfo])).asInstanceOf[ClassTypeAdapterBase[T]]
   
   // The battle plan here is:  Scan the keys of the object looking for type typeHintField.  Perform any (optional)
