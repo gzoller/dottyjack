@@ -29,6 +29,7 @@ case class TraitTypeAdapter[T](
 )(implicit taCache: TypeAdapterCache) extends TypeAdapter[T] with Classish:
 
   inline def calcTA(c: Class[_]): ClassTypeAdapterBase[T] =
+    val s3r = c.getAnnotations.toList.head.asInstanceOf[S3Reflection]
     taCache.typeAdapterOf(RType.inTermsOf(c, info.asInstanceOf[TraitInfo])).asInstanceOf[ClassTypeAdapterBase[T]]
   
   // The battle plan here is:  Scan the keys of the object looking for type typeHintField.  Perform any (optional)

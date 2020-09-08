@@ -132,7 +132,5 @@ case class TypeAdapterCache(
     override def apply(concrete: Transporter.RType): TypeEntry = 
       concrete match {
         case s: SelfRefRType => new TypeEntry(RType.of(s.infoClass))
-        case s => 
-          println("+++ "+s)
-          new TypeEntry(s)
+        case s => new TypeEntry(s)
       }

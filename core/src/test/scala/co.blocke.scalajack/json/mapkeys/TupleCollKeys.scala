@@ -10,13 +10,10 @@ import java.util.UUID
 import co.blocke.dottyjack.model._
 
 
-case class ParamWrapper[T,U](m: Map[T,U])
-
 class TupleCollKeys() extends FunSuite:
 
   val sj = co.blocke.dottyjack.DottyJack()
 
-  /*
   test("Tuple as key") {
     describe(
       "-------------------------\n:  Tuple Map Key Tests  :\n-------------------------", Console.BLUE
@@ -213,12 +210,6 @@ class TupleCollKeys() extends FunSuite:
       """{"[{\"a\":\"wow\",\"b\":4},{\"a\":\"boom\",\"b\":1}]":[{"a":"yep","b":3},{"a":"yikes","b":11}]}""".asInstanceOf[JSON],js)
     assertEquals(inst,sj.read[Map[(AThing[Int, String], AThing[Int, String]), (AThing[Int, String], AThing[Int, String])]](js))
   }
-  */
-
-  /*
-  NOTE: Dotty reflection can't unpack naked collections (not wrapped in a class) having traits that need to be resolved.
-  Therefore we'll wrap the next 2 examples in a wrapping class...
-  */
   
   test("Parameterized trait") {
     type T1 = Thing[String,Int]

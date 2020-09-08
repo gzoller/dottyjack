@@ -1,10 +1,16 @@
 name := "dottyjack"
 organization in ThisBuild := "co.blocke"
-val dottyVersion =  "0.26.0-RC1"
-val reflectionLibVersion = "paths2_6f28f4"
+val dottyVersion =  "0.27.0-RC1"
+val reflectionLibVersion = "0.2.0"
 
+// lazy val root = (project in file("."))
+//   .settings(settings)
+//   .settings(publishArtifact := false)
+//   .settings(publish := {})
+//   .settings(crossScalaVersions := Nil)
+//   .aggregate(dottyjack)
 
-
+// lazy val dottyjack = (project in file("core"))
 lazy val root = (project in file("."))
   .settings(settings)
   .settings(
@@ -28,7 +34,7 @@ addCompilerPlugin("co.blocke" %% "dotty-reflection" % reflectionLibVersion)
 lazy val dependencies =
   new {
     val dottyReflection = "co.blocke" %% "dotty-reflection" % reflectionLibVersion
-    val munit = "org.scalameta" %% "munit" % "0.7.11" % Test
+    val munit = "org.scalameta" %% "munit" % "0.7.12" % Test
     val commonsCodec    = "commons-codec" % "commons-codec" % "1.12"
     val json4sCore      = "org.json4s" % "json4s-core_2.13" % "3.6.6" % Test
     val json4sNative    = "org.json4s" % "json4s-native_2.13" % "3.6.6" % Test

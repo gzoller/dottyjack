@@ -29,8 +29,12 @@ that can be reflected on at compile-time (anytime you use RType.of[...]) there's
 library must fall back to runtime reflection (inspection in Dotty-speak), RType.of(...) or RType.inTermsOf[](), performance becomes alarmingly poor.  The 
 reason is that unlike Scala 2.x, which held a lot of reflection information ready-to-go in the compiled class file, Dotty must parse the .tasty file by 
 first reading it (file IO!).  For a comparison: a macro-readable class (reflection) might process in 2 or 3 milliseconds.  A class that needs Dotty 
-inspection (runtime) might be more than 1 or 2 full seconds to process.  YIKES!  For now, there's not much we can do about that.  
+inspection (runtime) might be more than 1 or 2 full seconds to process.  YIKES!  
 
-While initially this sounds like disappointing news, for many use cases it may not be that impactful.  Like ScalaJack, DottyJack caches classes it has seen, 
-so once cached it runs super-fast like ScalaJack does.  So once "primed", DottyJack is very performant.  Many use cases require serialization of the same 
-set of classes over and over again, so a one-time hit of reading the tasty file will be quickly amortized over the rest of your serializations.
+There is an optional compiler plugin that mitigates this problem.  If you use it your performance for DottyJack trait handling will go way up.  To use, add
+the following to your build.sbt:
+
+```scala
+addCompilerPlugin("co.blocke" %% "dotty-reflection" % VERSION)
+```
+where VERSION is the latest dotty-reflection version (found by looking at the Download badge here: www.blocke.co/dotty-reflection)

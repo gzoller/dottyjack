@@ -10,8 +10,6 @@ import java.util.UUID
 import co.blocke.dottyjack.model._
 
 
-case class ParamWrapper[T,U](m: Map[T,U])
-
 class TupleCollKeys() extends FunSuite:
 
   val sj = co.blocke.dottyjack.DottyJack()
@@ -213,11 +211,6 @@ class TupleCollKeys() extends FunSuite:
     assertEquals(inst,sj.read[Map[(AThing[Int, String], AThing[Int, String]), (AThing[Int, String], AThing[Int, String])]](js))
   }
 
-  /*
-  NOTE: Dotty reflection can't unpack naked collections (not wrapped in a class) having traits that need to be resolved.
-  Therefore we'll wrap the next 2 examples in a wrapping class...
-  */
-  
   test("Parameterized trait") {
     type T1 = Thing[String,Int]
     val t1: (Thing[String,Int], Thing[String,Int]) =
@@ -236,7 +229,6 @@ class TupleCollKeys() extends FunSuite:
       (AThing("wow", APart(1.2)), AThing("boom", APart(2.3)))
     val t2: (Thing[String, Part[Double]], Thing[String, Part[Double]]) =
       (AThing("yep", APart(4.5)), AThing("yikes", APart(6.7)))
-    println("HERE: "+RType.of[Map[(Thing[String, Part[Double]],Thing[String, Part[Double]]),(Thing[String, Part[Double]],Thing[String, Part[Double]])]])
     val inst = Map(t1 -> t2)
     val js = sj.render(inst)
     assertEquals(

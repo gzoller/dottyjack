@@ -20,18 +20,20 @@ object TupleTypeAdapterFactory extends TypeAdapterFactory:
 
   def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
     val ti = concrete.asInstanceOf[TupleInfo]
-    val fields = ti.tupleTypes.zipWithIndex.map{ (f,idx) => f match {
-      case _: info.TypeSymbolInfo => throw new ScalaJackError(s"Unexpected non-Concrete tuple type ${f.getClass.getName}")
-      case c => 
-        val javaClassField = ti.infoClass.getDeclaredField(s"_${idx+1}")
+    val tupClassFields = ti.infoClass.getDeclaredFields
+    var idx = 0
+    val fields = ti.tupleTypes.zip(tupClassFields).collect{
+      case (tupField: info.TypeSymbolInfo, _) => throw new ScalaJackError(s"Unexpected non-Concrete tuple type ${tupField.getClass.getName}")
+      case (c: Transporter.RType, javaClassField: java.lang.reflect.Field) => 
         javaClassField.setAccessible(true)
         val typeAdapter = taCache.typeAdapterOf(c) match {
           case ta: OptionTypeAdapter[_] => ta.convertNullToNone()
           case ta: JavaOptionalTypeAdapter[_] => ta.convertNullToNone()
           case ta => ta
         }
-        TupleField(idx+1, javaClassField, typeAdapter)
-      }}
+        idx += 1
+        TupleField(idx, javaClassField, typeAdapter)
+      }
     TupleTypeAdapter(concrete, fields.toList, ti.infoClass.getConstructors.head)
 
 
