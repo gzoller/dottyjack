@@ -1,7 +1,7 @@
 name := "dottyjack"
 organization in ThisBuild := "co.blocke"
 val dottyVersion =  "0.27.0-RC1"
-val reflectionLibVersion = "0.2.1"
+val reflectionLibVersion = "0.2.1" //"streamliner_75ecfc"
 
 // lazy val root = (project in file("."))
 //   .settings(settings)
@@ -36,6 +36,7 @@ lazy val dependencies =
     val dottyReflection = "co.blocke" %% "dotty-reflection" % reflectionLibVersion
     val munit = "org.scalameta" %% "munit" % "0.7.12" % Test
     val commonsCodec    = "commons-codec" % "commons-codec" % "1.12"
+    // val kyro            = "com.esotericsoftware" % "kryo" % "5.0.0-RC9" % Test
     val json4sCore      = "org.json4s" % "json4s-core_2.13" % "3.6.6" % Test
     val json4sNative    = "org.json4s" % "json4s-native_2.13" % "3.6.6" % Test
   }
@@ -45,6 +46,7 @@ lazy val commonDependencies = Seq(
   dependencies.commonsCodec,
   dependencies.json4sCore,
   dependencies.json4sNative,
+  // dependencies.kyro,
   dependencies.munit
 )
 

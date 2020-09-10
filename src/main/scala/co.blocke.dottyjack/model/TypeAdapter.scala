@@ -28,6 +28,8 @@ import co.blocke.dotty_reflection.impl.Clazzes._
  trait TypeAdapter[T] {
   self =>
 
+  type tpe = T
+
   val info: Transporter.RType
   def resolved: TypeAdapter[T] = this // Might be something else during Lazy construction
   
@@ -54,6 +56,11 @@ import co.blocke.dotty_reflection.impl.Clazzes._
         )
     }
   }
+
+  // Used to correctly-type tuple fields, which each have separate types that are unknown at write, but...
+  // each field's TypeAdapter *does* know its type so it can be correctly cast inside the TypeAdapter.
+  inline def castAndWrite[WIRE]( v: Any, writer: Writer[WIRE], out: mutable.Builder[WIRE, WIRE]): Unit = 
+    write(v.asInstanceOf[tpe], writer, out)
 }
 
 trait ScalarTypeAdapter[T] extends TypeAdapter[T] 
