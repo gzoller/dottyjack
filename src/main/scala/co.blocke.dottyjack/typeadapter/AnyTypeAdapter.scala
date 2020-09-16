@@ -4,6 +4,7 @@ package typeadapter
 import model._
 import classes._
 import co.blocke.dotty_reflection._
+import collection._
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
@@ -17,6 +18,7 @@ object AnyTypeAdapterFactory extends TypeAdapterFactory:
 
 case class AnyTypeAdapter(info: Transporter.RType, taCache: TypeAdapterCache) extends TypeAdapter[Any] {
   val jackFlavor = taCache.jackFlavor
+
   lazy val mapAnyTypeAdapter: TypeAdapter[Map[Any, Any]]  = taCache.typeAdapterOf[Map[Any, Any]]
   lazy val listAnyTypeAdapter: TypeAdapter[List[Any]]     = taCache.typeAdapterOf[List[Any]]
   lazy val optionAnyTypeAdapter: TypeAdapter[Option[Any]] = taCache.typeAdapterOf[Option[Any]]

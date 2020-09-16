@@ -9,7 +9,6 @@ import co.blocke.dottyjack.json.JSON
 import java.util.UUID
 import co.blocke.dottyjack.model._
 
-
 class TupleCollKeys() extends FunSuite:
 
   val sj = co.blocke.dottyjack.DottyJack()

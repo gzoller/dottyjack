@@ -65,7 +65,7 @@ object TypeAdapterCache {
       PeriodTypeAdapterFactory,
       ZonedDateTimeTypeAdapterFactory,
       JavaClassTypeAdapterFactory
-    )
+    )  
 }
 
 case class TypeAdapterCache(
@@ -129,8 +129,11 @@ case class TypeAdapterCache(
   val self = this 
 
   object ConcreteTypeEntryFactory extends java.util.function.Function[Transporter.RType, TypeEntry]:
+    private val AnyRType = RType.of[Any]
+    private val AnySelfRef = SelfRefRType("scala.Any")
     override def apply(concrete: Transporter.RType): TypeEntry = 
       concrete match {
+        case AnySelfRef      => new TypeEntry(AnyRType)
         case s: SelfRefRType => new TypeEntry(RType.of(s.infoClass))
-        case s => new TypeEntry(s)
+        case s               => new TypeEntry(s)
       }
