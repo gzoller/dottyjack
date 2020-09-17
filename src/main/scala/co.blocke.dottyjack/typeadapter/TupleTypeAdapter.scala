@@ -12,13 +12,13 @@ object TupleTypeAdapterFactory extends TypeAdapterFactory:
 
   private val tupleFullName: Regex = """scala.Tuple(\d+)""".r
 
-  def matches(concrete: Transporter.RType): Boolean = 
+  def matches(concrete: RType): Boolean = 
     concrete match {
       case ti: TupleInfo => true
       case _ => false
     }
 
-  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
     val fieldTAs = concrete.asInstanceOf[TupleInfo].tupleTypes.map{ f =>
         taCache.typeAdapterOf(f) match {
           case ota: OptionTypeAdapter[_] => ota.copy(nullIsNone = true)
@@ -31,7 +31,7 @@ object TupleTypeAdapterFactory extends TypeAdapterFactory:
 
 
 case class TupleTypeAdapter[T](
-  info:          Transporter.RType,
+  info:          RType,
   writeFn:       (Product) => List[(TypeAdapter[_], Any)],
   fieldTAs:      List[TypeAdapter[_]],
   constructor:   java.lang.reflect.Constructor[T]

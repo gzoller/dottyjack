@@ -10,7 +10,7 @@ import scala.collection.mutable
 
 
 case class CaseClassTypeAdapter[T](
-    info:               Transporter.RType,
+    info:               RType,
     fieldMembersByName: Map[String, ClassFieldMember[_,_]],
     argsTemplate:       Array[Object],
     fieldBitsTemplate:  mutable.BitSet,

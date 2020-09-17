@@ -1,7 +1,7 @@
 name := "dottyjack"
 organization in ThisBuild := "co.blocke"
 val dottyVersion =  "0.27.0-RC1"
-val reflectionLibVersion = "streamliner_75ecfc"
+val reflectionLibVersion = "1.0.0"
 
 // lazy val root = (project in file("."))
 //   .settings(settings)

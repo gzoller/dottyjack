@@ -19,7 +19,7 @@ case class MaybeStringWrapTypeAdapter[T](
   private val javaEnumClazz = Class.forName("java.util.Enumeration")
 
   override def isStringish: Boolean = true
-  val info: Transporter.RType = wrappedTypeAdapter.info
+  val info: RType = wrappedTypeAdapter.info
 
   def read(parser: Parser): T =
     parser.expectString() match {

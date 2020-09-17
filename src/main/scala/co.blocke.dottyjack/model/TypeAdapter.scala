@@ -30,7 +30,7 @@ import co.blocke.dotty_reflection.impl.Clazzes._
 
   type tpe = T
 
-  val info: Transporter.RType
+  val info: RType
   def resolved: TypeAdapter[T] = this // Might be something else during Lazy construction
   
   def defaultValue: Option[T] = None

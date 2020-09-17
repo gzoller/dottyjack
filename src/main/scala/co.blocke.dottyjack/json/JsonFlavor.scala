@@ -2,7 +2,7 @@ package co.blocke.dottyjack
 package json
 
 import model._
-import co.blocke.dotty_reflection.Transporter
+import co.blocke.dotty_reflection.RType
 import typeadapter.{MaybeStringWrapTypeAdapter, StringWrapTypeAdapter}
 
 opaque type JSON = String
@@ -14,7 +14,7 @@ case class JsonFlavor(
   override val hintMap:            Map[String, String]              = Map.empty[String, String],
   override val hintValueModifiers: Map[String, HintValueModifier]   = Map.empty[String, HintValueModifier],
   override val typeValueModifier:  HintValueModifier                = DefaultHintModifier,
-  override val parseOrElseMap:     Map[Class[_], Transporter.RType] = Map.empty[Class[_], Transporter.RType],
+  override val parseOrElseMap:     Map[Class[_], RType]             = Map.empty[Class[_], RType],
   override val enumsAsInt:         Boolean                          = false
 ) extends JackFlavor[JSON] {
 
@@ -36,15 +36,15 @@ case class JsonFlavor(
   def allowPermissivePrimitives(): JackFlavor[JSON] =
     this.copy(permissivesOk = true)
   def enumsAsInts(): JackFlavor[JSON] = this.copy(enumsAsInt = true)
-  def parseOrElse(poe: (Transporter.RType, Transporter.RType)*): JackFlavor[JSON] =
+  def parseOrElse(poe: (RType, RType)*): JackFlavor[JSON] =
     this.copy(parseOrElseMap = this.parseOrElseMap ++ poe.map{(p,oe) => p.infoClass->oe})
   def withAdapters(ta: TypeAdapterFactory*): JackFlavor[JSON] =
     this.copy(customAdapters = this.customAdapters ++ ta.toList)
   def withDefaultHint(hint: String): JackFlavor[JSON] =
     this.copy(defaultHint = hint)
-  def withHints(h: (Transporter.RType, String)*): JackFlavor[JSON] =
+  def withHints(h: (RType, String)*): JackFlavor[JSON] =
     this.copy(hintMap = this.hintMap ++ h.map{(rt,hint) => rt.name->hint})
-  def withHintModifiers(hm: (Transporter.RType, HintValueModifier)*): JackFlavor[JSON] =
+  def withHintModifiers(hm: (RType, HintValueModifier)*): JackFlavor[JSON] =
     this.copy(hintValueModifiers = this.hintValueModifiers ++ hm.map{(rt,hintM) => rt.name->hintM})
   def withTypeValueModifier(tm: HintValueModifier): JackFlavor[JSON] =
     this.copy(typeValueModifier = tm)
