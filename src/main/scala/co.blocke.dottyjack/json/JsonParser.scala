@@ -157,13 +157,13 @@ case class JsonParser(jsRaw: JSON, jackFlavor: JackFlavor[JSON]) extends Parser 
   }
 
   def expectTuple(
-      readFns: List[TupleField[_]]
+      tupleFieldTypeAdapters: List[TypeAdapter[_]]
   ): List[Object] = {
     if (i == max || jsChars(i) != '[')
       throw new ScalaJackError(showError("Expected start of tuple here"))
     i += 1
     var first = true
-    val result = readFns.map { fn =>
+    val result = tupleFieldTypeAdapters.map { fieldTypeAdapter =>
       whitespace()
       if (!first) {
         if (i == max || jsChars(i) != ',')
@@ -173,7 +173,7 @@ case class JsonParser(jsRaw: JSON, jackFlavor: JackFlavor[JSON]) extends Parser 
         whitespace()
       } else
         first = false
-      fn.valueTypeAdapter.read(this)
+      fieldTypeAdapter.read(this)
     }
     if (i == max || jsChars(i) != ']')
       throw new ScalaJackError(showError("Expected end of tuple here"))

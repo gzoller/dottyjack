@@ -14,14 +14,14 @@ import scala.language.implicitConversions
 
 object ArrayTypeAdapterFactory extends TypeAdapterFactory:
 
-  def matches(concrete: Transporter.RType): Boolean = 
+  def matches(concrete: RType): Boolean = 
     concrete match {
       case _: ArrayInfo => true
       case _: JavaArrayInfo => true
       case _ => false
     }
 
-  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] = 
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] = 
     concrete match {
       case arrInfo: ArrayInfo =>
         val elementInfo = arrInfo.elementType
@@ -41,9 +41,9 @@ object ArrayTypeAdapterFactory extends TypeAdapterFactory:
 
 
 case class ArrayTypeAdapter[ELEM](
-    info:               Transporter.RType,
+    info:               RType,
     elemIsOptional:     Boolean,
-    elementType:        Transporter.RType,
+    elementType:        RType,
     elementTypeAdapter: TypeAdapter[ELEM]
   ) extends TypeAdapter[Array[ELEM]] with ScalarTypeAdapter[Array[ELEM]]:
 

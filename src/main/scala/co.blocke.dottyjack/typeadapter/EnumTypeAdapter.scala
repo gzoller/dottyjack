@@ -10,7 +10,7 @@ import co.blocke.dotty_reflection._
 import co.blocke.dotty_reflection.info._
 
 object EnumTypeAdapterFactory extends TypeAdapterFactory:
-  def matches(concrete: Transporter.RType): Boolean =
+  def matches(concrete: RType): Boolean =
     concrete match {
       case _: ScalaEnumInfo => true
       case _: ScalaEnumerationInfo => true
@@ -18,7 +18,7 @@ object EnumTypeAdapterFactory extends TypeAdapterFactory:
       case _ => false
     }
 
-  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
     val enumsAsInt = taCache.jackFlavor.enumsAsInt
     concrete match {
       // Scala 2.x Enumeration support
@@ -43,7 +43,7 @@ object EnumTypeAdapterFactory extends TypeAdapterFactory:
 
 case class ScalaEnumerationTypeAdapter[E <: Enumeration](
     e:           E,
-    info:        Transporter.RType,
+    info:        RType,
     enumsAsInt:  Boolean
   ) extends TypeAdapter[e.Value]:
   override def isStringish: Boolean = !enumsAsInt
@@ -95,7 +95,7 @@ case class ScalaEnumerationTypeAdapter[E <: Enumeration](
 
 
 case class ScalaEnumTypeAdapter[E <: Enum](
-    info:        Transporter.RType,
+    info:        RType,
     enumsAsInt:  Boolean
   ) extends TypeAdapter[E]:
 
@@ -149,7 +149,7 @@ case class ScalaEnumTypeAdapter[E <: Enum](
   
 
 case class JavaEnumTypeAdapter[E <: java.lang.Enum[_]](
-    info:        Transporter.RType,
+    info:        RType,
     enumsAsInt:  Boolean
   ) extends TypeAdapter[E]:
 

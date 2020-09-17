@@ -10,7 +10,7 @@ import java.lang.reflect.Constructor
 
 object ScalaClassTypeAdapterFactory extends TypeAdapterFactory:
   
-  def matches(concrete: Transporter.RType): Boolean = 
+  def matches(concrete: RType): Boolean = 
     concrete match {
       case c: ScalaCaseClassInfo if !c.isValueClass => true
       case c: ScalaClassInfo => true
@@ -77,7 +77,7 @@ object ScalaClassTypeAdapterFactory extends TypeAdapterFactory:
     }.toMap
     (fieldsByName, bits, args, fieldsWeCareAbout.map( f => f.annotations.get(CHANGE_ANNO).map(_("name")).getOrElse(f.name) ))
   
-  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
     concrete match {
       case classInfo: ScalaCaseClassInfo =>
         val (fieldMembersByName, bits, args, orderedFieldNames) = bakeFieldMembersByName(classInfo.fields.toList, classInfo.constructor, classInfo.infoClass)

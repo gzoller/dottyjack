@@ -65,7 +65,7 @@ object TypeAdapterCache {
       PeriodTypeAdapterFactory,
       ZonedDateTimeTypeAdapterFactory,
       JavaClassTypeAdapterFactory
-    )
+    )  
 }
 
 case class TypeAdapterCache(
@@ -79,7 +79,7 @@ case class TypeAdapterCache(
 
   val selfCache = this
 
-  class TypeEntry(tpe: Transporter.RType):
+  class TypeEntry(tpe: RType):
     @volatile
     private var phase: Phase = Uninitialized
     // println(s"--> TACache (${typeEntries.size}) add [${tpe.name}]")
@@ -112,7 +112,7 @@ case class TypeAdapterCache(
       attempt.get
 
 
-  private val typeEntries = new java.util.concurrent.ConcurrentHashMap[Transporter.RType, TypeEntry]
+  private val typeEntries = new java.util.concurrent.ConcurrentHashMap[RType, TypeEntry]
 
   def withFactory(factory: TypeAdapterFactory): TypeAdapterCache =
     copy(factories = factories :+ factory)
@@ -120,7 +120,7 @@ case class TypeAdapterCache(
   // def typeAdapterOf(tpe: TypeStructure): TypeAdapter[_] = 
   //   typeAdapterOf(RType.ofType(tpe))
 
-  def typeAdapterOf(concreteType: Transporter.RType): TypeAdapter[_] =
+  def typeAdapterOf(concreteType: RType): TypeAdapter[_] =
     typeEntries.computeIfAbsent(concreteType, ConcreteTypeEntryFactory).typeAdapter
 
   inline def typeAdapterOf[T]: TypeAdapter[T] =
@@ -128,9 +128,12 @@ case class TypeAdapterCache(
 
   val self = this 
 
-  object ConcreteTypeEntryFactory extends java.util.function.Function[Transporter.RType, TypeEntry]:
-    override def apply(concrete: Transporter.RType): TypeEntry = 
+  object ConcreteTypeEntryFactory extends java.util.function.Function[RType, TypeEntry]:
+    private val AnyRType = RType.of[Any]
+    private val AnySelfRef = SelfRefRType("scala.Any")
+    override def apply(concrete: RType): TypeEntry = 
       concrete match {
+        case AnySelfRef      => new TypeEntry(AnyRType)
         case s: SelfRefRType => new TypeEntry(RType.of(s.infoClass))
-        case s => new TypeEntry(s)
+        case s               => new TypeEntry(s)
       }

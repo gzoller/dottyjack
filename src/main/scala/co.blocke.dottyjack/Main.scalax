@@ -8,31 +8,20 @@ import scala.collection.mutable
 import scala.jdk.CollectionConverters._
 import co.blocke.dottyjack.json.JSON
 
-// trait Thing[A, B] { val a: A; val b: B }
-// case class AThing[Y, X](a: X, b: Y) extends Thing[X, Y]
-// trait Part[A] { val p: A }
-// case class APart[A](p: A) extends Part[A]
 
-
+case class Eek(t: (Option[String],Int))
 
 object Main {
 
   def main(args: Array[String]): Unit = 
 
-    // val sj = DottyJack()
     val sj = co.blocke.dottyjack.DottyJack()
 
-    // println(RType.of[(Thing[String, Int], Thing[String, Int])])
-    // println(RType.of[(Thing[String, Part[Double]], Thing[String, Part[Double]])])
-    // println("---------------------")
-    // println(RType.of(Class.forName("co.blocke.dottyjack.AThing")))
+    val e = Eek( (None,1) )
+    val js = sj.render(e)
+    println(js)
+    // println(sj.read[Eek](js))
 
-    // println(RType.inTermsOf[(Thing[String, Int], Thing[String, Int])](Class.forName("co.blocke.dottyjack.AThing")))
-
-    // val t1 = (AThing("wow", 4), AThing("boom", 1))
-    // val t2 = (AThing("yep", 3), AThing("yikes", 11))
-    // val inst = Map(t1 -> t2)
-    // println(sj.render(inst))
 
 
   def constructors(clazz: Class[_]): String = 

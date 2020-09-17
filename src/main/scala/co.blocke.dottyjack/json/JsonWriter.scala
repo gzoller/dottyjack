@@ -173,15 +173,15 @@ case class JsonWriter() extends Writer[JSON] {
     }
   }
 
-  def writeTuple[T](t: T, writeFns: List[TupleField[_]], out: mutable.Builder[JSON, JSON]): Unit = {
+  def writeTuple[T](t: T, writeFn: (Product) => List[(TypeAdapter[_], Any)], out: mutable.Builder[JSON, JSON]): Unit = {
     out += "[".asInstanceOf[JSON]
     var first = true
-    writeFns.foreach { f =>
+    writeFn(t.asInstanceOf[Product]).foreach { (fieldTA, fieldValue) =>
       if (first)
         first = false
       else
         out += ",".asInstanceOf[JSON]
-      f.write(t, this, out)
+      fieldTA.castAndWrite( fieldValue, this, out )
     }
     out += "]".asInstanceOf[JSON]
   }

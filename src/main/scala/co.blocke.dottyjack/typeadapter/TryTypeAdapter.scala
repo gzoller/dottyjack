@@ -10,17 +10,17 @@ import scala.util.{Try, Success, Failure}
 
 
 object TryTypeAdapterFactory extends TypeAdapterFactory:
-  def matches(concrete: Transporter.RType): Boolean = 
+  def matches(concrete: RType): Boolean = 
     concrete match {
       case _: TryInfo => true
       case _ => false
     }
-  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
     TryTypeAdapter(concrete, taCache.typeAdapterOf(concrete.asInstanceOf[TryInfo].tryType), taCache.jackFlavor)
 
 
 case class TryTypeAdapter[T](
-    info:             Transporter.RType,
+    info:             RType,
     valueTypeAdapter: TypeAdapter[T],
     jackFlavor:       JackFlavor[_]
   ) extends TypeAdapter[Try[T]]:

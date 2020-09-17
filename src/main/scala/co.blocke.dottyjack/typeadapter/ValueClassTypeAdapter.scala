@@ -7,13 +7,13 @@ import co.blocke.dotty_reflection._
 import scala.collection.mutable
 
 object ValueClassTypeAdapterFactory extends TypeAdapterFactory:
-  def matches(concrete: Transporter.RType): Boolean = concrete match {
+  def matches(concrete: RType): Boolean = concrete match {
     case c: ScalaCaseClassInfo if c.isValueClass => true
     case c: ScalaClassInfo if c.isValueClass => true
     case _ => false
   }
 
-  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
     val elementType = concrete.asInstanceOf[ClassInfo].fields(0).fieldType
     val field0 = concrete match {
       case c: ScalaCaseClassInfo => c.fields(0).asInstanceOf[ScalaFieldInfo]
@@ -23,7 +23,7 @@ object ValueClassTypeAdapterFactory extends TypeAdapterFactory:
 
 
 case class ValueClassTypeAdapter[VC, Value](
-    info:               Transporter.RType,
+    info:               RType,
     field0:             ScalaFieldInfo,
     elementTypeAdapter: TypeAdapter[Value]
 ) extends TypeAdapter[VC] {
