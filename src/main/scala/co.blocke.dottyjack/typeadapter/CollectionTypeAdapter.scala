@@ -9,7 +9,7 @@ import co.blocke.dotty_reflection.info._
 
 
 object CollectionTypeAdapterFactory extends TypeAdapterFactory:
-  def matches(concrete: Transporter.RType): Boolean = 
+  def matches(concrete: RType): Boolean = 
     concrete match {
       case _: CollectionRType => true
       case _ => false
@@ -17,7 +17,7 @@ object CollectionTypeAdapterFactory extends TypeAdapterFactory:
 
   inline def isOptionalTA(ta: TypeAdapter[_]) = ta.isInstanceOf[OptionTypeAdapter[_]] || ta.isInstanceOf[JavaOptionalTypeAdapter[_]] 
 
-  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
     concrete match {
       case c: SeqLikeInfo => 
         val elementInfo = c.elementType
