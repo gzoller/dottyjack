@@ -16,7 +16,7 @@ case class StringWrapTypeAdapter[T](
   ) extends TypeAdapter[T] {
 
   override def isStringish: Boolean = true
-  val info: Transporter.RType = wrappedTypeAdapter.info
+  val info: RType = wrappedTypeAdapter.info
 
   def read(parser: Parser): T =
     parser.expectString() match {

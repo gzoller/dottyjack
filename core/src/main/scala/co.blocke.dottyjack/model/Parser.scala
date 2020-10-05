@@ -15,7 +15,7 @@ trait Parser {
       KtypeAdapter: TypeAdapter[K],
       builder:      mutable.Builder[K, TO]): TO
   def expectTuple(
-      readFns: List[TupleField[_]]
+      tupleFieldTypeAdapters: List[TypeAdapter[_]]
   ): List[Object]
   def expectMap[K, V, TO](
       keyTypeAdapter:   TypeAdapter[K],

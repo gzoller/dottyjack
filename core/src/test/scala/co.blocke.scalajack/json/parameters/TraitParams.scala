@@ -21,7 +21,7 @@ class TraitParams() extends FunSuite:
     assertEquals(inst,sj.read[T1[Boolean]](js))
   }
 
-  test("Non-parameter trait as a parameter - Foo[A](x:A) where A -> Bar (case clas)") {
+  test("Non-parameter trait as a parameter - Foo[A](x:A) where A -> Bar (case class)") {
     val inst: T1[T2] = TFoo1(TBar1("Fred"), 19)
     val js = sj.render[T1[T2]](inst)
     assertEquals(
@@ -29,6 +29,7 @@ class TraitParams() extends FunSuite:
     assert(inst == sj.read[TFoo1[TBar1]](js))
   }
 
+  /*
   test("Parameterized trait as parameter - Foo[A](x:A) where A -> Bar[Int]") {
     describe("Advanced Parameterized trait")
 
@@ -107,6 +108,7 @@ class TraitParams() extends FunSuite:
     val z = sj.read[T10[T11[Int, T5[Double, Char]], String]](js)
     assertEquals(inst, sj.read[T10[T11[Int, T5[Double, Char]], String]](js))
   }
+  */
 
   /* Performance tests
   var rtx: RType = null

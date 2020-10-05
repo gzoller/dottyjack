@@ -10,7 +10,7 @@ import scala.collection.mutable
 
 
 case class CaseClassTypeAdapter[T](
-    info:               Transporter.RType,
+    info:               RType,
     fieldMembersByName: Map[String, ClassFieldMember[_,_]],
     argsTemplate:       Array[Object],
     fieldBitsTemplate:  mutable.BitSet,
@@ -33,7 +33,7 @@ case class CaseClassTypeAdapter[T](
 
   def _read_createInstance(args: List[Object], foundBits: mutable.BitSet, captured: java.util.HashMap[String, String]): T = 
     val asBuilt = constructWith(args)
-    if isSJCapture
+    if isSJCapture then
       asBuilt.asInstanceOf[SJCapture].captured = captured
     asBuilt
 

@@ -13,6 +13,7 @@ import scala.language.implicitConversions
 import java.util.Optional
 import json.JsonMatcher
 
+
 class Options() extends FunSuite:
 
   val sj = co.blocke.dottyjack.DottyJack()
@@ -116,8 +117,7 @@ class Options() extends FunSuite:
     val js2 = sj.render(inst2)
     assertEquals("".asInstanceOf[JSON],js2)
 
-    val inst3: Map[Option[AThing[Int, String]], Int] =
-      Map(None -> 2, Some(AThing("wow", 5)) -> 1)
+    val inst3: Map[Option[AThing[Int, String]], Int] = Map(None -> 2, Some(AThing("wow", 5)) -> 1)
     val js3 = sj.render(inst3)
     assertEquals("""{"{\"a\":\"wow\",\"b\":5}":1}""".asInstanceOf[JSON],js3)
     assertEquals(Map(Some(AThing("wow", 5)) -> 1), sj.read[Map[Option[AThing[Int, String]], Int]](js3))

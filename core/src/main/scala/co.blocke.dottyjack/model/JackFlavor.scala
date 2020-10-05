@@ -18,7 +18,7 @@ trait JackFlavor[WIRE] extends ViewSplice: // extends Filterable[WIRE] with View
   val typeValueModifier: HintValueModifier               = DefaultHintModifier
   val enumsAsInt: Boolean                                = false
   val customAdapters: List[TypeAdapterFactory]           = List.empty[TypeAdapterFactory]
-  val parseOrElseMap: Map[Class[_], Transporter.RType]   = Map.empty[Class[_], Transporter.RType]
+  val parseOrElseMap: Map[Class[_], RType]               = Map.empty[Class[_], RType]
   val permissivesOk: Boolean                             = false
 
   lazy val taCache: TypeAdapterCache = bakeCache()
@@ -60,9 +60,9 @@ trait JackFlavor[WIRE] extends ViewSplice: // extends Filterable[WIRE] with View
     val parseOrElseFactories: List[TypeAdapterFactory] = parseOrElseMap.map {
       case (attemptedTypeClass, fallbackType) => 
         new TypeAdapterFactory {
-          def matches(concrete: Transporter.RType): Boolean = concrete.infoClass == attemptedTypeClass
+          def matches(concrete: RType): Boolean = concrete.infoClass == attemptedTypeClass
         
-          def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] = 
+          def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] = 
             FallbackTypeAdapter( stage1TC.typeAdapterOf(concrete), stage1TC.typeAdapterOf(fallbackType) )
         }
     }.toList
@@ -89,7 +89,7 @@ trait JackFlavor[WIRE] extends ViewSplice: // extends Filterable[WIRE] with View
   lazy val anyTypeAdapter: TypeAdapter[Any]       = taCache.typeAdapterOf[Any]
 
   // Look up any custom hint label for given type, and if none then use default
-  def getHintLabelFor(tpe: Transporter.RType): String = hintMap.getOrElse(tpe.name, defaultHint)
+  def getHintLabelFor(tpe: RType): String = hintMap.getOrElse(tpe.name, defaultHint)
 
   def stringWrapTypeAdapterFactory[T](
       wrappedTypeAdapter: TypeAdapter[T],
@@ -102,11 +102,11 @@ trait JackFlavor[WIRE] extends ViewSplice: // extends Filterable[WIRE] with View
 
   def enumsAsInts(): JackFlavor[WIRE]
   def allowPermissivePrimitives(): JackFlavor[WIRE]
-  def parseOrElse(poe: (Transporter.RType, Transporter.RType)*): JackFlavor[WIRE]
+  def parseOrElse(poe: (RType, RType)*): JackFlavor[WIRE]
   def withAdapters(ta: TypeAdapterFactory*): JackFlavor[WIRE]
   def withDefaultHint(hint: String): JackFlavor[WIRE]
-  def withHints(h: (Transporter.RType, String)*): JackFlavor[WIRE]
-  def withHintModifiers(hm: (Transporter.RType, HintValueModifier)*): JackFlavor[WIRE]
+  def withHints(h: (RType, String)*): JackFlavor[WIRE]
+  def withHintModifiers(hm: (RType, HintValueModifier)*): JackFlavor[WIRE]
   def withTypeValueModifier(tm: HintValueModifier): JackFlavor[WIRE]
 
   // Need WIRE-specific Builder instance.  By default this is StringBuilder.  Mongo will overwrite this.

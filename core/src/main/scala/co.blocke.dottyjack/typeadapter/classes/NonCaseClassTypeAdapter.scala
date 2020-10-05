@@ -9,7 +9,7 @@ import scala.collection.mutable
 
 
 case class NonCaseClassTypeAdapter[T](
-    info:                 Transporter.RType,
+    info:                 RType,
     fieldMembersByName:   Map[String, ClassFieldMember[_,_]],
     argsTemplate:         Array[Object],
     fieldBitsTemplate:    mutable.BitSet,
@@ -44,7 +44,7 @@ case class NonCaseClassTypeAdapter[T](
           case thing => setter.invoke(asBuilt, thing)
         }        
     }
-    if isSJCapture
+    if isSJCapture then
       asBuilt.asInstanceOf[SJCapture].captured = captured
     asBuilt
 

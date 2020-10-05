@@ -12,12 +12,12 @@ import scala.util.{ Failure, Success, Try }
 object UUIDTypeAdapterFactory extends TypeAdapterFactory with TypeAdapter[UUID]: 
   override def isStringish: Boolean = true
   val uuidClass = classOf[UUID]
-  def matches(concrete: Transporter.RType): Boolean = 
+  def matches(concrete: RType): Boolean = 
     concrete match {
       case j: JavaClassInfo if j.infoClass <:< uuidClass => true
       case _ => false
     }
-  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[UUID] = this
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[UUID] = this
 
   val info = RType.of[java.util.UUID]
   def read(parser: Parser): UUID =

@@ -10,13 +10,13 @@ import co.blocke.scala_reflection.info._
 import scala.util.Try
 
 object JavaClassTypeAdapterFactory extends TypeAdapterFactory:
-  def matches(concrete: Transporter.RType): Boolean = 
+  def matches(concrete: RType): Boolean = 
     concrete match {
       case _: JavaClassInfo => true
       case _ => false
     }
 
-  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
     val classInfo = concrete.asInstanceOf[ClassInfo]
 
     // Filter out any ignored fields and re-index them all
@@ -57,7 +57,7 @@ object JavaClassTypeAdapterFactory extends TypeAdapterFactory:
 
 
 case class JavaClassTypeAdapter[J](
-    info:               Transporter.RType,
+    info:               RType,
     argsTemplate:       Array[Object],
     fieldBitsTemplate:  mutable.BitSet,
     fieldMembersByName: Map[String, ClassFieldMember[_,_]],
@@ -78,7 +78,7 @@ case class JavaClassTypeAdapter[J](
     if (testBits.isEmpty) then
       val const = javaClassInfo.infoClass.getConstructors.head
       val asBuilt = const.newInstance().asInstanceOf[J]
-      if isSJCapture
+      if isSJCapture then
         asBuilt.asInstanceOf[SJCapture].captured = captured
       fieldMembersByName.values.map( f => f.info.asInstanceOf[JavaFieldInfo].valueSetter.invoke(asBuilt, args(f.info.index)) )
       asBuilt

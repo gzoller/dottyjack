@@ -11,13 +11,13 @@ import scala.util.{ Failure, Success, Try }
 
 object UnionTypeAdapterFactory extends TypeAdapterFactory:
 
-  def matches(concrete: Transporter.RType): Boolean = 
+  def matches(concrete: RType): Boolean = 
     concrete match {
       case _: UnionInfo => true
       case _ => false
     }
 
-  def makeTypeAdapter(concrete: Transporter.RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
+  def makeTypeAdapter(concrete: RType)(implicit taCache: TypeAdapterCache): TypeAdapter[_] =
     val unionInfo = concrete.asInstanceOf[UnionInfo]
     val leftInfo = unionInfo.leftType
     val rightInfo = unionInfo.rightType
@@ -32,7 +32,7 @@ object UnionTypeAdapterFactory extends TypeAdapterFactory:
 
 
 case class UnionTypeAdapter[L, R](
-    info: Transporter.RType,
+    info: RType,
     leftTypeAdapter:  TypeAdapter[L],
     rightTypeAdapter: TypeAdapter[R])(implicit taCache: TypeAdapterCache)
   extends TypeAdapter[L | R] {
