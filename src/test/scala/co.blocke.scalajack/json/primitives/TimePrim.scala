@@ -1,7 +1,7 @@
 package co.blocke.scalajack
 package json.primitives
 
-import co.blocke.dotty_reflection._
+import co.blocke.scala_reflection._
 import TestUtil._
 import munit._
 import munit.internal.console

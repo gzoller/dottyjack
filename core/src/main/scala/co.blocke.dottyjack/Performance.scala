@@ -1,7 +1,7 @@
 package co.blocke.dottyjack
 
-import co.blocke.dotty_reflection._
-import co.blocke.dotty_reflection.info._
+import co.blocke.scala_reflection._
+import co.blocke.scala_reflection.info._
 import org.apache.commons.codec.binary.Base64
 
 case class Person(
@@ -100,7 +100,7 @@ object Main {
 */
 
 // From reflection:
-// ScalaCaseClassInfo(xxx.Thing,class xxx.Thing,List(),List(ScalaFieldInfo(0,t,ArrayInfo([[I,class [[I,ArrayInfo([I,class [I,Scala_Int)),Map(),public int[][] co.blocke.dotty_reflection.Thing.t(),None)),List(),Map(),false)
+// ScalaCaseClassInfo(xxx.Thing,class xxx.Thing,List(),List(ScalaFieldInfo(0,t,ArrayInfo([[I,class [[I,ArrayInfo([I,class [I,Scala_Int)),Map(),public int[][] co.blocke.scala_reflection.Thing.t(),None)),List(),Map(),false)
 
 // From dottyjack:
 // ScalaCaseClassInfo(xxx.Thing,class xxx.Thing,List(),List(ScalaFieldInfo(0,t,ArrayInfo([[I,class scala.Array,ArrayInfo([I,class scala.Array,Scala_Int)),Map(),public int[][] co.blocke.dottyjack.Thing.t(),None)),List(),Map(),false)

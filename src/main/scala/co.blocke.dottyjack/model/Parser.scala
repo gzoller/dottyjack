@@ -3,7 +3,7 @@ package model
 
 import typeadapter.classes.ClassTypeAdapterBase
 import scala.collection.mutable
-import co.blocke.dotty_reflection.info.TypeMemberInfo
+import co.blocke.scala_reflection.info.TypeMemberInfo
 
 trait Parser {
   type WIRE

@@ -1,7 +1,7 @@
 package co.blocke.scalajack
 package json.structures
 
-import co.blocke.dotty_reflection._
+import co.blocke.scala_reflection._
 import scala.math.BigDecimal
 import java.util.UUID
 import TestUtil._

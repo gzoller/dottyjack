@@ -2,9 +2,9 @@ package co.blocke.dottyjack
 package typeadapter
 
 import model._
-import co.blocke.dotty_reflection._
-import co.blocke.dotty_reflection.info.JavaClassInfo
-import co.blocke.dotty_reflection.impl.PrimitiveType
+import co.blocke.scala_reflection._
+import co.blocke.scala_reflection.info.JavaClassInfo
+import co.blocke.scala_reflection.impl.PrimitiveType
 
 import java.math.BigDecimal
 import java.math.BigInteger

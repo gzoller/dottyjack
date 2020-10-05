@@ -1,7 +1,7 @@
 package co.blocke.dottyjack
 package model
 
-import co.blocke.dotty_reflection._
+import co.blocke.scala_reflection._
 
 trait TypeAdapterFactory:
   def matches(concrete: Transporter.RType): Boolean

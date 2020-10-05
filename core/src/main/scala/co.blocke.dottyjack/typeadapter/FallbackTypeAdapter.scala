@@ -2,7 +2,7 @@ package co.blocke.dottyjack
 package typeadapter
 
 import model._
-import co.blocke.dotty_reflection.Transporter
+import co.blocke.scala_reflection.Transporter
 
 import scala.collection.mutable
 import scala.util.{ Failure, Success, Try }

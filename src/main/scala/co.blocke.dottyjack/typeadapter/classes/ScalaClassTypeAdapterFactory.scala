@@ -2,8 +2,8 @@ package co.blocke.dottyjack
 package typeadapter
 package classes
 
-import co.blocke.dotty_reflection.info._
-import co.blocke.dotty_reflection._
+import co.blocke.scala_reflection.info._
+import co.blocke.scala_reflection._
 import model._
 import scala.collection.mutable
 import java.lang.reflect.Constructor

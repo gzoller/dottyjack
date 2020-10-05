@@ -3,8 +3,8 @@ package typeadapter
 
 import model._
 import classes._
-import co.blocke.dotty_reflection._
-import co.blocke.dotty_reflection.info.TraitInfo
+import co.blocke.scala_reflection._
+import co.blocke.scala_reflection.info.TraitInfo
 
 import scala.collection.mutable
 

@@ -3,9 +3,9 @@ package model
 
 import scala.collection.mutable
 import scala.reflect.ClassTag
-import co.blocke.dotty_reflection._
-import co.blocke.dotty_reflection.info._
-import co.blocke.dotty_reflection.impl.Clazzes._
+import co.blocke.scala_reflection._
+import co.blocke.scala_reflection.info._
+import co.blocke.scala_reflection.impl.Clazzes._
 
 
 /**

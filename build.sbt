@@ -1,7 +1,7 @@
 name := "dottyjack"
 organization in ThisBuild := "co.blocke"
-val dottyVersion =  "0.27.0-RC1"
-val reflectionLibVersion = "1.0.0"
+val dottyVersion =  "0.28.0-bin-SNAPSHOT"
+val reflectionLibVersion = "c80908_SNAPSHOT"
 
 // lazy val root = (project in file("."))
 //   .settings(settings)
@@ -26,15 +26,15 @@ lazy val root = (project in file("."))
     scalacOptions in Test ++= Classpaths.autoPlugins(update.value, Seq(), true)
   )
 
-addCompilerPlugin("co.blocke" %% "dotty-reflection" % reflectionLibVersion)
+addCompilerPlugin("co.blocke" %% "scala-reflection" % reflectionLibVersion)
 
 //==========================
 // Dependencies
 //==========================
 lazy val dependencies =
   new {
-    val dottyReflection = "co.blocke" %% "dotty-reflection" % reflectionLibVersion
-    val munit = "org.scalameta" %% "munit" % "0.7.12" % Test
+    val dottyReflection = "co.blocke" %% "scala-reflection" % reflectionLibVersion
+    val munit = "org.scalameta" %% "munit" % "0.7.12+51-8feb6e8b-SNAPSHOT" % Test
     val commonsCodec    = "commons-codec" % "commons-codec" % "1.12"
     val json4sCore      = "org.json4s" % "json4s-core_2.13" % "3.6.6" % Test
     val json4sNative    = "org.json4s" % "json4s-native_2.13" % "3.6.6" % Test
@@ -80,3 +80,4 @@ lazy val publishSettings = Seq(
   bintrayRepository := "releases",
   bintrayPackageLabels := Seq("scala", "dotty", "reflection")
 )
+

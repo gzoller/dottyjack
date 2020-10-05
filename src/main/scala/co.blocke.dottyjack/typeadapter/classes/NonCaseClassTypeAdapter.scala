@@ -3,8 +3,8 @@ package typeadapter
 package classes
 
 import model._
-import co.blocke.dotty_reflection.info._
-import co.blocke.dotty_reflection._
+import co.blocke.scala_reflection.info._
+import co.blocke.scala_reflection._
 import scala.collection.mutable
 
 
@@ -44,7 +44,7 @@ case class NonCaseClassTypeAdapter[T](
           case thing => setter.invoke(asBuilt, thing)
         }        
     }
-    if isSJCapture
+    if isSJCapture then
       asBuilt.asInstanceOf[SJCapture].captured = captured
     asBuilt
 

@@ -1,7 +1,7 @@
 package co.blocke.scalajack
 package json.collections
 
-import co.blocke.dotty_reflection._
+import co.blocke.scala_reflection._
 import scala.math._
 import java.util.UUID
 import TestUtil._

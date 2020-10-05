@@ -3,7 +3,7 @@ package model
 
 import typeadapter._
 import scala.collection.mutable
-import co.blocke.dotty_reflection._
+import co.blocke.scala_reflection._
 
 trait JackFlavor[WIRE] extends ViewSplice: // extends Filterable[WIRE] with ViewSplice {
 

@@ -2,7 +2,7 @@ package co.blocke.scalajack
 package json.plainclass
 
 import co.blocke.dottyjack.SJCapture
-import co.blocke.dotty_reflection._
+import co.blocke.scala_reflection._
 import co.blocke.dottyjack._
 
 import scala.util._

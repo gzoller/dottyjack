@@ -4,8 +4,8 @@ package typeadapter
 import model._
 
 import scala.collection.mutable
-import co.blocke.dotty_reflection._
-import co.blocke.dotty_reflection.info._
+import co.blocke.scala_reflection._
+import co.blocke.scala_reflection.info._
 import java.util.Optional
 
 /*

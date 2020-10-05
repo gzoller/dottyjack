@@ -3,8 +3,8 @@ package json
 
 import model._
 import typeadapter.classes.ClassTypeAdapterBase
-import co.blocke.dotty_reflection._
-import co.blocke.dotty_reflection.info.TypeMemberInfo
+import co.blocke.scala_reflection._
+import co.blocke.scala_reflection.info.TypeMemberInfo
 
 import scala.collection.mutable
 import scala.jdk.CollectionConverters._

@@ -1,7 +1,7 @@
 package co.blocke.dottyjack
 package model
 
-import co.blocke.dotty_reflection.info._
+import co.blocke.scala_reflection.info._
 import typeadapter._
 
 case class ClassFieldMember[OWNER,T](

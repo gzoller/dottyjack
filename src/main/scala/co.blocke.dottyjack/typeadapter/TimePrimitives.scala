@@ -1,9 +1,9 @@
 package co.blocke.dottyjack
 package typeadapter
 
-import co.blocke.dotty_reflection.impl.Clazzes._
-import co.blocke.dotty_reflection.info._
-import co.blocke.dotty_reflection._
+import co.blocke.scala_reflection.impl.Clazzes._
+import co.blocke.scala_reflection.info._
+import co.blocke.scala_reflection._
 
 import scala.collection.mutable
 import scala.util.{ Failure, Success, Try }

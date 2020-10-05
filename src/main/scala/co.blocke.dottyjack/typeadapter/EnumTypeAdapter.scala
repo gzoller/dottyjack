@@ -6,8 +6,8 @@ import model._
 import scala.collection.mutable
 import scala.util.{Try, Success, Failure}
 import java.lang.reflect.Method
-import co.blocke.dotty_reflection._
-import co.blocke.dotty_reflection.info._
+import co.blocke.scala_reflection._
+import co.blocke.scala_reflection.info._
 
 object EnumTypeAdapterFactory extends TypeAdapterFactory:
   def matches(concrete: RType): Boolean =

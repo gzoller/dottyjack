@@ -2,7 +2,7 @@ package co.blocke.dottyjack
 package json
 
 import model._
-import co.blocke.dotty_reflection.RType
+import co.blocke.scala_reflection.RType
 import typeadapter.{MaybeStringWrapTypeAdapter, StringWrapTypeAdapter}
 
 opaque type JSON = String

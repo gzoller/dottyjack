@@ -3,7 +3,7 @@ package typeadapter
 
 import model._
 import classes._
-import co.blocke.dotty_reflection._
+import co.blocke.scala_reflection._
 import collection._
 
 import scala.collection.mutable

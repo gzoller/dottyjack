@@ -3,8 +3,8 @@ package typeadapter
 package classes
 
 import model._
-import co.blocke.dotty_reflection.info._
-import co.blocke.dotty_reflection._
+import co.blocke.scala_reflection.info._
+import co.blocke.scala_reflection._
 
 import scala.collection.mutable
 
@@ -33,7 +33,7 @@ case class CaseClassTypeAdapter[T](
 
   def _read_createInstance(args: List[Object], foundBits: mutable.BitSet, captured: java.util.HashMap[String, String]): T = 
     val asBuilt = constructWith(args)
-    if isSJCapture
+    if isSJCapture then
       asBuilt.asInstanceOf[SJCapture].captured = captured
     asBuilt
 

@@ -5,8 +5,8 @@ package classes
 import model._
 
 import scala.collection.mutable
-import co.blocke.dotty_reflection._
-import co.blocke.dotty_reflection.info._
+import co.blocke.scala_reflection._
+import co.blocke.scala_reflection.info._
 import scala.util.Try
 
 object JavaClassTypeAdapterFactory extends TypeAdapterFactory:
@@ -78,7 +78,7 @@ case class JavaClassTypeAdapter[J](
     if (testBits.isEmpty) then
       val const = javaClassInfo.infoClass.getConstructors.head
       val asBuilt = const.newInstance().asInstanceOf[J]
-      if isSJCapture
+      if isSJCapture then
         asBuilt.asInstanceOf[SJCapture].captured = captured
       fieldMembersByName.values.map( f => f.info.asInstanceOf[JavaFieldInfo].valueSetter.invoke(asBuilt, args(f.info.index)) )
       asBuilt

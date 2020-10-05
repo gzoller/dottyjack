@@ -4,8 +4,9 @@ package typeadapter
 import model._
 import collection._
 
-import co.blocke.dotty_reflection._
-import co.blocke.dotty_reflection.info._
+import co.blocke.scala_reflection._
+import co.blocke.scala_reflection.impl.CollectionRType
+import co.blocke.scala_reflection.info._
 
 
 object CollectionTypeAdapterFactory extends TypeAdapterFactory:

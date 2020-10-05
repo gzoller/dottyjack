@@ -1,9 +1,9 @@
 package co.blocke.scalajack
 package json.custom
 
-import co.blocke.dotty_reflection.impl.Clazzes._
-import co.blocke.dotty_reflection.info.AliasInfo
-import co.blocke.dotty_reflection._
+import co.blocke.scala_reflection.impl.Clazzes._
+import co.blocke.scala_reflection.info.AliasInfo
+import co.blocke.scala_reflection._
 import co.blocke.dottyjack.model._
 
 opaque type Phone = String

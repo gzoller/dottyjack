@@ -3,7 +3,7 @@ package json
 package plainclass
 
 import co.blocke.dottyjack.model.ClassNameHintModifier
-import co.blocke.dotty_reflection._
+import co.blocke.scala_reflection._
 import TestUtil._
 import munit._
 import munit.internal.console
@@ -114,7 +114,7 @@ class Inheritance() extends FunSuite:
   //----------
   // test("Must fail non-val constructor field") {
   //   val f = new Fail4(1, 2)
-  //   interceptMessage[co.blocke.dotty_reflection.ReflectException]("""Class [co.blocke.scalajack.json.plainclass.Fail4]: Non-case class constructor arguments must all be 'val'"""){
+  //   interceptMessage[co.blocke.scala_reflection.ReflectException]("""Class [co.blocke.scalajack.json.plainclass.Fail4]: Non-case class constructor arguments must all be 'val'"""){
   //     sj.render(f)
   //   }
   // }

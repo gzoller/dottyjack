@@ -1,7 +1,7 @@
 package co.blocke.scalajack
 package json.collections
 
-import co.blocke.dotty_reflection._
+import co.blocke.scala_reflection._
 import scala.math._
 import java.util.UUID
 import TestUtil._
@@ -316,12 +316,21 @@ class Maps() extends FunSuite:
   test("Multidimensional arrays must work") {
     describe("+++ Complex Types +++")
 
+    //case class JMultiMap( a1: java.util.HashMap[java.util.HashMap[String,Boolean],Int], a2: java.util.HashMap[Int,java.util.HashMap[String,Boolean]] )
+    val m1: java.util.HashMap[String,Boolean] = java.util.HashMap( Map( ("a",true), ("b",false) ).asJava )
+    val m2: java.util.HashMap[String,Boolean] = java.util.HashMap( Map( ("c",true), ("d",false) ).asJava )
     val inst = JMultiMap(
       java.util.HashMap(
-        Map(java.util.HashMap( Map("a"->true,"b"->false).asJava) -> 1, java.util.HashMap(Map("c"->true,"d"->false).asJava) -> 2).asJava
+        Map(
+          (m1, 1), 
+          (m2, 2)
+        ).asJava
       ), 
       java.util.HashMap(
-        Map(1 ->java.util.HashMap( Map("a"->true,"b"->false).asJava), 2 -> java.util.HashMap(Map("c"->true,"d"->false).asJava)).asJava
+        Map(
+          (1, m1), 
+          (2, m2)
+        ).asJava
       )
     )
     val js = sj.render(inst)

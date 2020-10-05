@@ -4,8 +4,8 @@ package model
 import typeadapter._
 import typeadapter.classes._
 import scala.util.{ Success, Try }
-import co.blocke.dotty_reflection._
-import co.blocke.dotty_reflection.info._
+import co.blocke.scala_reflection._
+import co.blocke.scala_reflection.info._
 
 
 object TypeAdapterCache {

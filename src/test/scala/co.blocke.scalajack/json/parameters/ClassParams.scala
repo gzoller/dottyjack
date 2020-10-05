@@ -5,7 +5,7 @@ import TestUtil._
 import munit._
 import munit.internal.console
 import co.blocke.dottyjack.json.JSON
-import co.blocke.dotty_reflection._
+import co.blocke.scala_reflection._
 
 class ClassParams() extends FunSuite:
 

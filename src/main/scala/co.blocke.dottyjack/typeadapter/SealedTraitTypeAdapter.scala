@@ -4,9 +4,9 @@ package typeadapter
 import model._
 
 import scala.collection.mutable
-import co.blocke.dotty_reflection._
-import co.blocke.dotty_reflection.impl.Clazzes._
-import co.blocke.dotty_reflection.info._
+import co.blocke.scala_reflection._
+import co.blocke.scala_reflection.impl.Clazzes._
+import co.blocke.scala_reflection.info._
 
 object SealedTraitTypeAdapterFactory extends TypeAdapterFactory:
   def matches(concrete: RType): Boolean = 

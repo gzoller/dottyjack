@@ -2,8 +2,8 @@ package co.blocke.dottyjack
 package typeadapter
 
 import model._
-import co.blocke.dotty_reflection._
-import co.blocke.dotty_reflection.info.TupleInfo
+import co.blocke.scala_reflection._
+import co.blocke.scala_reflection.info.TupleInfo
 import java.lang.reflect.Method
 import scala.collection.mutable
 import scala.util.matching.Regex
