@@ -35,7 +35,7 @@ lazy val dependencies =
     val dottyReflection = "co.blocke"     %% "scala-reflection"  % reflectionLibVersion
     val munit           = "org.scalameta" %% "munit"             % "0.7.12+51-8feb6e8b-SNAPSHOT" % Test
     val commonsCodec    = "commons-codec" % "commons-codec"      % "1.12"
-    val json4sCore      = "org.json4s"    % "json4s-core_2.13"   % "3.6.6" % Test
+    val json4sCore      = "org.json4s"    % "json4s-core_2.13"   % "3.6.6"
     val json4sNative    = "org.json4s"    % "json4s-native_2.13" % "3.6.6" % Test
   }
 

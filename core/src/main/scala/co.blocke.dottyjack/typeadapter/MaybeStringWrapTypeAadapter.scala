@@ -43,14 +43,6 @@ case class MaybeStringWrapTypeAdapter[T](
       case e if e.getClass.getName =="scala.Enumeration$Val" && !jackFlavor.enumsAsInt => writer.writeString(t.toString, out)
       case _: scala.Enum if !jackFlavor.enumsAsInt => writer.writeString(t.toString, out)
       case t if t.getClass <:< javaEnumClazz && !jackFlavor.enumsAsInt => writer.writeString(t.toString, out)
-      case _ =>
-        // Need to wrap string...
-        val stringBuilder = co.blocke.dottyjack.model.StringBuilder()
-        wrappedTypeAdapter.write(
-          t,
-          writer,
-          stringBuilder.asInstanceOf[mutable.Builder[Any, WIRE]]
-        )
-        writer.writeString(stringBuilder.result(), out)
+      case _ => jackFlavor.stringWrapTypeAdapterFactory(wrappedTypeAdapter).write(t, writer, out)
       }
 }

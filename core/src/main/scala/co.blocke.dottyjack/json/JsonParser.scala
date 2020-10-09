@@ -221,7 +221,7 @@ case class JsonParser(jsRaw: JSON, jackFlavor: JackFlavor[JSON]) extends Parser 
   ): (mutable.BitSet, List[Object], java.util.HashMap[String, String]) = {
     whitespace()
     val args      = classBase.argsTemplate.clone()
-    val fieldBits = mutable.BitSet() // classBase.fieldBitsTemplate.clone()
+    val fieldBits = mutable.BitSet() 
     val captured =
       if (classBase.isSJCapture) 
         new java.util.HashMap[String, String]()
