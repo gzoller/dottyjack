@@ -216,14 +216,10 @@ class Json4sSpec extends FunSuite:
     )
     val value: Envelope[Body] = Envelope("DEF", FancyBody("BOO"))
     val d = scalaJack.render[Envelope[Body]](value)
-    println("Value   : "+value)
-    println("Rendered: "+d)
-    println("Read    : "+scalaJack.read[Envelope[Body]](d))
-    //Rendered: JObject(List((Giraffe,JString(FancyBody)), (id,JString(DEF)), (body,JObject(List((message,JString(BOO)))))))
-    // assertEquals(
-    //   "JObject(List((Giraffe,JString(Body)), (id,JString(DEF)), (body,JObject(List((_hint,JString(co.blocke.scalajack.json4s.FancyBody)), (message,JString(BOO)))))))",
-    //   d.toString)
-    // assertEquals(scalaJack.read[Envelope[Body]](d), value)
+    assertEquals(
+      "JObject(List((Giraffe,JString(FancyBody)), (id,JString(DEF)), (body,JObject(List((message,JString(BOO)))))))",
+      d.toString)
+    assertEquals(scalaJack.read[Envelope[Body]](d), value)
   }
 
   test("Source as string") {

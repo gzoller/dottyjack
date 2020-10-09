@@ -31,7 +31,7 @@ case class CaseClassTypeAdapter[T](
     else
       const.newInstance(args:_*).asInstanceOf[T]
 
-  def _read_createInstance(args: List[Object], foundBits: mutable.BitSet, captured: java.util.HashMap[String, String]): T = 
+  def _read_createInstance(args: List[Object], foundBits: mutable.BitSet, captured: java.util.HashMap[String, _]): T = 
     val asBuilt = constructWith(args)
     if isSJCapture then
       asBuilt.asInstanceOf[SJCapture].captured = captured

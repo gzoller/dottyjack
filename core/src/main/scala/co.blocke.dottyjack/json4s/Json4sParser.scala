@@ -82,7 +82,6 @@ case class Json4sParser(input: JValue, jackFlavor: JackFlavor[JValue])
         val args = classBase.argsTemplate.clone()
         val fieldBits = mutable.BitSet()
         val captured =
-          // if (classBase.isSJCapture) new java.util.HashMap[String, String]()
           if classBase.isSJCapture then
             new java.util.HashMap[String, Any]()
           else 
@@ -98,7 +97,7 @@ case class Json4sParser(input: JValue, jackFlavor: JackFlavor[JValue])
               }
               .getOrElse {
                 if (captured != null)
-                  captured.put(key, jackFlavor.anyTypeAdapter.read(subParser(objVal)))//.expectString())
+                  captured.put(key, objVal)
               }
         }
         (fieldBits, args.toList, captured)

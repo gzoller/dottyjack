@@ -17,7 +17,7 @@ trait ScalaClassTypeAdapter[T](implicit taCache: TypeAdapterCache) extends Class
 
   val isSJCapture = classInfo.hasMixin(SJ_CAPTURE)
 
-  def _read_createInstance(args: List[Object], foundBits: mutable.BitSet, captured: java.util.HashMap[String, String]): T
+  def _read_createInstance(args: List[Object], foundBits: mutable.BitSet, captured: java.util.HashMap[String, _]): T
   def _read_updateFieldMembers( fmbn: Map[String, ClassFieldMember[_,_]]): ScalaClassTypeAdapter[T]
 
   def read(parser: Parser): T =

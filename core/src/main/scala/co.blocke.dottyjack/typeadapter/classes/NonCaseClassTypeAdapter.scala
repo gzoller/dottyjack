@@ -23,7 +23,7 @@ case class NonCaseClassTypeAdapter[T](
 
   inline def fieldName(f: FieldInfo): String = f.annotations.get(CHANGE_ANNO).map(_("name")).getOrElse(f.name)
 
-  def _read_createInstance(args: List[Object], foundBits: mutable.BitSet, captured: java.util.HashMap[String, String]): T = 
+  def _read_createInstance(args: List[Object], foundBits: mutable.BitSet, captured: java.util.HashMap[String, _]): T = 
     // Build base object
     val asBuilt = 
       val const = classInfo.infoClass.getConstructors.head
